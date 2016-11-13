@@ -1,0 +1,8 @@
+**/Debug
+**/Release
+**/.vs
+**/*.opendb
+**/*.aps
+**/*.suo
+**/*.db
+vis_milk2/bin
