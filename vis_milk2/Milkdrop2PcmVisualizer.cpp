@@ -35,7 +35,6 @@ static D3DPRESENT_PARAMETERS d3dPp;
 static HMODULE module = nullptr;
 static std::atomic<HANDLE> thread = nullptr;
 static unsigned threadId = 0;
-static bool quit = false;
 
 static std::mutex pcmMutex;
 static unsigned char pcmLeftIn[SAMPLE_SIZE];

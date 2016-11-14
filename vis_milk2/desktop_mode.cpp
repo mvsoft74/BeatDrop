@@ -254,11 +254,11 @@ int CPluginShell::CreateDesktopIconTexture(IDirect3DTexture9** ppTex)
     }
 
     // create new
-    int ntries = (m_lpDX->m_d3dpp.BackBufferFormat == D3DFMT_R5G6B5) ? 3 : 1;
+    int ntries = (m_lpDX->m_d3dpp->BackBufferFormat == D3DFMT_R5G6B5) ? 3 : 1;
     for (int ntry=0; ntry<ntries; ntry++)
     {
-        D3DFORMAT fmt = m_lpDX->m_d3dpp.BackBufferFormat;
-        switch(m_lpDX->m_d3dpp.BackBufferFormat)
+        D3DFORMAT fmt = m_lpDX->m_d3dpp->BackBufferFormat;
+        switch(m_lpDX->m_d3dpp->BackBufferFormat)
         {
         case D3DFMT_R8G8B8:
         case D3DFMT_X8R8G8B8:
