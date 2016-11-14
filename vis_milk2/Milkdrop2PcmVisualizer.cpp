@@ -100,7 +100,12 @@ LRESULT CALLBACK StaticWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPara
         }
 
         case WM_CHAR: {
-            g_plugin.HandleRegularKey(wParam);
+            if (wParam == VK_ESCAPE) {
+                PostQuitMessage(0);
+            }
+            else {
+                g_plugin.PluginShellWindowProc(hWnd, uMsg, wParam, lParam);
+            }
             break;
         }
 
