@@ -306,11 +306,11 @@ void StartRenderThread(HINSTANCE instance) {
 class Visualizer : public musik::core::audio::IPcmVisualizer {
     public:
         virtual const char* Name() {
-            return "milkdrop2";
+            return "Milkdrop2";
         };
 
         virtual const char* Version() {
-            return "0.1.2";
+            return "0.1.3";
         };
 
         virtual const char* Author() {
