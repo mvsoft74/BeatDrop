@@ -11,6 +11,7 @@
 #include <d3d9.h>
 #include "plugin.h"
 #include <math.h>
+#include <dwmapi.h>
 
 #include <mutex>
 #include <atomic>
@@ -32,10 +33,15 @@ static IDirect3D9* pD3D9 = nullptr;
 static IDirect3DDevice9* pD3DDevice = nullptr;
 static D3DPRESENT_PARAMETERS d3dPp;
 
+static LONG lastWindowStyle = 0;
+static LONG lastWindowStyleEx = 0;
+
+static bool fullscreen;
+static RECT lastRect = { 0 };
+
 static HMODULE module = nullptr;
 static std::atomic<HANDLE> thread = nullptr;
 static unsigned threadId = 0;
-
 static std::mutex pcmMutex;
 static unsigned char pcmLeftIn[SAMPLE_SIZE];
 static unsigned char pcmRightIn[SAMPLE_SIZE];
@@ -84,7 +90,53 @@ void DeinitD3d() {
     }
 }
 
-static bool resized = false;
+void ToggleFullScreen(HWND hwnd) {
+    if (!fullscreen) {
+        ShowCursor(FALSE);
+
+        lastWindowStyle = GetWindowLong(hwnd, GWL_STYLE);
+        lastWindowStyleEx = GetWindowLongW(hwnd, GWL_EXSTYLE);
+        lastWindowStyleEx &= ~WS_EX_TOPMOST;
+        GetWindowRect(hwnd, &lastRect);
+
+        HMONITOR monitor = MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST);
+
+        MONITORINFO info;
+        info.cbSize = sizeof(MONITORINFO);
+
+        GetMonitorInfoW(monitor, &info);
+
+        int width = info.rcMonitor.right - info.rcMonitor.left;
+        int height = info.rcMonitor.bottom - info.rcMonitor.top;
+
+        SetWindowLongW(hwnd, GWL_STYLE, WS_POPUP | WS_VISIBLE);
+        SetWindowLongW(hwnd, GWL_EXSTYLE, WS_EX_APPWINDOW);
+        SetWindowPos(hwnd, HWND_TOPMOST, info.rcMonitor.left, info.rcMonitor.top, width, height, SWP_DRAWFRAME | SWP_FRAMECHANGED);
+
+        d3dPp.BackBufferWidth = width;
+        d3dPp.BackBufferHeight = height;
+
+        pD3DDevice->Reset(&d3dPp);
+        fullscreen = true;
+    }
+    else {
+        ShowCursor(TRUE);
+
+        int width = lastRect.right - lastRect.left;
+        int height = lastRect.bottom - lastRect.top;
+
+        d3dPp.BackBufferWidth = width;
+        d3dPp.BackBufferHeight = height;
+
+        pD3DDevice->Reset(&d3dPp);
+        fullscreen = false;
+
+        SetWindowLongW(hwnd, GWL_STYLE, lastWindowStyle);
+        SetWindowLongW(hwnd, GWL_EXSTYLE, lastWindowStyleEx);
+        SetWindowPos(hwnd, HWND_NOTOPMOST, lastRect.left, lastRect.top, width, height, SWP_DRAWFRAME | SWP_FRAMECHANGED);
+        SetWindowPos(hwnd, 0, 0, 0, 0, 0, SWP_DRAWFRAME | SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE | SWP_NOZORDER);
+    }
+}
 
 LRESULT CALLBACK StaticWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
     switch(uMsg) {
@@ -99,9 +151,12 @@ LRESULT CALLBACK StaticWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPara
             break;
         }
 
-        case WM_CHAR: {
-            if (wParam == VK_ESCAPE) {
+        case WM_SYSKEYDOWN: {
+            if (wParam == VK_F4) {
                 PostQuitMessage(0);
+            }
+            else if (wParam == VK_RETURN) {
+                ToggleFullScreen(hWnd);
             }
             else {
                 g_plugin.PluginShellWindowProc(hWnd, uMsg, wParam, lParam);
