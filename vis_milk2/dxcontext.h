@@ -63,8 +63,7 @@ class DXContext
 {
 public:
     // PUBLIC FUNCTIONS
-    DXContext(LPDIRECT3DDEVICE9 device, wchar_t* szIniFile);
-    //DXContext(HWND hWndWinamp,HINSTANCE hInstance,LPCWSTR szClassName,LPCSTR szWindowCaption,WNDPROC pProc,LONG_PTR uWindowLong, int minimize_winamp, wchar_t* szIniFile);
+    DXContext(LPDIRECT3DDEVICE9 device, D3DPRESENT_PARAMETERS* d3dpp, HWND hwnd, wchar_t* szIniFile);
     ~DXContext();
     BOOL StartOrRestartDevice(DXCONTEXT_PARAMS *pParams); // also serves as Init() function
     void OnTrulyExiting() { m_truly_exiting = 1; }
@@ -97,7 +96,7 @@ public:
     RECT m_monitor_work_rect_orig; // original work rect; does not account for pseudo-multimon modes like 2048x768
     DXCONTEXT_PARAMS       m_current_mode;
     LPDIRECT3DDEVICE9      m_lpDevice;
-    D3DPRESENT_PARAMETERS  m_d3dpp;
+    D3DPRESENT_PARAMETERS* m_d3dpp;
     LPDIRECT3D9            m_lpD3D;
     D3DCAPS9               m_caps;
 
@@ -120,6 +119,7 @@ protected:
     int  m_truly_exiting;
     int  m_bpp;
 
+    void WriteSafeWindowPos();
     int GetWindowedModeAutoSize(int iteration);
     BOOL TestDepth(int ordinal_adapter, D3DFORMAT fmt);
     BOOL TestFormat(int ordinal_adapter, D3DFORMAT fmt);

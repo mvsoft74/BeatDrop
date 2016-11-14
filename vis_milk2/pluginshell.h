@@ -257,8 +257,7 @@ public:
 
     // called by vis.cpp, on behalf of Winamp:
     int  PluginPreInitialize(HWND hWinampWnd, HINSTANCE hWinampInstance);
-    int  PluginInitialize();
-    int  PluginInitialize(LPDIRECT3DDEVICE9 device, int iWidth, int iHeight);
+    int  PluginInitialize(LPDIRECT3DDEVICE9 device, D3DPRESENT_PARAMETERS* d3dpp, HWND hwnd, int iWidth, int iHeight);
     int  PluginRender(unsigned char *pWaveL, unsigned char *pWaveR);
     void PluginQuit();
 
@@ -286,7 +285,7 @@ private:
     void DoTime();
     void AnalyzeNewSound(unsigned char *pWaveL, unsigned char *pWaveR);
     void AlignWaves();
-    int  InitDirectX(LPDIRECT3DDEVICE9 device);
+    int  InitDirectX(LPDIRECT3DDEVICE9 device, D3DPRESENT_PARAMETERS* d3dpp, HWND hwnd);
     void CleanUpDirectX();
     int  InitGDIStuff();
     void CleanUpGDIStuff();

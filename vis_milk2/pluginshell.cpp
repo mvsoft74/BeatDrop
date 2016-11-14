@@ -966,10 +966,10 @@ void CPluginShell::TogglePlaylist()
 	int ret = CheckMenuItem(m_context_menu, ID_SHOWPLAYLIST, MF_BYCOMMAND | (m_show_playlist ? MF_CHECKED : MF_UNCHECKED));
 }
 
-int CPluginShell::InitDirectX(LPDIRECT3DDEVICE9 device)
+int CPluginShell::InitDirectX(LPDIRECT3DDEVICE9 device, D3DPRESENT_PARAMETERS* d3dpp, HWND hwnd)
 {
     if (device) {
-        m_lpDX = new DXContext(device, m_szConfigIniFile);
+        m_lpDX = new DXContext(device, d3dpp, hwnd, m_szConfigIniFile);
     }
     else {
 //        m_lpDX = new DXContext(m_hWndWinamp, m_hInstance, CLASSNAME, WINDOWCAPTION, CPluginShell::WindowProc, (LONG_PTR)this, m_minimize_winamp, m_szConfigIniFile);
@@ -1310,27 +1310,13 @@ int CPluginShell::PluginPreInitialize(HWND hWinampWnd, HINSTANCE hWinampInstance
 	return TRUE;
 }
 
-int CPluginShell::PluginInitialize()
-{
-	// note: initialize GDI before DirectX.  Also separate them because
-	// when we change windowed<->fullscreen, or lose the device and restore it,
-	// we don't want to mess with any (persistent) GDI stuff.
-
-	if (!InitDirectX(NULL))    return FALSE;  // gives its own error messages
-	if (!InitNondx9Stuff())    return FALSE;  // gives its own error messages
-	if (!AllocateDX9Stuff())   return FALSE;  // gives its own error messages
-	if (!InitVJStuff())        return FALSE;
-
-	return TRUE;
-}
-
-int CPluginShell::PluginInitialize(LPDIRECT3DDEVICE9 device, int iWidth, int iHeight)
+int CPluginShell::PluginInitialize(LPDIRECT3DDEVICE9 device, D3DPRESENT_PARAMETERS* d3dpp, HWND hwnd, int iWidth, int iHeight)
 {
     // note: initialize GDI before DirectX.  Also separate them because
     // when we change windowed<->fullscreen, or lose the device and restore it,
     // we don't want to mess with any (persistent) GDI stuff.
 
-    if (!InitDirectX(device)) return FALSE;  // gives its own error messages
+    if (!InitDirectX(device, d3dpp, hwnd)) return FALSE;  // gives its own error messages
     m_lpDX->m_client_width = iWidth;
     m_lpDX->m_client_height = iHeight;
     m_lpDX->m_REAL_client_height = iHeight;
@@ -1580,7 +1566,7 @@ int CPluginShell::PluginRender(unsigned char *pWaveL, unsigned char *pWaveR)//, 
 	{
 		// device WAS lost, and is now ready to be reset (and come back online):
 		CleanUpDX9Stuff(0);
-		if (m_lpDX->m_lpDevice->Reset(&m_lpDX->m_d3dpp) != D3D_OK)
+		if (m_lpDX->m_lpDevice->Reset(m_lpDX->m_d3dpp) != D3D_OK)
 		{
 			// note: a basic warning messagebox will have already been given.
 			// now suggest specific advice on how to regain more video memory:

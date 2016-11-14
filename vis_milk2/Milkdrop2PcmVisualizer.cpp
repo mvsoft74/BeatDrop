@@ -20,18 +20,22 @@
 #define DLL_EXPORT __declspec(dllexport)
 #define COMPILE_AS_DLL
 #define SAMPLE_SIZE 576
+#define DEFAULT_WIDTH 1280;
+#define DEFAULT_HEIGHT 720;
 
 CPlugin g_plugin;
 HINSTANCE api_orig_hinstance = nullptr;
 _locale_t g_use_C_locale;
 char keyMappings[8];
 
-static IDirect3D9* pD3D9 = NULL;
-static IDirect3DDevice9* pD3DDevice = NULL;
-static HWND gHWND = NULL;
+static IDirect3D9* pD3D9 = nullptr;
+static IDirect3DDevice9* pD3DDevice = nullptr;
+static D3DPRESENT_PARAMETERS d3dPp;
+
 static HMODULE module = nullptr;
 static std::atomic<HANDLE> thread = nullptr;
 static unsigned threadId = 0;
+static bool quit = false;
 
 static std::mutex pcmMutex;
 static unsigned char pcmLeftIn[SAMPLE_SIZE];
@@ -39,35 +43,49 @@ static unsigned char pcmRightIn[SAMPLE_SIZE];
 static unsigned char pcmLeftOut[SAMPLE_SIZE];
 static unsigned char pcmRightOut[SAMPLE_SIZE];
 
-void CreateDevice(int iWidth, int iHeight) {
+void InitD3d(HWND hwnd, int width, int height) {
     pD3D9 = Direct3DCreate9(D3D_SDK_VERSION);
+
     D3DDISPLAYMODE mode;
     pD3D9->GetAdapterDisplayMode(D3DADAPTER_DEFAULT, &mode);
 
-    D3DPRESENT_PARAMETERS PresentParameters;
-    memset(&PresentParameters, 0, sizeof(PresentParameters));
+    memset(&d3dPp, 0, sizeof(d3dPp));
 
-    PresentParameters.BackBufferCount = 1;
-    PresentParameters.BackBufferFormat = mode.Format;
-    PresentParameters.BackBufferWidth = iWidth;
-    PresentParameters.BackBufferHeight = iHeight;
-    PresentParameters.SwapEffect = D3DSWAPEFFECT_COPY;
-    PresentParameters.Flags = 0;
-    PresentParameters.EnableAutoDepthStencil = TRUE;
-    PresentParameters.AutoDepthStencilFormat = D3DFMT_D24X8;
-    PresentParameters.Windowed = TRUE;
-    PresentParameters.PresentationInterval = D3DPRESENT_INTERVAL_ONE;
-    PresentParameters.MultiSampleType = D3DMULTISAMPLE_NONE;
-    PresentParameters.hDeviceWindow = (HWND) gHWND;
+    d3dPp.BackBufferCount = 1;
+    d3dPp.BackBufferFormat = mode.Format;
+    d3dPp.BackBufferWidth = width;
+    d3dPp.BackBufferHeight = height;
+    d3dPp.SwapEffect = D3DSWAPEFFECT_COPY;
+    d3dPp.Flags = 0;
+    d3dPp.EnableAutoDepthStencil = TRUE;
+    d3dPp.AutoDepthStencilFormat = D3DFMT_D24X8;
+    d3dPp.Windowed = TRUE;
+    d3dPp.PresentationInterval = D3DPRESENT_INTERVAL_ONE;
+    d3dPp.MultiSampleType = D3DMULTISAMPLE_NONE;
+    d3dPp.hDeviceWindow = (HWND) hwnd;
 
     pD3D9->CreateDevice(
         D3DADAPTER_DEFAULT,
         D3DDEVTYPE_HAL,
-        (HWND) gHWND,
+        (HWND) hwnd,
         D3DCREATE_HARDWARE_VERTEXPROCESSING,
-        &PresentParameters,
+        &d3dPp,
         &pD3DDevice );
 }
+
+void DeinitD3d() {
+    if (pD3DDevice) {
+        pD3DDevice->Release();
+        pD3DDevice = nullptr;
+    }
+
+    if (pD3D9) {
+        pD3D9->Release();
+        pD3D9 = nullptr;
+    }
+}
+
+static bool resized = false;
 
 LRESULT CALLBACK StaticWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
     switch(uMsg) {
@@ -114,6 +132,9 @@ unsigned __stdcall CreateWindowAndRun(void* data) {
     _CrtSetBreakAlloc(60);
 #endif
 
+    // Find the window's initial size, but it might be changed later
+
+
     // Register the windows class
     WNDCLASSW wndClass;
     wndClass.style = CS_DBLCLKS;
@@ -134,16 +155,15 @@ unsigned __stdcall CreateWindowAndRun(void* data) {
         }
     }
 
-    // Find the window's initial size, but it might be changed later
-    int nDefaultWidth = 1280;
-    int nDefaultHeight = 720;
+    int windowWidth = DEFAULT_WIDTH;
+    int windowHeight = DEFAULT_HEIGHT;
 
     RECT rc;
-    SetRect(&rc, 0, 0, nDefaultWidth, nDefaultHeight);
+    SetRect(&rc, 0, 0, windowWidth, windowHeight);
     AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW, false);
 
     // Create the render window
-    HWND hWnd = CreateWindowW(
+    HWND hwnd = CreateWindowW(
         L"Direct3DWindowClass",
         L"milkdrop2-musikcube",
         WS_OVERLAPPEDWINDOW,
@@ -156,19 +176,25 @@ unsigned __stdcall CreateWindowAndRun(void* data) {
         instance,
         0);
 
-    if (!hWnd) {
+    if (!hwnd) {
         DWORD dwError = GetLastError();
         return 0;
     }
 
-    gHWND = hWnd;
+    ShowWindow(hwnd, SW_SHOW);
 
-    ShowWindow(hWnd, SW_SHOW);
-
-    CreateDevice(nDefaultWidth, nDefaultHeight);
+    int lastWidth = windowWidth;
+    int lastHeight = windowHeight;
 
     g_plugin.PluginPreInitialize(0, 0);
-    g_plugin.PluginInitialize(pD3DDevice, nDefaultWidth, nDefaultHeight);
+    InitD3d(hwnd, windowWidth, windowHeight);
+
+    g_plugin.PluginInitialize(
+        pD3DDevice,
+        &d3dPp,
+        hwnd,
+        windowWidth,
+        windowHeight);
 
     MSG msg;
     msg.message = WM_NULL;
@@ -185,9 +211,7 @@ unsigned __stdcall CreateWindowAndRun(void* data) {
     }
 
     g_plugin.PluginQuit();
-
-    pD3DDevice->Release();
-    pD3D9->Release();
+    DeinitD3d();
 
     thread = nullptr;
     threadId = 0;
