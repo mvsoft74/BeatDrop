@@ -87,9 +87,6 @@
     <Image Include="plugin_icon.ico">
       <Filter>library\resources</Filter>
     </Image>
-    <Image Include="temp.ico">
-      <Filter>library\resources</Filter>
-    </Image>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="wasabi.h">

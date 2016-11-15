@@ -191,7 +191,6 @@ xcopy $(SolutionDir)resources\Milkdrop2\* $(SolutionDir)..\musikcube\bin\debug\p
   </ItemGroup>
   <ItemGroup>
     <Image Include="plugin_icon.ico" />
-    <Image Include="temp.ico" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AutoCharFn.h" />

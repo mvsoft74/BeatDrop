@@ -9,9 +9,11 @@
 #include <windows.h>
 #include <process.h>
 #include <d3d9.h>
-#include "plugin.h"
 #include <math.h>
 #include <dwmapi.h>
+
+#include "plugin.h"
+#include "resource.h"
 
 #include <mutex>
 #include <atomic>
@@ -36,7 +38,7 @@ static D3DPRESENT_PARAMETERS d3dPp;
 static LONG lastWindowStyle = 0;
 static LONG lastWindowStyleEx = 0;
 
-static bool fullscreen;
+static bool fullscreen = false;
 static RECT lastRect = { 0 };
 
 static HMODULE module = nullptr;
@@ -47,6 +49,8 @@ static unsigned char pcmLeftIn[SAMPLE_SIZE];
 static unsigned char pcmRightIn[SAMPLE_SIZE];
 static unsigned char pcmLeftOut[SAMPLE_SIZE];
 static unsigned char pcmRightOut[SAMPLE_SIZE];
+
+static HICON icon = nullptr;
 
 void InitD3d(HWND hwnd, int width, int height) {
     pD3D9 = Direct3DCreate9(D3D_SDK_VERSION);
@@ -239,6 +243,13 @@ unsigned __stdcall CreateWindowAndRun(void* data) {
         DWORD dwError = GetLastError();
         return 0;
     }
+
+    if (!icon) {
+        icon = LoadIconW(instance, MAKEINTRESOURCEW(IDI_PLUGIN_ICON));
+    }
+
+    SendMessageW(hwnd, WM_SETICON, ICON_BIG, (LPARAM) icon);
+    SendMessageW(hwnd, WM_SETICON, ICON_SMALL, (LPARAM) icon);
 
     ShowWindow(hwnd, SW_SHOW);
 
