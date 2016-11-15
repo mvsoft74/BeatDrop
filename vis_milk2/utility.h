@@ -96,69 +96,6 @@ bool ReadCBValue(HWND hwnd, DWORD ctrl_id, int* pRetValue);
 LRESULT GetWinampVersion(HWND winamp);
 void* GetTextResource(UINT id, int no_fallback);
 
-//HMODULE FindD3DX9(HWND winamp);
-
 intptr_t myOpenURL(HWND hwnd, wchar_t *loc);
 
-//typedef HRESULT (WINAPI *D3DXCREATEFONTW)(LPDIRECT3DDEVICE9, INT, UINT, UINT, UINT, BOOL, DWORD, DWORD, DWORD, DWORD, LPCWSTR, LPD3DXFONT *);
-//extern D3DXCREATEFONTW D3DXCreateFontW;
-//
-//typedef D3DXMATRIX *(WINAPI *D3DXMATRIXMULTIPLY)(D3DXMATRIX *pOut, CONST D3DXMATRIX *pM1, CONST D3DXMATRIX *pM2);
-//extern D3DXMATRIXMULTIPLY D3DXMatrixMultiply;
-//
-//typedef D3DXMATRIX* (WINAPI *D3DXMATRIXTRANSLATION)( D3DXMATRIX *pOut, FLOAT x, FLOAT y, FLOAT z );
-//extern D3DXMATRIXTRANSLATION D3DXMatrixTranslation;
-//
-//typedef D3DXMATRIX* (WINAPI *D3DXMATRIXSCALING)( D3DXMATRIX *pOut, FLOAT sx, FLOAT sy, FLOAT sz );
-//extern D3DXMATRIXSCALING D3DXMatrixScaling;
-//
-//typedef D3DXMATRIX* (WINAPI *D3DXMATRIXROTATION)( D3DXMATRIX *pOut, FLOAT Angle );
-//extern D3DXMATRIXROTATION D3DXMatrixRotationX, D3DXMatrixRotationY, D3DXMatrixRotationZ;
-//
-//typedef HRESULT (WINAPI *D3DXCREATETEXTUREFROMFILEEXW)(
-//        LPDIRECT3DDEVICE9         pDevice,
-//        LPCWSTR                   pSrcFile,
-//        UINT                      Width,
-//        UINT                      Height,
-//        UINT                      MipLevels,
-//        DWORD                     Usage,
-//        D3DFORMAT                 Format,
-//        D3DPOOL                   Pool,
-//        DWORD                     Filter,
-//        DWORD                     MipFilter,
-//        D3DCOLOR                  ColorKey,
-//        D3DXIMAGE_INFO*           pSrcInfo,
-//        PALETTEENTRY*             pPalette,
-//        LPDIRECT3DTEXTURE9*       ppTexture);
-//extern D3DXCREATETEXTUREFROMFILEEXW D3DXCreateTextureFromFileExW;
-//
-//typedef D3DXMATRIX* (WINAPI *D3DXMATRIXORTHOLH)(D3DXMATRIX *pOut, FLOAT w, FLOAT h, FLOAT zn, FLOAT zf);
-//extern D3DXMATRIXORTHOLH D3DXMatrixOrthoLH;
-//
-//typedef HRESULT (WINAPI *D3DXCOMPILESHADER)(
-//        LPCSTR                          pSrcData,
-//        UINT                            SrcDataLen,
-//        CONST D3DXMACRO*                pDefines,
-//        LPD3DXINCLUDE                   pInclude,
-//        LPCSTR                          pFunctionName,
-//        LPCSTR                          pProfile,
-//        DWORD                           Flags,
-//        LPD3DXBUFFER*                   ppShader,
-//        LPD3DXBUFFER*                   ppErrorMsgs,
-//        LPD3DXCONSTANTTABLE*            ppConstantTable);
-//extern D3DXCOMPILESHADER D3DXCompileShader;
-//
-//typedef D3DXMATRIX* (WINAPI *D3DXMATRIXLOOKATLH)( D3DXMATRIX *pOut, CONST D3DXVECTOR3 *pEye, CONST D3DXVECTOR3 *pAt, CONST D3DXVECTOR3 *pUp );
-//extern D3DXMATRIXLOOKATLH D3DXMatrixLookAtLH;
-//
-//typedef HRESULT (WINAPI *D3DXCREATETEXTURE)(
-//        LPDIRECT3DDEVICE9         pDevice,
-//        UINT                      Width,
-//        UINT                      Height,
-//        UINT                      MipLevels,
-//        DWORD                     Usage,
-//        D3DFORMAT                 Format,
-//        D3DPOOL                   Pool,
-//        LPDIRECT3DTEXTURE9*       ppTexture);
-//extern D3DXCREATETEXTURE D3DXCreateTexture;
 #endif

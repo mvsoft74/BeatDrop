@@ -37,7 +37,6 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define MAX_ICON_TEXTURES 8
 #define ICON_TEXTURE_SIZE 256
 #define DEFAULT_WINDOW_SIZE 0.625f      // as a portion of the width or height of the screen (whichever is smaller)
-#define DESKTOP_MODE_KEYBOARD_INPUT_WINDOW_CLASSNAME "DESKTOP MODE KEYBOARD INPUT WINDOW"
 #define BGR2RGB(x) (((x>>16)&0xFF) | (x & 0xFF00) | ((x<<16)&0xFF0000))
 
 #define NUM_BASIC_FONTS 4
@@ -59,17 +58,6 @@ typedef enum
     EXTRA_5 = 8
 }
 eFontIndex;
-
-// for m_screenmode:
-typedef enum
-{
-    NOT_YET_KNOWN   = -1,
-    FULLSCREEN      =  0,
-    WINDOWED        =  1,
-    FAKE_FULLSCREEN =  2,
-    DESKTOP         =  3       // doesn't use overlays! =)
-}
-eScrMode;
 
 #include "wa_ipc.h"
 

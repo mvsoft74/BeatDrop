@@ -68,26 +68,12 @@ void DXContext::Internal_CleanUp()
 BOOL DXContext::Internal_Init(DXCONTEXT_PARAMS *pParams, BOOL bFirstInit)
 {
     memcpy(&m_current_mode, pParams, sizeof(DXCONTEXT_PARAMS));
-    //	memset(&myWindowState,0,sizeof(myWindowState));
 
-    // various checks
-    if (m_current_mode.screenmode != WINDOWED)
-        m_current_mode.m_skin = 0;
-
-    // get device caps:
     memset(&m_caps, 0, sizeof(m_caps));
     m_lpDevice->GetDeviceCaps(&m_caps);
     m_bpp = 32;
 
-    // set initial viewport
-    //	SetViewport();
-
-    // return success
     m_ready = TRUE;
-    // benski> a little hack to get the window size correct. it seems to work
-    /*
-    if (m_current_mode.screenmode==WINDOWED)
-    PostMessage(m_hwnd, WM_USER+555, 0, 0);*/
     return TRUE;
 }
 
@@ -127,17 +113,14 @@ void DXContext::SaveWindow() { }
 
 void DXContext::WriteSafeWindowPos()
 {
-    if (m_current_mode.screenmode == WINDOWED)
-    {
-        WritePrivateProfileIntW(64, L"nMainWndTop", m_szIniFile, L"settings");
-        WritePrivateProfileIntW(64, L"nMainWndLeft", m_szIniFile, L"settings");
-        WritePrivateProfileIntW(64 + 256, L"nMainWndRight", m_szIniFile, L"settings");
-        WritePrivateProfileIntW(64 + 256, L"nMainWndBottom", m_szIniFile, L"settings");
-        WritePrivateProfileIntW(64, L"avs_wx", m_szIniFile, L"settings");
-        WritePrivateProfileIntW(64, L"avs_wy", m_szIniFile, L"settings");
-        WritePrivateProfileIntW(256, L"avs_ww", m_szIniFile, L"settings");
-        WritePrivateProfileIntW(256, L"avs_wh", m_szIniFile, L"settings");
-    }
+    WritePrivateProfileIntW(64, L"nMainWndTop", m_szIniFile, L"settings");
+    WritePrivateProfileIntW(64, L"nMainWndLeft", m_szIniFile, L"settings");
+    WritePrivateProfileIntW(64 + 256, L"nMainWndRight", m_szIniFile, L"settings");
+    WritePrivateProfileIntW(64 + 256, L"nMainWndBottom", m_szIniFile, L"settings");
+    WritePrivateProfileIntW(64, L"avs_wx", m_szIniFile, L"settings");
+    WritePrivateProfileIntW(64, L"avs_wy", m_szIniFile, L"settings");
+    WritePrivateProfileIntW(256, L"avs_ww", m_szIniFile, L"settings");
+    WritePrivateProfileIntW(256, L"avs_wh", m_szIniFile, L"settings");
 }
 
 bool DXContext::OnUserResizeWindow(RECT *new_window_rect, RECT *new_client_rect)
@@ -147,7 +130,7 @@ bool DXContext::OnUserResizeWindow(RECT *new_window_rect, RECT *new_client_rect)
     // be sure to clean up all your DirectX stuff first (textures, vertex buffers,
     //   D3DX allocations, etc.) and reallocate it afterwards!
 
-    if (!m_ready || (m_current_mode.screenmode != WINDOWED))
+    if (!m_ready)
         return FALSE;
 
     if ((m_client_width == new_client_rect->right - new_client_rect->left) &&

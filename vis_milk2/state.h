@@ -4,26 +4,26 @@
 Copyright 2005-2013 Nullsoft, Inc.
 All rights reserved.
 
-Redistribution and use in source and binary forms, with or without modification, 
+Redistribution and use in source and binary forms, with or without modification,
 are permitted provided that the following conditions are met:
 
   * Redistributions of source code must retain the above copyright notice,
-    this list of conditions and the following disclaimer. 
+    this list of conditions and the following disclaimer.
 
   * Redistributions in binary form must reproduce the above copyright notice,
     this list of conditions and the following disclaimer in the documentation
-    and/or other materials provided with the distribution. 
+    and/or other materials provided with the distribution.
 
-  * Neither the name of Nullsoft nor the names of its contributors may be used to 
-    endorse or promote products derived from this software without specific prior written permission. 
- 
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR 
-IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND 
-FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR 
+  * Neither the name of Nullsoft nor the names of its contributors may be used to
+    endorse or promote products derived from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR
+IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
+FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
 CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
 DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
 DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER
-IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT 
+IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
 OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
@@ -58,29 +58,29 @@ public:
 	CBlendableFloat();
 	~CBlendableFloat();
 
-	float operator = (float f) { 
-		val = f; 
-		m_bBlending = false; 
+	float operator = (float f) {
+		val = f;
+		m_bBlending = false;
         return val;
 	};
-	float operator *= (float f) { 
-		val *= f; 
-		m_bBlending = false; 
+	float operator *= (float f) {
+		val *= f;
+		m_bBlending = false;
         return val;
 	};
-	float operator /= (float f) { 
-		val /= f; 
-		m_bBlending = false; 
+	float operator /= (float f) {
+		val /= f;
+		m_bBlending = false;
         return val;
 	};
-	float operator -= (float f) { 
-		val -= f; 
-		m_bBlending = false; 
+	float operator -= (float f) {
+		val -= f;
+		m_bBlending = false;
         return val;
 	};
-	float operator += (float f) { 
-		val += f; 
-		m_bBlending = false; 
+	float operator += (float f) {
+		val += f;
+		m_bBlending = false;
         return val;
 	};
 
@@ -119,7 +119,7 @@ public:
     NSEEL_CODEHANDLE m_pf_codehandle;
     //int   m_pp_codehandle;
 
-		
+
 	// for per-frame expression evaluation:
 		NSEEL_VMCTX m_pf_eel;
 	double *var_pf_time, *var_pf_fps;
@@ -152,7 +152,7 @@ public:
     double *var_pp_x, *var_pp_y, *var_pp_rad, *var_pp_ang, *var_pp_sides;
     */
 
-	double t_values_after_init_code[NUM_T_VAR];  
+	double t_values_after_init_code[NUM_T_VAR];
 };
 
 class CWave
@@ -204,18 +204,18 @@ public:
     double *var_pp_sample, *var_pp_value1, *var_pp_value2;
 	double *var_pp_x, *var_pp_y, *var_pp_r, *var_pp_g, *var_pp_b, *var_pp_a;
 
-	double t_values_after_init_code[NUM_T_VAR];  
+	double t_values_after_init_code[NUM_T_VAR];
 };
 
-typedef struct 
+typedef struct
 {
-	int   type;		
-	int   in_var;	
-	int   out_var;	
+	int   type;
+	int   in_var;
+	int   out_var;
 	float constant;
 	float min;
 	float max;
-	float in_scale;	
+	float in_scale;
 	float amp;		// for sine functions
 	float freq;		// for sine functions
 	float freq2;	// for sine functions
@@ -278,7 +278,7 @@ public:
 	bool				m_bAdditiveWaves;
 	CBlendableFloat		m_fWaveAlpha;
 	CBlendableFloat		m_fWaveScale;
-	CBlendableFloat		m_fWaveSmoothing;	
+	CBlendableFloat		m_fWaveSmoothing;
 	bool				m_bWaveDots;
 	bool                m_bWaveThick;
 	CBlendableFloat		m_fWaveParam;		// -1..1; 0 is normal
@@ -312,9 +312,9 @@ public:
 
 	// map controls:
 	CBlendableFloat		m_fZoom;
-	CBlendableFloat		m_fRot;	
-	CBlendableFloat		m_fRotCX;	
-	CBlendableFloat		m_fRotCY;	
+	CBlendableFloat		m_fRot;
+	CBlendableFloat		m_fRotCX;
+	CBlendableFloat		m_fRotCY;
 	CBlendableFloat		m_fXPush;
 	CBlendableFloat		m_fYPush;
 	CBlendableFloat		m_fWarpAmount;
@@ -354,7 +354,7 @@ public:
 
     CShape              m_shape[MAX_CUSTOM_SHAPES];
     CWave               m_wave[MAX_CUSTOM_WAVES];
-	
+
     // some random stuff for driving shaders:
     void         RandomizePresetVars();
     D3DXVECTOR4  m_rand_preset; // 4 random floats (0..1); randomized @ preset load; fed to pixel shaders.  --FIXME (blending)
@@ -369,8 +369,8 @@ public:
 	//COscillator			m_wavePosY;		// 0 = centered
 
 	// for arbitrary function evaluation:
-    NSEEL_CODEHANDLE				m_pf_codehandle;			
-    NSEEL_CODEHANDLE				m_pp_codehandle;	
+    NSEEL_CODEHANDLE				m_pf_codehandle;
+    NSEEL_CODEHANDLE				m_pp_codehandle;
     char			m_szPerFrameInit[MAX_BIGSTRING_LEN];
     char			m_szPerFrameExpr[MAX_BIGSTRING_LEN];
     char			m_szPerPixelExpr[MAX_BIGSTRING_LEN];
@@ -423,7 +423,7 @@ public:
     double *var_pf_blur2max;
     double *var_pf_blur3max;
     double *var_pf_blur1_edge_darken;
-    
+
 	// for per-vertex expression evaluation:
 		NSEEL_VMCTX m_pv_eel;
     double *var_pv_zoom, *var_pv_zoomexp, *var_pv_rot, *var_pv_warp, *var_pv_cx, *var_pv_cy, *var_pv_dx, *var_pv_dy, *var_pv_sx, *var_pv_sy;
@@ -438,7 +438,7 @@ public:
     double *var_pv_pixelsx, *var_pv_pixelsy;
     double *var_pv_aspectx, *var_pv_aspecty;
 
-	double q_values_after_init_code[NUM_Q_VAR];  
+	double q_values_after_init_code[NUM_Q_VAR];
     double monitor_after_init_code;
 
     float GetPresetStartTime() { return m_fPresetStartTime; }

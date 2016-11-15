@@ -184,10 +184,6 @@ CPluginShell::~CPluginShell()
 	// this should remain empty!
 }
 
-eScrMode  CPluginShell::GetScreenMode()
-{
-	return m_screenmode;
-};
 int       CPluginShell::GetFrame()
 {
 	return m_frame;
@@ -214,11 +210,11 @@ int       CPluginShell::GetHeight()
 };
 int       CPluginShell::GetCanvasMarginX()
 {
-	if (m_lpDX && m_screenmode==WINDOWED) return (m_lpDX->m_client_width  - m_lpDX->m_REAL_client_width)/2; else return 0;
+	if (m_lpDX) return (m_lpDX->m_client_width  - m_lpDX->m_REAL_client_width)/2; else return 0;
 };
 int       CPluginShell::GetCanvasMarginY()
 {
-	if (m_lpDX && m_screenmode==WINDOWED) return (m_lpDX->m_client_height - m_lpDX->m_REAL_client_height)/2; else return 0;
+	if (m_lpDX) return (m_lpDX->m_client_height - m_lpDX->m_REAL_client_height)/2; else return 0;
 };
 HWND      CPluginShell::GetWinampWindow()
 {
@@ -308,22 +304,6 @@ int CPluginShell::InitGDIStuff()
 		}
 	}
 
-	if (!(m_main_menu = wasabiApiLoadMenu(IDR_WINDOWED_CONTEXT_MENU)))
-	{
-		MessageBoxW(NULL, wasabiApiLangString(IDS_ERROR_LOADING_MAIN_MENU),
-				    wasabiApiLangString(IDS_MILKDROP_ERROR, title, 64),
-				    MB_OK|MB_SETFOREGROUND|MB_TOPMOST);
-		return false;
-	}
-
-	if (!(m_context_menu = GetSubMenu(m_main_menu, 0)))
-	{
-		MessageBoxW(NULL, wasabiApiLangString(IDS_ERROR_LOADING_CONTEXT_MENU),
-				    wasabiApiLangString(IDS_MILKDROP_ERROR, title, 64),
-				    MB_OK|MB_SETFOREGROUND|MB_TOPMOST);
-		return false;
-	}
-
 	return true;
 }
 
@@ -337,20 +317,6 @@ void CPluginShell::CleanUpGDIStuff()
 			m_font[i] = NULL;
 		}
 	}
-
-	/*if (m_context_menu)
-	{
-	    DestroyMenu(m_context_menu);
-	    m_context_menu = NULL;
-	}*/
-
-	if (m_main_menu)
-	{
-		DestroyMenu(m_main_menu);
-		m_main_menu = NULL;
-	}
-
-	//CleanUpMyGDIStuff();
 }
 
 int CPluginShell::InitVJStuff(RECT* pClientRect)
@@ -656,41 +622,6 @@ int CPluginShell::AllocateDX9Stuff()
 			AllocateTextSurface();
 	}
 
-	/*
-	// Create D3DX system font:
-	for (int i=0; i<NUM_BASIC_FONTS + NUM_EXTRA_FONTS; i++)
-	    if (D3DXCreateFontW(m_lpDX->m_lpDevice,
-					   m_fontinfo[i].nSize,
-					   m_fontinfo[i].nSize*4/10,
-	                       m_fontinfo[i].bBold ? 900 : 400,
-		               0,  // mip levels
-					   m_fontinfo[i].bItalic,
-					   DEFAULT_CHARSET,
-					   OUT_DEFAULT_PRECIS,
-					   m_fontinfo[i].bAntiAliased ? ANTIALIASED_QUALITY : DEFAULT_QUALITY,
-					   DEFAULT_PITCH,
-					   m_fontinfo[i].szFace,
-					   &m_d3dx_font[i]
-					   ) != D3D_OK)
-	    {
-	        MessageBox(m_lpDX->GetHwnd(), "Error creating D3DX fonts", "ERROR", MB_OK|MB_SETFOREGROUND|MB_TOPMOST);
-	        return false;
-	    }
-
-	// get actual font heights
-	for (i=0; i<NUM_BASIC_FONTS + NUM_EXTRA_FONTS; i++)
-	{
-	    RECT r;
-	    SetRect(&r, 0, 0, 1024, 1024);
-	    int h = m_d3dx_font[i]->DrawText(NULL, "M", -1, &r, DT_CALCRECT, 0xFFFFFFFF);
-	    if (h>0) m_fontinfo[i].nSize = h;
-	}
-	*/
-
-	if (m_screenmode == DESKTOP)
-		if (!InitDesktopMode())
-			return false;
-
 	int ret = AllocateMyDX9Stuff();
 
 	// invalidate various 'caches' here:
@@ -715,9 +646,6 @@ void CPluginShell::CleanUpDX9Stuff(int final_cleanup)
 		for (int i=0; i<16; i++)
 			m_lpDX->m_lpDevice->SetTexture(i, NULL);
 	}
-
-	if (m_screenmode == DESKTOP)
-		CleanUpDesktopMode();
 
 	if (!m_vj_mode)
 	{
@@ -837,134 +765,20 @@ void CPluginShell::OnUserResizeWindow()
 
 void CPluginShell::StuffParams(DXCONTEXT_PARAMS *pParams)
 {
-	pParams->screenmode   = m_screenmode;
 	pParams->display_mode = m_disp_mode_fs;
-	pParams->nbackbuf     = 1;
+	pParams->nbackbuf = 1;
 	pParams->m_dualhead_horz = m_dualhead_horz;
 	pParams->m_dualhead_vert = m_dualhead_vert;
-	pParams->m_skin = (m_screenmode==WINDOWED) ? m_skin : 0;
-	switch (m_screenmode)
-	{
-	case WINDOWED:
-		pParams->allow_page_tearing = m_allow_page_tearing_w;
-		pParams->adapter_guid       = m_adapter_guid_windowed;
-		pParams->multisamp          = m_multisample_windowed;
-		strcpy(pParams->adapter_devicename, m_adapter_devicename_windowed);
-		break;
-	case FULLSCREEN:
-	case FAKE_FULLSCREEN:
-		pParams->allow_page_tearing = m_allow_page_tearing_fs;
-		pParams->adapter_guid       = m_adapter_guid_fullscreen;
-		pParams->multisamp          = m_multisample_fullscreen;
-		strcpy(pParams->adapter_devicename, m_adapter_devicename_fullscreen);
-		break;
-	case DESKTOP:
-		pParams->allow_page_tearing = m_allow_page_tearing_dm;
-		pParams->adapter_guid       = m_adapter_guid_desktop;
-		pParams->multisamp          = m_multisample_desktop;
-		strcpy(pParams->adapter_devicename, m_adapter_devicename_desktop);
-		break;
-	}
-	pParams->parent_window = (m_screenmode==DESKTOP) ? m_hWndDesktopListView : NULL;
-}
-
-void CPluginShell::ToggleDesktop()
-{
-	CleanUpDX9Stuff(0);
-
-	switch (m_screenmode)
-	{
-	case WINDOWED:
-	case FULLSCREEN:
-	case FAKE_FULLSCREEN:
-		m_screenmode = DESKTOP;
-		break;
-	case DESKTOP:
-		m_screenmode = WINDOWED;
-		break;
-	}
-
-	DXCONTEXT_PARAMS params;
-	StuffParams(&params);
-
-	if (!m_lpDX->StartOrRestartDevice(&params))
-	{
-		// note: a basic warning messagebox will have already been given.
-		if (m_lpDX->m_lastErr == DXC_ERR_CREATEDEV_PROBABLY_OUTOFVIDEOMEMORY)
-			SuggestHowToFreeSomeMem();
-		return;
-	}
-
-	if (!AllocateDX9Stuff())
-	{
-		m_lpDX->m_ready = false;   // flag to exit
-		return;
-	}
-
-	SetForegroundWindow(m_lpDX->GetHwnd());
-	SetActiveWindow(m_lpDX->GetHwnd());
-	SetFocus(m_lpDX->GetHwnd());
+	pParams->m_skin = m_skin;
+    pParams->allow_page_tearing = m_allow_page_tearing_w;
+    pParams->adapter_guid = m_adapter_guid_windowed;
+    pParams->multisamp = m_multisample_windowed;
+    strcpy(pParams->adapter_devicename, m_adapter_devicename_windowed);
+	pParams->parent_window = NULL;
 }
 
 #define IPC_IS_PLAYING_VIDEO 501 // from wa_ipc.h
 #define IPC_SET_VIS_FS_FLAG 631 // a vis should send this message with 1/as param to notify winamp that it has gone to or has come back from fullscreen mode
-
-void CPluginShell::ToggleFullScreen()
-{
-	CleanUpDX9Stuff(0);
-
-	switch (m_screenmode)
-	{
-	case DESKTOP:
-	case WINDOWED:
-		m_screenmode = m_fake_fullscreen_mode ? FAKE_FULLSCREEN : FULLSCREEN;
-		if (m_screenmode == FULLSCREEN && SendMessage(GetWinampWindow(), WM_WA_IPC, 0, IPC_IS_PLAYING_VIDEO) > 1)
-		{
-			m_screenmode = FAKE_FULLSCREEN;
-		}
-		SendMessage(GetWinampWindow(), WM_WA_IPC, 1, IPC_SET_VIS_FS_FLAG);
-		break;
-	case FULLSCREEN:
-	case FAKE_FULLSCREEN:
-		m_screenmode = WINDOWED;
-		SendMessage(GetWinampWindow(), WM_WA_IPC, 0, IPC_SET_VIS_FS_FLAG);
-		break;
-	}
-
-	DXCONTEXT_PARAMS params;
-	StuffParams(&params);
-
-	if (!m_lpDX->StartOrRestartDevice(&params))
-	{
-		// note: a basic warning messagebox will have already been given.
-		if (m_lpDX->m_lastErr == DXC_ERR_CREATEDEV_PROBABLY_OUTOFVIDEOMEMORY)
-			SuggestHowToFreeSomeMem();
-		return;
-	}
-
-	if (!AllocateDX9Stuff())
-	{
-		m_lpDX->m_ready = false;   // flag to exit
-		return;
-	}
-
-	SetForegroundWindow(m_lpDX->GetHwnd());
-	SetActiveWindow(m_lpDX->GetHwnd());
-	SetFocus(m_lpDX->GetHwnd());
-}
-
-void CPluginShell::ToggleHelp()
-{
-	m_show_help = 1-m_show_help;
-	int ret = CheckMenuItem(m_context_menu, ID_SHOWHELP, MF_BYCOMMAND | (m_show_help ? MF_CHECKED : MF_UNCHECKED));
-}
-
-void CPluginShell::TogglePlaylist()
-{
-	m_show_playlist = 1-m_show_playlist;
-	m_playlist_top_idx = -1;    // <- invalidates playlist cache
-	int ret = CheckMenuItem(m_context_menu, ID_SHOWPLAYLIST, MF_BYCOMMAND | (m_show_playlist ? MF_CHECKED : MF_UNCHECKED));
-}
 
 int CPluginShell::InitDirectX(LPDIRECT3DDEVICE9 device, D3DPRESENT_PARAMETERS* d3dpp, HWND hwnd)
 {
@@ -1228,32 +1042,9 @@ int CPluginShell::PluginPreInitialize(HWND hWinampWnd, HINSTANCE hWinampInstance
 	m_force_accept_WM_WINDOWPOSCHANGING = 0;
 
 	// PRIVATE - GDI STUFF
-	m_main_menu     = NULL;
-	m_context_menu  = NULL;
 	for (i=0; i<NUM_BASIC_FONTS + NUM_EXTRA_FONTS; i++)
 		m_font[i] = NULL;
 	m_font_desktop = NULL;
-
-	// PRIVATE - DESKTOP MODE STUFF
-	m_icon_list.clear();
-	for (i=0; i<MAX_ICON_TEXTURES; i++)
-		m_desktop_icons_texture[i] = NULL;
-	FindDesktopWindows(&m_hWndProgMan, &m_hWndDesktop, &m_hWndDesktopListView);
-	GetDesktopFolder(m_szDesktopFolder);
-	m_desktop_icon_size       = 32;
-	m_desktop_dragging        = 0;   // '1' when user is dragging icons around
-	m_desktop_box             = 0;   // '1' when user is drawing a box
-	m_desktop_wc_registered   = 0;
-	m_desktop_bk_color        = 0xFF000000 | BGR2RGB(::GetSysColor(COLOR_BACKGROUND));
-	m_desktop_text_color      = 0xFF000000 | BGR2RGB(SendMessage(m_hWndDesktopListView, LVM_GETTEXTCOLOR, 0, 0));
-	m_desktop_sel_color       = 0xFF000000 | BGR2RGB(::GetSysColor(COLOR_HIGHLIGHT));
-	m_desktop_sel_text_color  = 0xFF000000 | BGR2RGB(::GetSysColor(COLOR_HIGHLIGHTTEXT));
-	m_desktop_icon_state      = 0;
-	m_desktop_icon_count      = 0;
-	m_desktop_icon_update_frame = 0;
-	m_desktop_icons_disabled  = 0;
-	m_vms_desktop_loaded      = 0;
-	m_desktop_hook_set        = 0;
 
 	// PRIVATE - MORE TIMEKEEPING
 	m_last_raw_time = 0;
@@ -1284,24 +1075,8 @@ int CPluginShell::PluginPreInitialize(HWND hWinampWnd, HINSTANCE hWinampInstance
 
 	//-----
 
-	m_screenmode = NOT_YET_KNOWN;
-
 	OverrideDefaults();
 	ReadConfig();
-
-	if (m_start_fullscreen)
-	{
-		m_screenmode = m_fake_fullscreen_mode ? FAKE_FULLSCREEN : FULLSCREEN;
-		if (m_screenmode == FULLSCREEN && SendMessage(GetWinampWindow(), WM_WA_IPC, 0, IPC_IS_PLAYING_VIDEO) > 1)
-		{
-			m_screenmode = FAKE_FULLSCREEN;
-		}
-	}
-	else if (m_start_desktop)
-		m_screenmode = DESKTOP;
-	else
-		m_screenmode = WINDOWED;
-
 	MyPreInitialize();
 	MyReadConfig();
 
@@ -1549,10 +1324,7 @@ int CPluginShell::PluginRender(unsigned char *pWaveL, unsigned char *pWaveR)//, 
 	else
 		m_lost_focus = (GetFocus() != GetPluginWindow());
 
-	if ((m_screenmode==WINDOWED   && m_hidden) ||
-	    (m_screenmode==FULLSCREEN && m_lost_focus) ||
-	    (m_screenmode==WINDOWED   && m_resizing)
-	   )
+	if (m_hidden || m_resizing)
 	{
 		Sleep(30);
 		return true;
@@ -1609,11 +1381,6 @@ int CPluginShell::PluginRender(unsigned char *pWaveL, unsigned char *pWaveR)//, 
 		}
 	}
 
-	if (m_screenmode==DESKTOP)
-	{
-		PushWindowToJustBeforeDesktop(GetPluginWindow());
-	}
-
 	DoTime();
 	AnalyzeNewSound(pWaveL, pWaveR);
 	AlignWaves();
@@ -1625,42 +1392,6 @@ int CPluginShell::PluginRender(unsigned char *pWaveL, unsigned char *pWaveR)//, 
 	m_frame++;
 
 	return true;
-}
-
-void CPluginShell::PushWindowToJustBeforeDesktop(HWND h)
-{
-	// if our window isn't already at the bottom of the Z order,
-	// freshly send it to HWND_BOTTOM.
-
-	// this usually gives us the Program Manager window:
-	HWND hWndBottom = GetWindow(h, GW_HWNDLAST);
-
-	// then, bottommost 'normal' window is usually the one just in front of it:
-	if (hWndBottom == m_hWndProgMan)
-		hWndBottom = GetWindow(hWndBottom, GW_HWNDPREV);
-
-	if (hWndBottom != h)
-	{
-		m_force_accept_WM_WINDOWPOSCHANGING = 1;
-		SetWindowPos(h, HWND_BOTTOM, 0,0,0,0, SWP_NOMOVE|SWP_NOSIZE);
-		m_force_accept_WM_WINDOWPOSCHANGING = 0;
-	}
-
-	/*
-	HWND hDesktopBkgWnd = FindWindow("SHELLDLL_DefView", "");
-	if (hDesktopBkgWnd)
-	{
-	    HWND hWndInFrontOfIcons = GetWindow(h, GW_HWNDPREV);
-	    if (hWndInFrontOfIcons != h)
-	    {
-	        m_force_accept_WM_WINDOWPOSCHANGING = 1;
-	        SetWindowPos(hDesktopBkgWnd, h, 0,0,0,0, SWP_NOMOVE|SWP_NOSIZE);
-	        m_force_accept_WM_WINDOWPOSCHANGING = 0;
-	    }
-	}
-	*/
-
-
 }
 
 void CPluginShell::DrawAndDisplay(int redraw)
@@ -1727,7 +1458,6 @@ void CPluginShell::DrawAndDisplay(int redraw)
 
 		PrepareFor2DDrawing_B(GetDevice(), GetWidth(), GetHeight());
 
-		RenderDesktop();
 		if (!m_vjd3d9_device)   // in VJ mode, this renders to different context, so do it after BeginScene() on 2nd device.
 			RenderBuiltInTextMsgs();    // to m_lpDDSText?
 		MyRenderUI(&m_upper_left_corner_y, &m_upper_right_corner_y, &m_lower_left_corner_y, &m_lower_right_corner_y, m_left_edge, m_right_edge);
@@ -1756,16 +1486,7 @@ void CPluginShell::DrawAndDisplay(int redraw)
 		m_vjd3d9_device->EndScene();
 	}
 
-	if (m_screenmode == DESKTOP)
-	{
-		// window is hidden after creation, until 1st frame is ready to go;
-		// now that it's ready, we show it.
-		// see dxcontext::Internal_Init()'s call to SetWindowPos() for the DESKTOP case.
-		if (!IsWindowVisible(GetPluginWindow()))
-			ShowWindow(GetPluginWindow(), SW_SHOWNORMAL);
-	}
-
-	if (m_screenmode == WINDOWED && (m_lpDX->m_client_width != m_lpDX->m_REAL_client_width || m_lpDX->m_client_height != m_lpDX->m_REAL_client_height))
+	if (m_lpDX->m_client_width != m_lpDX->m_REAL_client_width || m_lpDX->m_client_height != m_lpDX->m_REAL_client_height)
 	{
 		int real_w = m_lpDX->m_REAL_client_width;   // real client size, in pixels
 		int real_h = m_lpDX->m_REAL_client_height;
@@ -1787,14 +1508,7 @@ void CPluginShell::DrawAndDisplay(int redraw)
 
 void CPluginShell::EnforceMaxFPS()
 {
-	int max_fps;
-	switch (m_screenmode)
-	{
-	case WINDOWED:        max_fps = m_max_fps_w;  break;
-	case FULLSCREEN:      max_fps = m_max_fps_fs; break;
-	case FAKE_FULLSCREEN: max_fps = m_max_fps_fs; break;
-	case DESKTOP:         max_fps = m_max_fps_dm; break;
-	}
+	int max_fps = m_max_fps_w;
 
 	if (max_fps <= 0)
 		return;
@@ -2236,7 +1950,7 @@ void CPluginShell::DrawDarkTranslucentBox(RECT* pr)
 		verts[i].y = (i/2==0) ? (float)-(-m_lpDX->m_client_height/2 + pr->bottom)  :
 		             (float)-(-m_lpDX->m_client_height/2 + pr->top);
 		verts[i].z = 0;
-		verts[i].Diffuse = (m_screenmode==DESKTOP) ? 0xE0000000 : 0xD0000000;
+		verts[i].Diffuse = 0xD0000000;
 	}
 
 	m_lpDX->m_lpDevice->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, verts, sizeof(SIMPLEVERTEX));
@@ -2434,18 +2148,12 @@ void CPluginShell::SuggestHowToFreeSomeMem()
 
 	if (m_lpDX->m_current_mode.multisamp != D3DMULTISAMPLE_NONE)
 	{
-		if (m_lpDX->m_current_mode.screenmode == WINDOWED)
-			wasabiApiLangString(IDS_TO_FREE_UP_SOME_MEMORY_RESTART_WINAMP_THEN_GO_TO_CONFIG, str, 2048);
-		else if (m_lpDX->m_current_mode.screenmode == FAKE_FULLSCREEN)
-			wasabiApiLangString(IDS_TO_FREE_UP_SOME_MEMORY_RESTART_WINAMP_THEN_GO_TO_CONFIG_2, str, 2048);
-		else
-			wasabiApiLangString(IDS_TO_FREE_UP_SOME_MEMORY_RESTART_WINAMP_THEN_GO_TO_CONFIG_3, str, 2048);
+		wasabiApiLangString(IDS_TO_FREE_UP_SOME_MEMORY_RESTART_WINAMP_THEN_GO_TO_CONFIG, str, 2048);
 	}
-	else
-		if (m_lpDX->m_current_mode.screenmode == FULLSCREEN)  // true fullscreen
-			wasabiApiLangString(IDS_TO_FREE_UP_VIDEO_MEMORY, str, 2048);
-		else    // windowed, desktop mode, or fake fullscreen
-			wasabiApiLangString(IDS_TO_FREE_UP_VIDEO_MEMORY, str, 2048);
+    else
+    {
+        wasabiApiLangString(IDS_TO_FREE_UP_VIDEO_MEMORY, str, 2048);
+    }
 
 	MessageBoxW(m_lpDX->GetHwnd(), str, wasabiApiLangString(IDS_MILKDROP_SUGGESTION), MB_OK|MB_SETFOREGROUND|MB_TOPMOST);
 }
@@ -2501,67 +2209,6 @@ LRESULT CPluginShell::PluginShellWindowProc(HWND hWnd, unsigned uMsg, WPARAM wPa
 
 	switch (uMsg)
 	{
-	case WM_USER:
-		if (m_screenmode == DESKTOP)
-		{
-			// this function resides in vms_desktop.dll;
-			// its response will come later, via the WM_COPYDATA
-			// message (See below).
-			//KIV: **THIS CALL CRASHES EXPLORER IN VISTA**
-			getItemData(wParam);
-			return 0;
-		}
-		break;
-
-	case WM_COPYDATA:
-		if (m_screenmode == DESKTOP)
-		{
-			// this message is vms_desktop.dll's response to
-			// our call to getItemData().
-			PCOPYDATASTRUCT c = (PCOPYDATASTRUCT)lParam;
-			if (c && (c->cbData % sizeof(icon_t) == 0))
-			{
-				icon_t *pNewIcons = (icon_t*)c->lpData;
-
-				EnterCriticalSection(&m_desktop_cs);
-
-				if (m_desktop_icon_state == 1 && (c->dwData & 0x80000000))  // if doing a total refresh...
-				{
-					// ...we build the list from zero
-					int len = c->dwData & 0xFFFF;
-					for (int i=0; i<len; i++)
-						m_icon_list.push_back(pNewIcons[i]);
-				}
-				else if (m_desktop_icon_state == 3 && !(c->dwData & 0x80000000))
-				{
-					// otherwise, we alter existing things in the list:
-					IconList::iterator p;
-					int start = c->dwData & 0xFFFF;
-					int len   = c->dwData >> 16;
-
-					int i = 0;
-					for (p = m_icon_list.begin(); p != m_icon_list.end() && i<start; p++)
-						i++;
-					for (; p != m_icon_list.end() && i<start+len; p++)
-					{
-						p->x = pNewIcons[i-start].x;
-						p->y = pNewIcons[i-start].y;
-						memcpy(p->name, pNewIcons[i-start].name, sizeof(p->name));
-						memcpy(p->pidl, pNewIcons[i-start].pidl, sizeof(p->pidl));
-						i++;
-					}
-
-					m_desktop_icon_state = 2;
-					m_desktop_icon_update_frame = GetFrame();
-				}
-
-				LeaveCriticalSection(&m_desktop_cs);
-			}
-
-			return 0;
-		}
-		break;
-
 	case WM_ERASEBKGND:
 		// Repaint window when song is paused and image needs to be repainted:
 		if (SendMessage(m_hWndWinamp,WM_USER,0,104)!=1 && m_lpDX && m_lpDX->m_lpDevice && GetFrame() > 0)    // WM_USER/104 return codes: 1=playing, 3=paused, other=stopped
@@ -2572,47 +2219,8 @@ LRESULT CPluginShell::PluginShellWindowProc(HWND hWnd, unsigned uMsg, WPARAM wPa
 		break;
 
 	case WM_WINDOWPOSCHANGING:
-		if (
-		  m_screenmode == DESKTOP
-		  && (!m_force_accept_WM_WINDOWPOSCHANGING)
-		  && m_lpDX && m_lpDX->m_ready
-		)
-		{
-			// unless we requested it ourselves or it's init time,
-			// prevent the fake desktop window from moving around
-			// in the Z order!  (i.e., keep it on the bottom)
-
-			// without this code, when you click on the 'real' desktop
-			// in a multimon setup, any windows that are overtop of the
-			// 'fake' desktop will flash, since they'll be covered
-			// up by the fake desktop window (but then shown again on
-			// the next frame, when we detect that the fake desktop
-			// window isn't on bottom & send it back to the bottom).
-
-			LPWINDOWPOS pwp = (LPWINDOWPOS)lParam;
-			if (pwp)
-				pwp->flags |= SWP_NOOWNERZORDER | SWP_NOZORDER;
-		}
-		if (m_screenmode==WINDOWED && m_lpDX && m_lpDX->m_ready && m_lpDX->m_current_mode.m_skin)
+		if (m_lpDX && m_lpDX->m_ready && m_lpDX->m_current_mode.m_skin)
 			m_lpDX->SaveWindow();
-		break;
-	case WM_NCACTIVATE:
-		// *Very Important Handler!*
-		//    -Without this code, the app would not work properly when running in true
-		//     fullscreen mode on multiple monitors; it would auto-minimize whenever the
-		//     user clicked on a window in another display.
-		if (wParam == 0 &&
-		    m_screenmode == FULLSCREEN &&
-		    m_frame > 0 &&
-		    !m_exiting &&
-		    m_lpDX &&
-		    m_lpDX->m_ready
-		    && m_lpDX->m_lpD3D &&
-		    m_lpDX->m_lpD3D->GetAdapterCount() > 1
-		   )
-		{
-			return 0;
-		}
 		break;
 
 	case WM_DESTROY:
@@ -2628,17 +2236,19 @@ LRESULT CPluginShell::PluginShellWindowProc(HWND hWnd, unsigned uMsg, WPARAM wPa
 		}
 		return FALSE;
 		break;
-		// benski> a little hack to get the window size correct. it seems to work
+
+	// benski> a little hack to get the window size correct. it seems to work
 	case WM_USER+555:
-		if (m_lpDX && m_lpDX->m_ready && m_screenmode==WINDOWED && !m_resizing)
+		if (m_lpDX && m_lpDX->m_ready && !m_resizing)
 		{
 			OnUserResizeWindow();
 			m_lpDX->SaveWindow();
 		}
 		break;
+
 	case WM_SIZE:
 		// clear or set activity flag to reflect focus
-		if (m_lpDX && m_lpDX->m_ready && m_screenmode==WINDOWED && !m_resizing)
+		if (m_lpDX && m_lpDX->m_ready && !m_resizing)
 		{
 			m_hidden = (SIZE_MAXHIDE==wParam || SIZE_MINIMIZED==wParam) ? TRUE : FALSE;
 
@@ -2652,237 +2262,20 @@ LRESULT CPluginShell::PluginShellWindowProc(HWND hWnd, unsigned uMsg, WPARAM wPa
 		break;
 
 	case WM_EXITSIZEMOVE:
-		if (m_lpDX && m_lpDX->m_ready && m_screenmode==WINDOWED)
+		if (m_lpDX && m_lpDX->m_ready)
 			OnUserResizeWindow();
 		m_resizing = 0;
 		break;
 
 	case WM_GETMINMAXINFO:
-	{
-		// don't let the window get too small
-		MINMAXINFO* p = (MINMAXINFO*)lParam;
-		if (p->ptMinTrackSize.x < 64)
-			p->ptMinTrackSize.x = 64;
-		p->ptMinTrackSize.y = p->ptMinTrackSize.x*3/4;
-	}
-	return 0;
-
-	case WM_MOUSEMOVE:
-		if (m_screenmode==DESKTOP && (m_desktop_dragging==1 || m_desktop_box==1))
-		{
-			m_desktop_drag_curpos.x = LOWORD(lParam);
-			m_desktop_drag_curpos.y = HIWORD(lParam);
-			if (m_desktop_box==1)
-			{
-				// update selection based on box coords
-				RECT box, temp;
-				box.left   = min(m_desktop_drag_curpos.x, m_desktop_drag_startpos.x);
-				box.right  = max(m_desktop_drag_curpos.x, m_desktop_drag_startpos.x);
-				box.top    = min(m_desktop_drag_curpos.y, m_desktop_drag_startpos.y);
-				box.bottom = max(m_desktop_drag_curpos.y, m_desktop_drag_startpos.y);
-
-				IconList::iterator p;
-				for (p = m_icon_list.begin(); p != m_icon_list.end(); p++)
-				{
-					p->selected = 0;
-
-					if (IntersectRect(&temp, &box, &p->label_rect))
-						p->selected = 1;
-					else if (IntersectRect(&temp, &box, &p->icon_rect))
-						p->selected = 1;
-				}
-			}
-
-			// repaint window manually, if winamp is paused
-			if (SendMessage(m_hWndWinamp,WM_USER,0,104) != 1)
-			{
-				PushWindowToJustBeforeDesktop(GetPluginWindow());
-				DrawAndDisplay(1);
-			}
-
-			//return 0;
-		}
-		break;
-
-	case WM_LBUTTONUP:
-		if (m_screenmode==DESKTOP)
-		{
-			if (m_desktop_dragging)
-			{
-				m_desktop_dragging = 0;
-
-				// move selected item(s) to new cursor position
-				int dx = LOWORD(lParam) - m_desktop_drag_startpos.x;
-				int dy = HIWORD(lParam) - m_desktop_drag_startpos.y;
-
-				if (dx!=0 || dy!=0)
-				{
-					int idx=0;
-					IconList::iterator p;
-					for (p = m_icon_list.begin(); p != m_icon_list.end(); p++)
-					{
-						if (p->selected)
-						{
-							SendMessage(m_hWndDesktopListView, LVM_SETITEMPOSITION, idx, MAKELPARAM(p->x + dx, p->y + dy));
-							p->x += dx;
-							p->y += dy;
-						}
-						idx++;
-					}
-				}
-
-				// repaint window manually, if winamp is paused
-				if (SendMessage(m_hWndWinamp,WM_USER,0,104) != 1)
-				{
-					PushWindowToJustBeforeDesktop(GetPluginWindow());
-					DrawAndDisplay(1);
-				}
-			}
-
-			if (m_desktop_box)
-			{
-				m_desktop_box = 0;
-
-				// repaint window manually, if winamp is paused
-				if (SendMessage(m_hWndWinamp,WM_USER,0,104) != 1)
-				{
-					PushWindowToJustBeforeDesktop(GetPluginWindow());
-					DrawAndDisplay(1);
-				}
-			}
-
-			//return 0;
-		}
-		break;
-
-	case WM_USER + 1666:
-		if (wParam == 1 && lParam == 15)
-		{
-			if (m_screenmode == FULLSCREEN || m_screenmode == FAKE_FULLSCREEN)
-				ToggleFullScreen();
-		}
-		return 0;
-	case WM_LBUTTONDOWN:
-	case WM_LBUTTONDBLCLK:
-	case WM_RBUTTONDOWN:
-	case WM_RBUTTONUP:
-		// Toggle between Fullscreen and Windowed modes on double-click
-		// note: this requires the 'CS_DBLCLKS' windowclass style!
-		if (m_screenmode != DESKTOP)
-		{
-			SetFocus(hWnd);
-			if (uMsg==WM_LBUTTONDBLCLK && m_frame>0)
-			{
-				ToggleFullScreen();
-				return 0;
-			}
-		}
-		else
-		{
-			POINT pt;
-			pt.x = LOWORD(lParam);
-			pt.y = HIWORD(lParam);
-
-			int done = 0;
-
-			for (int pass=0; pass<2 && !done; pass++)
-			{
-				IconList::iterator p;
-				for (p = m_icon_list.begin(); p != m_icon_list.end(); p++)
-				{
-					RECT *pr = (pass==0) ? &p->icon_rect : &p->label_rect;
-					int bottom_extend = (pass==0) ? 3 : 0; // accepts clicks in the 3-pixel gap between the icon and the text label.
-					if (pt.x >= pr->left &&
-					    pt.x <= pr->right &&
-					    pt.y >= pr->top &&
-					    pt.y <= pr->bottom + bottom_extend)
-					{
-						switch (uMsg)
-						{
-						case WM_RBUTTONUP:
-							//pt.x += m_lpDX->m_monitor_rect.left;
-							//pt.y += m_lpDX->m_monitor_rect.top;
-							DoExplorerMenu(GetPluginWindow(), (LPITEMIDLIST)p->pidl, pt);
-							break;
-						case WM_LBUTTONDBLCLK:
-						{
-							char buf[MAX_PATH];
-							sprintf(buf, "%s\\%s", m_szDesktopFolder, p->name);
-							ExecutePidl((LPITEMIDLIST)p->pidl, buf, m_szDesktopFolder, GetPluginWindow());
-						}
-						break;
-						case WM_LBUTTONDOWN:
-							m_desktop_dragging = 1;
-							memcpy(m_desktop_drag_pidl, p->pidl, sizeof(m_desktop_drag_pidl));
-							m_desktop_drag_startpos.x = LOWORD(lParam);
-							m_desktop_drag_startpos.y = HIWORD(lParam);
-							m_desktop_drag_curpos.x = LOWORD(lParam);
-							m_desktop_drag_curpos.y = HIWORD(lParam);
-							if (!(wParam & MK_CONTROL)) // if CTRL not held down
-							{
-								if (!p->selected)
-								{
-									DeselectDesktop();
-									p->selected = 1;
-								}
-							}
-							else
-							{
-								p->selected = 1-p->selected;
-							}
-							break;
-						case WM_RBUTTONDOWN:
-							DeselectDesktop();
-							p->selected = 1;
-							break;
-						}
-
-						done = 1;
-						break;
-					}
-				}
-			}
-
-			if (!done)
-			{
-				// deselect all, unless they're CTRL+clicking and missed an icon.
-				if (uMsg!=WM_LBUTTONDOWN || !(wParam & MK_CONTROL))
-					DeselectDesktop();
-
-				if (uMsg==WM_RBUTTONUP)// || uMsg==WM_RBUTTONDOWN)
-				{
-					// note: can't use GetMenu and TrackPopupMenu here because the hwnd param to TrackPopupMenu must belong to current application.
-
-					// (before sending coords to desktop window, xform them into its client coords:)
-					POINT pt;
-					pt.x = LOWORD(lParam);
-					pt.y = HIWORD(lParam);
-					ScreenToClient(m_hWndDesktopListView, &pt);
-					lParam = MAKELPARAM(pt.x + m_lpDX->m_monitor_rect.left, pt.y + m_lpDX->m_monitor_rect.top);
-
-					PostMessage(m_hWndDesktopListView, uMsg, wParam, lParam);
-					//PostMessage(m_hWndDesktopListView, WM_CONTEXTMENU, (WPARAM)m_hWndDesktopListView, lParam);
-				}
-				else if (uMsg==WM_LBUTTONDOWN)
-				{
-					m_desktop_box = 1;
-					m_desktop_drag_startpos.x = LOWORD(lParam);
-					m_desktop_drag_startpos.y = HIWORD(lParam);
-					m_desktop_drag_curpos.x = LOWORD(lParam);
-					m_desktop_drag_curpos.y = HIWORD(lParam);
-				}
-			}
-
-			// repaint window manually, if winamp is paused
-			if (SendMessage(m_hWndWinamp,WM_USER,0,104) != 1)
-			{
-				PushWindowToJustBeforeDesktop(GetPluginWindow());
-				DrawAndDisplay(1);
-			}
-
-			//return 0;
-		}
-		break;
+	    {
+		    // don't let the window get too small
+		    MINMAXINFO* p = (MINMAXINFO*)lParam;
+		    if (p->ptMinTrackSize.x < 64)
+			    p->ptMinTrackSize.x = 64;
+		    p->ptMinTrackSize.y = p->ptMinTrackSize.x*3/4;
+	    }
+	    return 0;
 
 	case WM_SETFOCUS:
 		// note: this msg never comes in when embedwnd is used, but that's ok, because that's only
@@ -2896,134 +2289,17 @@ LRESULT CPluginShell::PluginShellWindowProc(HWND hWnd, unsigned uMsg, WPARAM wPa
 		m_lost_focus = 1;
 		break;
 
-	case WM_SETCURSOR:
-		if (
-		  (m_screenmode == FULLSCREEN) ||
-		  (m_screenmode == FAKE_FULLSCREEN && m_lpDX->m_fake_fs_covers_all)
-		)
-		{
-			// hide the cursor
-			SetCursor(NULL);
-			return TRUE; // prevent Windows from setting cursor to window class cursor
+	case WM_COMMAND: {
+		    // then allow the plugin to override any command:
+		    if (MyWindowProc(hWnd, uMsg, wParam, lParam) == 0)
+			    return 0;
 		}
-		break;
-
-	case WM_NCHITTEST:
-		// Prevent the user from selecting the menu in fullscreen mode
-		if (m_screenmode != WINDOWED)
-			return HTCLIENT;
-		break;
-
-	case WM_SYSCOMMAND:
-		// Prevent *moving/sizing* and *entering standby mode* when in fullscreen mode
-		switch (wParam)
-		{
-		case SC_MOVE:
-		case SC_SIZE:
-		case SC_MAXIMIZE:
-		case SC_KEYMENU:
-			if (m_screenmode != WINDOWED)
-				return 1;
-			break;
-		case SC_MONITORPOWER:
-			if (m_screenmode == FULLSCREEN || m_screenmode == FAKE_FULLSCREEN)
-				return 1;
-			break;
-		}
-		break;
-
-	case WM_CONTEXTMENU:
-		// launch popup context menu.  see handler for WM_COMMAND also.
-		if (m_screenmode == DESKTOP)
-		{
-			// note: execution should never reach this point,
-			// because we don't pass WM_RBUTTONUP to DefWindowProc
-			// when in desktop mode!
-			return 0;
-		}
-		else if (m_screenmode == WINDOWED)    // context menus only allowed in ~windowed modes
-		{
-			TrackPopupMenuEx(m_context_menu, TPM_VERTICAL, LOWORD(lParam), HIWORD(lParam), hWnd, NULL);
-			return 0;
-		}
-		break;
-
-	case WM_COMMAND:
-		// handle clicks on items on context menu.
-		if (m_screenmode == WINDOWED)
-		{
-			switch (LOWORD(wParam))
-			{
-			case ID_QUIT:
-				m_exiting = 1;
-				PostMessage(hWnd, WM_CLOSE, 0, 0);
-				return 0;
-			case ID_GO_FS:
-				if (m_frame > 0)
-					ToggleFullScreen();
-				return 0;
-			case ID_DESKTOP_MODE:
-				if (m_frame > 0)
-					ToggleDesktop();
-				return 0;
-			case ID_SHOWHELP:
-				ToggleHelp();
-				return 0;
-			case ID_SHOWPLAYLIST:
-				TogglePlaylist();
-				return 0;
-			}
-			// then allow the plugin to override any command:
-			if (MyWindowProc(hWnd, uMsg, wParam, lParam) == 0)
-				return 0;
-		}
-		break;
-
-		/*
-		KEY HANDLING: the basic idea:
-		    -in all cases, handle or capture:
-		        -ZXCVBRS, zxcvbrs
-		            -also make sure it's case-insensitive!  (lowercase come through only as WM_CHAR; uppercase come in as both)
-		        -(ALT+ENTER)
-		        -(F1, ESC, UP, DN, Left, Right, SHIFT+l/r)
-		        -(P for playlist)
-		            -when playlist showing: steal J, HOME, END, PGUP, PGDN, UP, DOWN, ESC
-		        -(BLOCK J, L)
-		    -when integrated with winamp (using embedwnd), also handle these keys:
-		        -j, l, L, CTRL+L [windowed mode only!]
-		        -CTRL+P, CTRL+D
-		        -CTRL+TAB
-		        -ALT-E
-		        -ALT+F (main menu)
-		        -ALT+3 (id3)
-		*/
-
-	case WM_SYSKEYDOWN:
-		if (wParam==VK_RETURN && m_frame > 0)
-		{
-			ToggleFullScreen();
-			return 0;
-		}
-		// if in embedded mode (using winamp skin), pass ALT+ keys on to winamp
-		// ex: ALT+E, ALT+F, ALT+3...
-		if (m_screenmode==WINDOWED && m_lpDX->m_current_mode.m_skin)
-			return PostMessage(m_hWndWinamp, uMsg, wParam, lParam); // force-pass to winamp; required for embedwnd
-		break;
-
-	case WM_SYSKEYUP:
-		if (m_screenmode==WINDOWED && m_lpDX->m_current_mode.m_skin)
-			return PostMessage(m_hWndWinamp, uMsg, wParam, lParam); // force-pass to winamp; required for embedwnd
 		break;
 
 	case WM_SYSCHAR:
 		if ((wParam=='k' || wParam=='K'))
 		{
 			OnAltK();
-			return 0;
-		}
-		if ((wParam=='d' || wParam=='D') && m_frame > 0)
-		{
-			ToggleDesktop();
 			return 0;
 		}
 		break;
@@ -3133,10 +2409,6 @@ LRESULT CPluginShell::PluginShellWindowProc(HWND hWnd, unsigned uMsg, WPARAM wPa
 				// toggle repeat
 				PostMessage(m_hWndWinamp,WM_COMMAND,40022,0);
 				return 0;
-			case 'p':
-			case 'P':
-				TogglePlaylist();
-				return 0;
 			case 'l':
 				// note that this is actually correct; when you hit 'l' from the
 				// MAIN winamp window, you get an "open files" dialog; when you hit
@@ -3180,12 +2452,6 @@ LRESULT CPluginShell::PluginShellWindowProc(HWND hWnd, unsigned uMsg, WPARAM wPa
 		{
 			switch (wParam)
 			{
-			case VK_ESCAPE:
-				if(m_show_playlist)
-					TogglePlaylist();
-				//m_show_playlist = 0;
-				return 0;
-
 			case VK_UP:
 			{
 				int nRepeat = lParam & 0xFFFF;
@@ -3241,79 +2507,38 @@ LRESULT CPluginShell::PluginShellWindowProc(HWND hWnd, unsigned uMsg, WPARAM wPa
 
 		switch (wParam)
 		{
-		case VK_F1:
-			m_show_press_f1_msg = 0;
-			ToggleHelp();
-			return 0;
+		    case VK_F1:
+			    m_show_press_f1_msg = 0;
+			    ToggleHelp();
+			    return 0;
 
-		case VK_ESCAPE:
-			if (m_show_help)
-				ToggleHelp();
-			else
-			{
-				if (m_screenmode == FAKE_FULLSCREEN || m_screenmode == FULLSCREEN)
-				{
-					ToggleFullScreen();
-				}
-				else if (m_screenmode == DESKTOP)
-				{
-					ToggleDesktop();
-				}
-				// exit the program on escape
-				//m_exiting = 1;
-				//PostMessage(hWnd, WM_CLOSE, 0, 0);
-			}
-			return 0;
+		    case VK_ESCAPE:
+			    if (m_show_help)
+				    ToggleHelp();
+			    return 0;
 
-		case VK_UP:
-			// increase volume
-		{
-			int nRepeat = lParam & 0xFFFF;
-			for (i=0; i<nRepeat*2; i++) PostMessage(m_hWndWinamp,WM_COMMAND,40058,0);
+		    case VK_LEFT:
+		    case VK_RIGHT:
+		    {
+			    bool bShiftHeldDown = (GetKeyState(VK_SHIFT) & mask) != 0;
+			    int cmd = (wParam == VK_LEFT) ? 40144 : 40148;
+			    int nRepeat = lParam & 0xFFFF;
+			    int reps = (bShiftHeldDown) ? 6*nRepeat : 1*nRepeat;
+
+			    for (int i=0; i<reps; i++)
+				    PostMessage(m_hWndWinamp,WM_COMMAND,cmd,0);
+		    }
+		    return 0;
 		}
 		return 0;
-
-		case VK_DOWN:
-			// decrease volume
-		{
-			int nRepeat = lParam & 0xFFFF;
-			for (i=0; i<nRepeat*2; i++) PostMessage(m_hWndWinamp,WM_COMMAND,40059,0);
-		}
-		return 0;
-
-		case VK_LEFT:
-		case VK_RIGHT:
-		{
-			bool bShiftHeldDown = (GetKeyState(VK_SHIFT) & mask) != 0;
-			int cmd = (wParam == VK_LEFT) ? 40144 : 40148;
-			int nRepeat = lParam & 0xFFFF;
-			int reps = (bShiftHeldDown) ? 6*nRepeat : 1*nRepeat;
-
-			for (int i=0; i<reps; i++)
-				PostMessage(m_hWndWinamp,WM_COMMAND,cmd,0);
-		}
-		return 0;
-		default:
-			// pass CTRL+A thru CTRL+Z, and also CTRL+TAB, to winamp, *if we're in windowed mode* and using an embedded window.
-			// be careful though; uppercase chars come both here AND to WM_CHAR handler,
-			//   so we have to eat some of them here, to avoid them from acting twice.
-			if (m_screenmode==WINDOWED && m_lpDX && m_lpDX->m_current_mode.m_skin)
-			{
-				if (bCtrlHeldDown && ((wParam >= 'A' && wParam <= 'Z') || wParam==VK_TAB))
-				{
-					PostMessage(m_hWndWinamp, uMsg, wParam, lParam);
-					return 0;
-				}
-			}
-			return 0;
-		}
-
-		return 0;
-		break;
 	}
 
-	return MyWindowProc(hWnd, uMsg, wParam, lParam);//DefWindowProc(hWnd, uMsg, wParam, lParam);
-	//return 0L;
+	return MyWindowProc(hWnd, uMsg, wParam, lParam);
+}
+
+void CPluginShell::ToggleHelp()
+{
+    m_show_help = 1 - m_show_help;
 }
 
 LRESULT CALLBACK CPluginShell::DesktopWndProc(HWND hWnd, unsigned uMsg, WPARAM wParam, LPARAM lParam)
@@ -3327,10 +2552,6 @@ LRESULT CALLBACK CPluginShell::DesktopWndProc(HWND hWnd, unsigned uMsg, WPARAM w
 
 LRESULT CPluginShell::PluginShellDesktopWndProc(HWND hWnd, unsigned uMsg, WPARAM wParam, LPARAM lParam)
 {
-	//#ifdef _DEBUG
-	//    OutputDebugMessage("kbfocus", hWnd, uMsg, wParam, lParam);
-	//#endif
-
 	switch (uMsg)
 	{
 	case WM_KEYDOWN:

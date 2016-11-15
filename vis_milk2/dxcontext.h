@@ -43,7 +43,6 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 typedef struct
 {
-    eScrMode screenmode;            // WINDOWED, FULLSCREEN, or FAKE FULLSCREEN
     int  nbackbuf;
     int  allow_page_tearing;
     GUID adapter_guid;

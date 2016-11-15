@@ -76,15 +76,6 @@
     <ClCompile Include="wasabi.cpp">
       <Filter>library\sources</Filter>
     </ClCompile>
-    <ClCompile Include="desktop_mode.cpp">
-      <Filter>library\sources</Filter>
-    </ClCompile>
-    <ClCompile Include="config2.cpp">
-      <Filter>library\sources</Filter>
-    </ClCompile>
-    <ClCompile Include="config.cpp">
-      <Filter>library\sources</Filter>
-    </ClCompile>
     <ClCompile Include="dxcontext.cpp">
       <Filter>library\sources</Filter>
     </ClCompile>

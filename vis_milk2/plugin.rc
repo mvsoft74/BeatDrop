@@ -13,388 +13,11 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// English (U.S.) resources
+// English (United States) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
-#ifdef _WIN32
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 #pragma code_page(1252)
-#endif //_WIN32
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// Dialog
-//
-
-IDD_CONFIG DIALOGEX 0, 0, 390, 292
-STYLE DS_SETFONT | DS_MODALFRAME | DS_SETFOREGROUND | DS_FIXEDSYS | DS_CENTER | DS_CONTEXTHELP | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "(window title will be assigned at runtime)"
-FONT 8, "MS Shell Dlg", 0, 0, 0x0
-BEGIN
-    CONTROL         "Tab1",IDC_TABS,"SysTabControl32",TCS_HOTTRACK | WS_TABSTOP,6,7,324,255
-    CONTROL         "",IDC_RECT,"Static",SS_BLACKRECT | NOT WS_VISIBLE,8,20,320,240
-    DEFPUSHBUTTON   "OK",IDOK,335,19,50,13
-    PUSHBUTTON      "Cancel",IDCANCEL,335,35,50,13
-    PUSHBUTTON      "Defaults",ID_DEFAULTS,335,51,50,13
-    PUSHBUTTON      "View Docs",ID_DOCS,335,67,50,13
-    PUSHBUTTON      "View Website",ID_WEB,335,83,50,13
-    CTEXT           "For help on any setting, click the '?' in the upper-right\rcorner, and then click the item you need help with.",IDC_STATIC,6,268,186,19,SS_SUNKEN
-    CTEXT           "(...'about' text will be placed in this box automatically, at runtime)",IDC_SZ_ABOUT,198,268,187,19,SS_SUNKEN
-END
-
-IDD_PROPPAGE_2 DIALOGEX 0, 0, 320, 240
-STYLE DS_SETFONT | DS_FIXEDSYS | DS_CONTROL | WS_CHILD | WS_VISIBLE
-EXSTYLE WS_EX_CONTROLPARENT
-FONT 8, "MS Shell Dlg", 0, 0, 0x1
-BEGIN
-    GROUPBOX        "[ More Settings: ]",IDC_FS_BOX,0,3,319,236
-    RTEXT           "Canvas Stretch:",IDC_STRETCH_CAPTION,5,33,56,10
-    COMBOBOX        IDC_STRETCH,67,30,99,87,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
-    LTEXT           "<-- use if your graphics chip (GPU) is slow !!",IDC_STATIC,169,33,144,8
-    RTEXT           "Mesh Size:",IDC_MESHSIZECOMBO_CAPTION,19,49,43,10
-    COMBOBOX        IDC_MESHSIZECOMBO,67,47,99,123,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
-    LTEXT           "<-- decrease if your processor (CPU) is slow !!",IDC_STATIC,168,50,150,8
-    RTEXT           "Pixel Shaders:",IDC_SHADERS_CAPTION,13,67,49,10
-    COMBOBOX        IDC_SHADERS,67,64,99,87,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
-    LTEXT           "<-- don't touch this.",IDC_STATIC,168,67,144,8
-    RTEXT           "Canvas Size:",IDC_TEXSIZECOMBO_CAPTION,19,84,43,10
-    COMBOBOX        IDC_TEXSIZECOMBO,67,81,99,87,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
-    LTEXT           "<-- don't touch this.",IDC_STATIC,168,84,144,8
-    CONTROL         "Start milkdrop with preset lock [scroll lock key] ON",IDC_CB_SCROLLON,
-                    "Button",BS_AUTOCHECKBOX | BS_TOP | BS_MULTILINE | WS_TABSTOP,22,116,175,10
-    CONTROL         "Disable preset rating (...all presets have equal chance)",IDC_CB_NORATING,
-                    "Button",BS_AUTOCHECKBOX | BS_TOP | BS_MULTILINE | WS_TABSTOP,22,129,192,10
-    CONTROL         "Suppress all errors/warnings (for VJ'ing)",IDC_CB_NOWARN2,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,22,142,143,10
-    CONTROL         "Prevent milkdrop from controlling the scroll lock key [default: OFF]",IDC_CB_SCROLLON2,
-                    "Button",BS_AUTOCHECKBOX | BS_TOP | BS_MULTILINE | WS_TABSTOP,22,155,227,10
-    GROUPBOX        "Brightness control for 16-bit-color video modes",IDC_BRIGHT_SLIDER_BOX,8,182,180,49
-    CONTROL         "Slider1",IDC_BRIGHT_SLIDER,"msctls_trackbar32",WS_TABSTOP,25,193,89,14
-    CTEXT           "0\r\n(bright)",IDC_T1,20,207,25,17
-    CTEXT           "2\r\n(normal)",IDC_T3,54,207,28,18
-    CTEXT           "3",IDC_T4,83,207,8,10
-    CTEXT           "4\r\n(dark)",IDC_T5,91,207,30,18
-    CONTROL         "guess,\r\nbased on my video card",IDC_CB_AUTOGAMMA,
-                    "Button",BS_AUTOCHECKBOX | BS_MULTILINE | WS_TABSTOP,129,194,54,30
-    CONTROL         "Scan presets instantly @ startup/dir. change (can cause a pause)",IDC_CB_INSTASCAN,
-                    "Button",BS_AUTOCHECKBOX | BS_TOP | BS_MULTILINE | NOT WS_VISIBLE | WS_DISABLED | WS_TABSTOP,207,197,100,17
-    CONTROL         "Stereo 3D mode Always ON",IDC_CB_ALWAYS3D,"Button",BS_AUTOCHECKBOX | NOT WS_VISIBLE | WS_DISABLED | WS_TABSTOP,203,207,103,10
-    CONTROL         "Use anisotropic filtering (if available) instead of bilinear interpolation",IDC_CB_ANISO,
-                    "Button",BS_AUTOCHECKBOX | BS_TOP | BS_MULTILINE | NOT WS_VISIBLE | WS_DISABLED | WS_TABSTOP,203,203,99,10
-    CTEXT           "1",IDC_T2,46,207,8,10
-    COMBOBOX        IDC_TEXFORMAT,205,197,99,87,CBS_DROPDOWNLIST | NOT WS_VISIBLE | WS_DISABLED | WS_VSCROLL | WS_TABSTOP
-    RTEXT           "Texture Format:",IDC_TEXFORMAT_CAPTION,201,198,55,10,NOT WS_VISIBLE | WS_DISABLED
-END
-
-IDD_PROPPAGE_1 DIALOGEX 0, 0, 320, 240
-STYLE DS_SETFONT | DS_FIXEDSYS | DS_CONTROL | WS_CHILD | WS_VISIBLE
-EXSTYLE WS_EX_CONTROLPARENT
-FONT 8, "MS Shell Dlg", 0, 0, 0x1
-BEGIN
-    GROUPBOX        "",IDC_STATIC,0,0,319,239
-    RTEXT           "Display Adapter:",IDC_DMS_ADAPTER_CAPTION,68,12,53,9
-    COMBOBOX        IDC_ADAPTER_DMS,126,9,185,191,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
-    CTEXT           "\rDESKTOP MODE\rsettings",IDC_DMS_LABEL,3,17,60,38
-    RTEXT           "Max Framerate:",IDC_DMS_MAXFPS_CAPTION,63,28,58,9
-    COMBOBOX        IDC_DMS_MAXFPS,126,25,81,106,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
-    PUSHBUTTON      "More &Options",ID_DM_MORE,261,25,50,15
-    RTEXT           "Multisampling:",IDC_DMS_MULTISAMPLING_CAPTION,5,43,46,9,NOT WS_VISIBLE | WS_DISABLED
-    COMBOBOX        IDC_DMSMS,56,41,81,123,CBS_DROPDOWNLIST | NOT WS_VISIBLE | WS_DISABLED | WS_VSCROLL | WS_TABSTOP
-    CONTROL         "Allow Page Tearing",IDC_CB_DMSPT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,126,43,77,10
-    CONTROL         "",IDC_STATIC,"Static",SS_GRAYRECT,0,58,318,1
-    RTEXT           "Display Adapter:",IDC_FS_ADAPTER_CAPTION,68,66,53,9
-    COMBOBOX        IDC_ADAPTER_FS,126,63,185,208,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
-    CTEXT           "FULLSCREEN settings",IDC_FS_LABEL,7,85,50,18
-    RTEXT           "Display Mode:",IDC_DISP_MODE_CAPTION,66,81,55,9
-    COMBOBOX        IDC_DISP_MODE,126,78,185,208,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
-    RTEXT           "Max Framerate:",IDC_FS_MAXFPS_CAPTION,66,96,55,9
-    COMBOBOX        IDC_FS_MAXFPS,126,94,81,107,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
-    RTEXT           "Multisampling:",IDC_FS_MULTISAMPLING_CAPTION,4,112,47,9,NOT WS_VISIBLE | WS_DISABLED
-    COMBOBOX        IDC_FSMS,56,110,81,123,CBS_DROPDOWNLIST | NOT WS_VISIBLE | WS_DISABLED | WS_VSCROLL | WS_TABSTOP
-    CONTROL         "Allow Page Tearing",IDC_CB_FSPT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,126,112,77,10
-    CONTROL         "Use Fa&ke fullscreen mode",IDC_CB_FAKE,"Button",BS_AUTOCHECKBOX | BS_TOP | WS_TABSTOP,214,112,97,10
-    CONTROL         "",IDC_STATIC,"Static",SS_GRAYRECT,0,127,318,1
-    RTEXT           "Display Adapter:",IDC_W_ADAPTER_CAPTION,68,135,53,9
-    COMBOBOX        IDC_ADAPTER_W,126,132,185,208,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
-    CTEXT           "WINDOWED settings",IDC_W_LABEL,7,145,46,18
-    RTEXT           "Max Framerate:",IDC_W_MAXFPS_CAPTION,56,151,65,9
-    COMBOBOX        IDC_W_MAXFPS,126,148,81,107,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
-    RTEXT           "Multisampling:",IDC_W_MULTISAMPLING_CAPTION,5,165,46,9,NOT WS_VISIBLE | WS_DISABLED
-    COMBOBOX        IDC_WMS,56,163,81,123,CBS_DROPDOWNLIST | NOT WS_VISIBLE | WS_DISABLED | WS_VSCROLL | WS_TABSTOP
-    CONTROL         "Allow Page Tearing",IDC_CB_WPT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,126,165,77,10
-    CONTROL         "Integrate with winamp skin",IDC_CB_SKIN,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,214,164,102,10
-    CONTROL         "",IDC_STATIC,"Static",SS_GRAYRECT,0,180,318,1
-    LTEXT           "Start in...",IDC_STATIC,9,192,61,8
-    CONTROL         "&Fullscreen",IDC_CB_FS,"Button",BS_AUTOCHECKBOX | BS_TOP | BS_MULTILINE | WS_TABSTOP,9,203,48,10
-    CONTROL         "&Desktop Mode",IDC_CB_DMS,"Button",BS_AUTOCHECKBOX | BS_TOP | BS_MULTILINE | WS_TABSTOP,9,215,61,10
-    CONTROL         "Sa&ve CPU by loosely enforcing Max Framerate",IDC_CB_SAVE_CPU,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,78,185,164,10
-    CONTROL         "Show '&Press F1 for  Help' message at startup",IDC_CB_PRESS_F1_MSG,
-                    "Button",BS_AUTOCHECKBOX | BS_TOP | WS_TABSTOP,78,195,159,10
-    CONTROL         "&Minimize Winamp when going fullscreen",IDC_CB_MIN,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,78,205,141,10
-    CONTROL         "Try to fix slow menus/text (uses more video memory)",IDC_CB_FIXSLOWTEXT,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,78,215,183,10
-    CONTROL         "V&J MODE - show text, menus in a second window",IDC_CB_VJMODE,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,78,225,173,10
-    PUSHBUTTON      "Dual&Head",ID_DUALHEAD,262,200,50,15
-    PUSHBUTTON      "&Select Fonts",ID_FONTS,262,217,50,15
-END
-
-IDD_PROPPAGE_3 DIALOGEX 0, 0, 320, 240
-STYLE DS_SETFONT | DS_FIXEDSYS | DS_CONTROL | WS_CHILD | WS_VISIBLE
-EXSTYLE WS_EX_CONTROLPARENT
-FONT 8, "MS Shell Dlg", 0, 0, 0x1
-BEGIN
-    GROUPBOX        "Image cache:",IDC_BRIGHT_SLIDER_BOX2,5,4,140,83
-    LTEXT           "Max # Images:",IDC_MAX_IMAGES_CAPTION,16,17,49,10
-    COMBOBOX        IDC_MAX_IMAGES,74,14,60,87,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
-    LTEXT           "Max Video Mem:",IDC_MAX_BYTES_CAPTION,16,34,55,10
-    COMBOBOX        IDC_MAX_BYTES,74,31,60,87,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
-    LTEXT           "Note: cache settings are only relevant if you've put gobs of textures into your milkdrop2\\textures\\ folder.  Otherwise, everything fits in 1 MB of VRAM.",IDC_STATIC,13,49,126,33
-    PUSHBUTTON      "Edit &Sprites",ID_SPRITE,11,93,82,15
-    PUSHBUTTON      "&Edit Custom Messages",ID_MSG,11,110,82,15
-    GROUPBOX        "Song Title Animations and Custom Messages",IDC_STATIC,5,130,169,104
-    LTEXT           "(seconds)",IDC_STATIC,137,140,33,9
-    RTEXT           "Duration of song title animations:",IDC_SONGTITLEANIM_DURATION_LABEL,20,153,110,10
-    EDITTEXT        IDC_SONGTITLEANIM_DURATION,136,151,32,13,ES_AUTOHSCROLL
-    RTEXT           "Time between\r\nRANDOM song title anims",IDC_RAND_TITLE_LABEL,34,166,96,17
-    EDITTEXT        IDC_RAND_TITLE,136,169,32,13,ES_AUTOHSCROLL
-    RTEXT           "Time between\r\nRANDOM custom messages",IDC_RAND_MSG_LABEL,34,185,96,17
-    EDITTEXT        IDC_RAND_MSG,136,188,32,13,ES_AUTOHSCROLL
-    CONTROL         "Automatically show song title anims when song changes?",IDC_CB_TITLE_ANIMS,
-                    "Button",BS_AUTOCHECKBOX | BS_LEFTTEXT | BS_MULTILINE | WS_TABSTOP,41,207,114,18
-    GROUPBOX        "Colored-lens 3D glasses",IDC_STATIC,212,66,104,58,NOT WS_VISIBLE | WS_DISABLED
-    PUSHBUTTON      "Set &right eye lens color",IDRIGHT,226,76,82,14,NOT WS_VISIBLE | WS_DISABLED
-    PUSHBUTTON      "Set &left eye lens color",IDLEFT,216,83,82,14,NOT WS_VISIBLE | WS_DISABLED
-    RTEXT           "Default stereo separation (normal=1):",IDC_3DSEP_LABEL,196,101,119,10,NOT WS_VISIBLE | WS_DISABLED
-    EDITTEXT        IDC_3DSEP,260,97,32,13,ES_AUTOHSCROLL | NOT WS_VISIBLE | WS_DISABLED
-    GROUPBOX        "VJ Mode",IDC_STATIC,188,129,127,63,NOT WS_VISIBLE | WS_DISABLED
-    CONTROL         "Enable &VJ Mode (creates a second window for text input and output and leaves the graphics display text-free; use this in conjunction w/multimon for live shows)",IDC_CB_SEPTEXT,
-                    "Button",BS_AUTOCHECKBOX | BS_TOP | BS_MULTILINE | NOT WS_VISIBLE | WS_DISABLED | WS_TABSTOP,194,143,121,44
-END
-
-IDD_PROPPAGE_4 DIALOGEX 0, 0, 320, 240
-STYLE DS_SETFONT | DS_FIXEDSYS | DS_CONTROL | WS_CHILD | WS_VISIBLE
-EXSTYLE WS_EX_CONTROLPARENT
-FONT 8, "MS Shell Dlg", 0, 0, 0x1
-BEGIN
-    GROUPBOX        "Soft Cuts (regular, periodic preset transitions/fades)",IDC_STATIC,5,7,187,96
-    RTEXT           "Time between auto preset changes:",IDC_BETWEEN_TIME_LABEL,20,25,116,10
-    EDITTEXT        IDC_BETWEEN_TIME,142,23,32,13,ES_AUTOHSCROLL
-    RTEXT           "Additional random time:",IDC_BETWEEN_TIME_RANDOM_LABEL,33,39,103,10
-    EDITTEXT        IDC_BETWEEN_TIME_RANDOM,142,38,32,13,ES_AUTOHSCROLL
-    RTEXT           "Auto preset blend time:",IDC_BLEND_AUTO_LABEL,34,55,102,10
-    EDITTEXT        IDC_BLEND_AUTO,142,53,32,13,ES_AUTOHSCROLL
-    RTEXT           "User-solicited preset blend time:",IDC_BLEND_USER_LABEL,26,70,110,10
-    EDITTEXT        IDC_BLEND_USER,142,68,32,13,ES_AUTOHSCROLL
-    LTEXT           "(seconds)",IDC_STATIC,142,83,33,10
-    GROUPBOX        "Hard Cuts (driven by major beats)",IDC_STATIC,5,106,187,91
-    RTEXT           "Average time between hard cuts:",IDC_HARDCUT_BETWEEN_TIME_LABEL,20,119,116,10
-    EDITTEXT        IDC_HARDCUT_BETWEEN_TIME,142,117,32,13,ES_AUTOHSCROLL
-    LTEXT           "(seconds)",IDC_STATIC,142,132,33,10
-    LTEXT           "Loudness threshold:",IDC_HARDCUT_LOUDNESS_LABEL,31,139,71,9
-    CTEXT           "min",IDC_HARDCUT_LOUDNESS_MIN,37,151,14,9
-    CONTROL         "Slider1",IDC_HARDCUT_LOUDNESS,"msctls_trackbar32",TBS_BOTH | TBS_NOTICKS | WS_TABSTOP,51,150,114,16
-    CTEXT           "max",IDC_HARDCUT_LOUDNESS_MAX,165,151,16,9
-    CONTROL         "&Disable hard cuts",IDC_CB_HARDCUTS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,33,171,72,13
-END
-
-IDD_PROPPAGE_5 DIALOGEX 0, 0, 320, 240
-STYLE DS_SETFONT | DS_FIXEDSYS | DS_CONTROL | WS_CHILD | WS_VISIBLE
-EXSTYLE WS_EX_CONTROLPARENT
-FONT 8, "MS Shell Dlg", 0, 0, 0x1
-BEGIN
-END
-
-#if defined(APSTUDIO_INVOKED) || defined(DISABLED)
-#if defined(APSTUDIO_INVOKED)
-IDD_PROPPAGE_6$(DISABLED) DIALOGEX 0, 0, 320, 240
-#else
-IDD_PROPPAGE_6 DIALOGEX 0, 0, 320, 240
-#endif
-STYLE DS_SETFONT | DS_FIXEDSYS | DS_CONTROL | WS_CHILD | WS_VISIBLE
-EXSTYLE WS_EX_CONTROLPARENT
-FONT 8, "MS Shell Dlg", 0, 0, 0x1
-BEGIN
-END
-#endif
-
-#if defined(APSTUDIO_INVOKED) || defined(DISABLED)
-#if defined(APSTUDIO_INVOKED)
-IDD_PROPPAGE_7$(DISABLED) DIALOGEX 0, 0, 320, 240
-#else
-IDD_PROPPAGE_7 DIALOGEX 0, 0, 320, 240
-#endif
-STYLE DS_SETFONT | DS_FIXEDSYS | DS_CONTROL | WS_CHILD | WS_VISIBLE
-EXSTYLE WS_EX_CONTROLPARENT
-FONT 8, "MS Shell Dlg", 0, 0, 0x1
-BEGIN
-END
-#endif
-
-#if defined(APSTUDIO_INVOKED) || defined(DISABLED)
-#if defined(APSTUDIO_INVOKED)
-IDD_PROPPAGE_8$(DISABLED) DIALOGEX 0, 0, 320, 240
-#else
-IDD_PROPPAGE_8 DIALOGEX 0, 0, 320, 240
-#endif
-STYLE DS_SETFONT | DS_FIXEDSYS | DS_CONTROL | WS_CHILD | WS_VISIBLE
-EXSTYLE WS_EX_CONTROLPARENT
-FONT 8, "MS Shell Dlg", 0, 0, 0x1
-BEGIN
-END
-#endif
-
-IDD_FONTDIALOG DIALOGEX 0, 0, 354, 175
-STYLE DS_SETFONT | DS_MODALFRAME | DS_SETFOREGROUND | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
-EXSTYLE WS_EX_NOPARENTNOTIFY
-CAPTION "Select Fonts"
-FONT 8, "MS Shell Dlg", 0, 0, 0x1
-BEGIN
-    LTEXT           "Typeset:",IDC_FONT_CAPTION,85,4,109,9
-    LTEXT           "Size:",IDC_FONTSIZE_CAPTION,217,4,50,10
-    LTEXT           "Bold",IDC_FONTOPTIONS_CAPTION,290,4,16,10
-    LTEXT           "Italics",IDC_FONTOPTIONS_CAPTION2,311,4,20,10
-    LTEXT           "AA",IDC_FONTOPTIONS_CAPTION3,336,4,11,10
-    RTEXT           "Simple font:",IDC_FONT_NAME_1,7,16,70,9
-    COMBOBOX        IDC_FONT1,85,13,127,291,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
-    COMBOBOX        IDC_FONTSIZE1,217,13,65,87,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
-    CONTROL         "",IDC_FONTBOLD1,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,293,16,9,9
-    CONTROL         "",IDC_FONTITAL1,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,315,16,9,9
-    CONTROL         "",IDC_FONTAA1,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,337,16,9,9
-    RTEXT           "Decorative font:",IDC_FONT_NAME_2,7,32,70,9
-    COMBOBOX        IDC_FONT2,85,29,127,291,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
-    COMBOBOX        IDC_FONTSIZE2,217,29,65,87,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
-    CONTROL         "",IDC_FONTBOLD2,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,293,32,9,9
-    CONTROL         "",IDC_FONTITAL2,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,315,32,9,9
-    CONTROL         "",IDC_FONTAA2,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,337,32,9,9
-    RTEXT           "Help screen:",IDC_FONT_NAME_3,7,48,70,9
-    COMBOBOX        IDC_FONT3,85,45,127,291,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
-    COMBOBOX        IDC_FONTSIZE3,217,45,65,87,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
-    CONTROL         "",IDC_FONTBOLD3,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,293,48,9,9
-    CONTROL         "",IDC_FONTITAL3,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,315,48,9,9
-    CONTROL         "",IDC_FONTAA3,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,337,48,9,9
-    RTEXT           "Playlist:",IDC_FONT_NAME_4,7,65,70,9
-    COMBOBOX        IDC_FONT4,85,61,127,291,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
-    COMBOBOX        IDC_FONTSIZE4,217,61,65,87,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
-    CONTROL         "",IDC_FONTBOLD4,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,293,64,9,9
-    CONTROL         "",IDC_FONTITAL4,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,315,64,9,9
-    CONTROL         "",IDC_FONTAA4,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,337,64,9,9
-    RTEXT           "Font 5:",IDC_FONT_NAME_5,7,80,70,9,NOT WS_VISIBLE
-    COMBOBOX        IDC_FONT5,85,77,127,291,CBS_DROPDOWNLIST | CBS_SORT | NOT WS_VISIBLE | WS_VSCROLL | WS_TABSTOP
-    COMBOBOX        IDC_FONTSIZE5,217,77,65,87,CBS_DROPDOWNLIST | NOT WS_VISIBLE | WS_VSCROLL | WS_TABSTOP
-    CONTROL         "",IDC_FONTBOLD5,"Button",BS_AUTOCHECKBOX | NOT WS_VISIBLE | WS_TABSTOP,293,80,9,9
-    CONTROL         "",IDC_FONTITAL5,"Button",BS_AUTOCHECKBOX | NOT WS_VISIBLE | WS_TABSTOP,315,80,9,9
-    CONTROL         "",IDC_FONTAA5,"Button",BS_AUTOCHECKBOX | NOT WS_VISIBLE | WS_TABSTOP,337,80,9,9
-    RTEXT           "Font 6:",IDC_FONT_NAME_6,7,96,70,9,NOT WS_VISIBLE
-    COMBOBOX        IDC_FONT6,85,93,127,291,CBS_DROPDOWNLIST | CBS_SORT | NOT WS_VISIBLE | WS_VSCROLL | WS_TABSTOP
-    COMBOBOX        IDC_FONTSIZE6,217,93,65,87,CBS_DROPDOWNLIST | NOT WS_VISIBLE | WS_VSCROLL | WS_TABSTOP
-    CONTROL         "",IDC_FONTBOLD6,"Button",BS_AUTOCHECKBOX | NOT WS_VISIBLE | WS_TABSTOP,293,96,9,9
-    CONTROL         "",IDC_FONTITAL6,"Button",BS_AUTOCHECKBOX | NOT WS_VISIBLE | WS_TABSTOP,315,96,9,9
-    CONTROL         "",IDC_FONTAA6,"Button",BS_AUTOCHECKBOX | NOT WS_VISIBLE | WS_TABSTOP,337,96,9,9
-    RTEXT           "Font 7:",IDC_FONT_NAME_7,7,112,70,9,NOT WS_VISIBLE
-    COMBOBOX        IDC_FONT7,85,109,127,291,CBS_DROPDOWNLIST | CBS_SORT | NOT WS_VISIBLE | WS_VSCROLL | WS_TABSTOP
-    COMBOBOX        IDC_FONTSIZE7,217,109,65,87,CBS_DROPDOWNLIST | NOT WS_VISIBLE | WS_VSCROLL | WS_TABSTOP
-    CONTROL         "",IDC_FONTBOLD7,"Button",BS_AUTOCHECKBOX | NOT WS_VISIBLE | WS_TABSTOP,293,112,9,9
-    CONTROL         "",IDC_FONTITAL7,"Button",BS_AUTOCHECKBOX | NOT WS_VISIBLE | WS_TABSTOP,315,112,9,9
-    CONTROL         "",IDC_FONTAA7,"Button",BS_AUTOCHECKBOX | NOT WS_VISIBLE | WS_TABSTOP,337,112,9,9
-    RTEXT           "Font 8:",IDC_FONT_NAME_8,7,128,70,9,NOT WS_VISIBLE
-    COMBOBOX        IDC_FONT8,85,125,127,291,CBS_DROPDOWNLIST | CBS_SORT | NOT WS_VISIBLE | WS_VSCROLL | WS_TABSTOP
-    COMBOBOX        IDC_FONTSIZE8,217,125,65,87,CBS_DROPDOWNLIST | NOT WS_VISIBLE | WS_VSCROLL | WS_TABSTOP
-    CONTROL         "",IDC_FONTBOLD8,"Button",BS_AUTOCHECKBOX | NOT WS_VISIBLE | WS_TABSTOP,293,128,9,9
-    CONTROL         "",IDC_FONTITAL8,"Button",BS_AUTOCHECKBOX | NOT WS_VISIBLE | WS_TABSTOP,315,128,9,9
-    CONTROL         "",IDC_FONTAA8,"Button",BS_AUTOCHECKBOX | NOT WS_VISIBLE | WS_TABSTOP,337,128,9,9
-    RTEXT           "Font 9:",IDC_FONT_NAME_9,7,144,70,9,NOT WS_VISIBLE
-    COMBOBOX        IDC_FONT9,85,141,127,291,CBS_DROPDOWNLIST | CBS_SORT | NOT WS_VISIBLE | WS_VSCROLL | WS_TABSTOP
-    COMBOBOX        IDC_FONTSIZE9,217,141,65,87,CBS_DROPDOWNLIST | NOT WS_VISIBLE | WS_VSCROLL | WS_TABSTOP
-    CONTROL         "",IDC_FONTBOLD9,"Button",BS_AUTOCHECKBOX | NOT WS_VISIBLE | WS_TABSTOP,293,144,9,9
-    CONTROL         "",IDC_FONTITAL9,"Button",BS_AUTOCHECKBOX | NOT WS_VISIBLE | WS_TABSTOP,315,144,9,9
-    CONTROL         "",IDC_FONTAA9,"Button",BS_AUTOCHECKBOX | NOT WS_VISIBLE | WS_TABSTOP,337,144,9,9
-    CTEXT           "Note: 'AA' stands for anti-aliasing (smoothing); not always available.",IDC_FONT_TEXT,7,160,235,8,SS_CENTERIMAGE
-    DEFPUSHBUTTON   "OK",IDOK,246,158,50,13
-    PUSHBUTTON      "Cancel",IDCANCEL,300,158,50,13
-END
-
-IDD_DESKTOPMODE DIALOGEX 0, 0, 201, 105
-STYLE DS_SETFONT | DS_MODALFRAME | DS_SETFOREGROUND | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
-EXSTYLE WS_EX_NOPARENTNOTIFY | WS_EX_CONTEXTHELP
-CAPTION "More Options for Desktop Mode"
-FONT 8, "MS Shell Dlg", 0, 0, 0x1
-BEGIN
-    CONTROL         "Show icons",IDC_CB_SHOW_ICONS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,4,4,51,10
-    CONTROL         "Draw colored boxes around icon text labels",IDC_CB_BOX,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,4,16,154,10
-    CONTROL         "My desktop icons get occluded (covered) by the taskbar when I use Desktop Mode; fix it!",IDC_CB_MANUAL_SCOOT,
-                    "Button",BS_AUTOCHECKBOX | BS_TOP | BS_MULTILINE | WS_TABSTOP,4,28,184,18
-    LTEXT           "When Windows is in [5-6-5] 16-bit color and there is no\ralpha (transparency) channel, try drawing the icons using...",IDC_DM_ALPHA_FIX_CAPTION,4,50,193,17
-    COMBOBOX        IDC_DM_ALPHA_FIX,4,71,193,291,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
-    DEFPUSHBUTTON   "OK",IDOK,91,88,50,13
-    PUSHBUTTON      "Cancel",IDCANCEL,147,88,50,13
-END
-
-IDD_DUALHEAD DIALOGEX 0, 0, 304, 164
-STYLE DS_SETFONT | DS_MODALFRAME | DS_SETFOREGROUND | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
-EXSTYLE WS_EX_NOPARENTNOTIFY
-CAPTION "Dualhead Options"
-FONT 8, "MS Shell Dlg", 0, 0, 0x1
-BEGIN
-    LTEXT           "Typically, multimon (ie. multiple monitor) setups feature two separate video cards and two separate monitors; each resulting display has its own resolution, and the desktop spans across them in some fashion.",IDC_STATIC,4,4,296,26
-    LTEXT           "DualHead video cards, though, feature a single card that feeds two monitors.  Some of these cards treat the two monitors separately, but some of them treat them as halves of a single double-width (~2048x768) or double-height (~1024x1536) 'virtual screen'.",IDC_STATIC,4,34,296,26
-    GROUPBOX        "For Desktop and *Fake* Fullscreen modes:",IDC_STATIC,4,64,150,96
-    LTEXT           "When a single virtual display spans two real screens Horizontally:",IDC_STATIC,10,75,137,18
-    COMBOBOX        IDC_H_PICK,16,96,104,91,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
-    LTEXT           "When a single virtual display spans two real screens Vertically:",IDC_STATIC,10,113,137,18
-    COMBOBOX        IDC_V_PICK,16,134,104,67,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
-    LTEXT           "As a result, graphics applications can't go 'fullscreen' on just one monitor, because it's really only half of the 'screen', from Windows' point of view.",IDC_STATIC,159,64,141,32
-    LTEXT           "This plug-in, however, will let you get away with it, when you're in Desktop Mode or *Fake* Fullscreen Mode; it just needs to know which half of the display (left/right or top/bottom) you want to use -- or both.",IDC_STATIC,159,100,141,42
-    DEFPUSHBUTTON   "OK",IDOK,196,147,50,13
-    PUSHBUTTON      "Cancel",IDCANCEL,250,147,50,13
-END
-
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// DESIGNINFO
-//
-
-#ifdef APSTUDIO_INVOKED
-GUIDELINES DESIGNINFO 
-BEGIN
-    IDD_CONFIG, DIALOG
-    BEGIN
-        LEFTMARGIN, 6
-        RIGHTMARGIN, 385
-        TOPMARGIN, 7
-        BOTTOMMARGIN, 287
-    END
-
-    IDD_FONTDIALOG, DIALOG
-    BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 350
-        TOPMARGIN, 4
-        BOTTOMMARGIN, 171
-    END
-
-    IDD_DESKTOPMODE, DIALOG
-    BEGIN
-        LEFTMARGIN, 4
-        RIGHTMARGIN, 197
-        TOPMARGIN, 4
-        BOTTOMMARGIN, 101
-    END
-
-    IDD_DUALHEAD, DIALOG
-    BEGIN
-        LEFTMARGIN, 4
-        RIGHTMARGIN, 300
-        TOPMARGIN, 4
-        BOTTOMMARGIN, 160
-    END
-END
-#endif    // APSTUDIO_INVOKED
-
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -424,26 +47,6 @@ END
 
 /////////////////////////////////////////////////////////////////////////////
 //
-// Menu
-//
-
-IDR_WINDOWED_CONTEXT_MENU MENU 
-BEGIN
-    POPUP "Options:"
-    BEGIN
-        MENUITEM "&Fullscreen\tAlt+Enter",      ID_GO_FS
-        MENUITEM "&Desktop Mode\tAlt+D",        ID_DESKTOP_MODE
-        MENUITEM SEPARATOR
-        MENUITEM "Show &Help\tF1",              ID_SHOWHELP
-        MENUITEM "Show Playlist\tP",            ID_SHOWPLAYLIST
-        MENUITEM SEPARATOR
-        MENUITEM "&Quit",                       ID_QUIT
-    END
-END
-
-
-/////////////////////////////////////////////////////////////////////////////
-//
 // Icon
 //
 
@@ -451,12 +54,14 @@ END
 // remains consistent on all systems.
 IDI_PLUGIN_ICON         ICON                    "plugin_icon.ico"
 
+
 /////////////////////////////////////////////////////////////////////////////
 //
 // TEXT
 //
 
 IDR_TEXT1               TEXT                    "text1.bin"
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -496,30 +101,28 @@ BEGIN
     END
 END
 
-#endif    // English (U.S.) resources
+#endif    // English (United States) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
 /////////////////////////////////////////////////////////////////////////////
-// English (U.K.) resources
+// English (United Kingdom) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENG)
-#ifdef _WIN32
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_UK
 #pragma code_page(1252)
-#endif //_WIN32
 
 /////////////////////////////////////////////////////////////////////////////
 //
 // String Table
 //
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     65535                   "{C5D175F1-E4E4-47ee-B85C-4EDC6B026A35}"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_ABOUT_STRING        "%s by %s\n%s"
     IDS_SZ_MENU_NAV_TOOLTIP "navigation: ESC: exit, Left Arrow: back, Right Arrow: select, UP/DOWN: change sel"
@@ -537,7 +140,7 @@ BEGIN
     IDS_MILKDROP_ERROR      "MILKDROP ERROR"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_THIS_PLUGIN_NEEDS_MUSIC_TO_RUN 
                             "This plug-in cannot run without music.\n\nPlease play some music, through Winamp, and then try running the plug-in again."
@@ -567,7 +170,7 @@ BEGIN
                             "Could not compile blur1 vertex shader"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_DXC_ERR_CAPSFAIL    "DirectX initialization failed (GetDeviceCaps).\n\nThis means that no valid 3D-accelerated display adapter could be found\non your computer.\nIf you know this is not the case, it is possible that your graphics\nsubsystem is temporarily unstable; please try rebooting your computer,\nand then try to run the plug-in again.  Otherwise, please install a\n3D-accelerated display adapter."
     IDS_FS_DISPLAY_MODE_SELECTED_IS_INVALID 
@@ -596,7 +199,7 @@ BEGIN
                             "Error invoking Direct3D 9 for VJ mode;\nDirectX 9 could be missing or corrupt."
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_COULD_NOT_COMPILE_BLUR1_PIXEL_SHADER 
                             "Could not compile blur1 pixel shader"
@@ -624,7 +227,7 @@ BEGIN
                             "3D noise texture byte layout not recognized"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_MILKDROP_WARNING    "MILKDROP WARNING"
     IDS_ERROR_CREATING_DOUBLE_SIZED_GDI_TITLE_FONT 
@@ -645,7 +248,7 @@ BEGIN
                             "Load which preset?  (arrow keys to scroll; Esc/close, Enter/select, INS/rename; DEL/delete)"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_ERROR_CREATING_SHADER "Error creating shader:\n"
     IDS_PLEASE_EXIT_VIS_BEFORE_RUNNING_CONFIG_PANEL 
@@ -673,7 +276,7 @@ BEGIN
                             "This preset does not currently use pixel shaders."
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_UPGRADE_TO_USE_PS2  "Do you want to upgrade it to use pixel shader 2?  [y/N]"
     IDS_WARNING_OLD_GPU_MIGHT_NOT_WORK_WITH_PRESET 
@@ -699,7 +302,7 @@ BEGIN
     IDS_DIRECTORY_OF_X      "Directory of: %s"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_PAGE_X_OF_X         " (page %d of %d) "
     IDS_LOCKED              "<locked> "
@@ -717,7 +320,7 @@ BEGIN
     IDS_RANDOM              "RANDOM"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_SHUFFLE_IS_NOW_OFF  "shuffle is now OFF"
     IDS_SHUFFLE_IS_NOW_ON   "shuffle is now ON"
@@ -736,7 +339,7 @@ BEGIN
     IDS_192X144_SLOW        "192 x 144 SLOW "
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_SAVE_AS             "Save as:"
     IDS_AUTO                " Auto "
@@ -753,7 +356,7 @@ BEGIN
     IDS_ERROR_IN_SHELLEXECUTE "error in ShellExecute"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_NONE_BEST_IMAGE_QUALITY " None (best image quality) "
     IDS_1_25_X              " 1.25 X "
@@ -773,7 +376,7 @@ BEGIN
     IDS_CANVAS_SIZE_TEXT    "This sets the size of the image that milkdrop uses, internally,\nto drive the visuals.  The bigger the value here, the crisper\nthe image you see.  It's highly recommended that you set this\nto 'auto', which will determine the ideal image (texture) size\nautomatically.  However, if you experience visual problems (such\nas black streaks or missing chunks in the image) due to low\nvideo memory, you might want to set this to a low value (like\n256x256 or 512x512).\n\n'Auto (exact)' means the internal texture size will exactly match\nthe number of pixels on the screen - this is the ideal case.\nIf that doesn't work, try 'Auto (nearest power of 2)' - some older\nvideo cards will have better luck with this option."
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_CANVAS_STRETCH      "Canvas Stretch"
     IDS_CANVAS_STRETCH_TEXT "MilkDrop works with an internal texture, or canvas, to do all of\nits graphics rendering.  The speed (framerate) that MilkDrop runs\nat is inversely proportional to the number of pixels that are in\nthis canvas.  So, to render things internally at a smaller resolution,\nbut stretch them up for display, you can use this option.  It will\nmake the image look a bit softer and less crisp or detailed,\nbut - especially for older graphics hardware - things will run\nmuch faster.\n\nKeep in mind, a stretch factor of 2X, for example, means that there\nwill be half as manypixels to simulate on both the X and Y axes, \nso MilkDrop will actually run FOUR TIMES as fast.  With a stretch\nfactor of 3X, it will run 9X as fast (hypothetically).  And so on."
@@ -799,7 +402,7 @@ BEGIN
     IDS_MENU_BLUR3_MIN_COLOR_VALUE "blur3: min color value"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_MESH_SIZE           "Mesh Size"
     IDS_MESH_SIZE_TEXT      "MilkDrop uses a mesh of polygons to warp the image each frame.\nThis setting determines how finely subdivided that mesh is.\nA larger mesh size will mean finer resolution 'movement' in the\nimage; basically, it will look better.  Watch out, though - \nonly crank this way up if you have a fast CPU."
@@ -815,7 +418,7 @@ BEGIN
     IDS_CB_AUTOGAMMA        "Check this option to ask milkdrop to make an educated guess\nfor the 'brightness control for 16-bit color' setting, based\non the vendor of your video card.  This usually gets it, but\nnot always.\n\nThe slider is only visible when this option is unchecked.\n\nSee the help for the slider for more information."
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_SPRITE              "Click this button to edit milk_img.ini, the file that defines\nall of the custom sprites you can invoke for display while\nmilkdrop is running.  A sprite is an image that you can fade\nin or our, move around, and so on."
     IDS_MSG                 "Click this button to edit milk_msg.ini, the file that you can\nconfigure to set up custom overlaid text messages that you can\ndisplay while milkdrop is running."
@@ -835,7 +438,7 @@ BEGIN
                             "Use this slider to adjust the sensitivity of the beat detection\nalgorithm used to detect the beats that cause hard cuts.  A value\nclose to 'min' will cause the algorithm to be very sensitive (so\neven small beats will trigger it); a value close to 'max' will\ncause only the largest beats to trigger it."
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_CB_HARDCUTS         "Check this to disable hard cuts; a loud beat\nwill never cause the preset to change."
     IDS_EDIT_CURRENT_PRESET "--edit current preset"
@@ -855,7 +458,7 @@ BEGIN
                             "read-only:  time, fps, frame, progress; {bass|mid|treb}[_att]\nread/write: zoom, rot, warp, cx, cy, dx, dy, sx, sy; q1-q8; monitor\n            mv_{x|y|dx|dy|l|r|g|b|a}, ib_{size|r|g|b|a}, ob_{size|r|g|b|a};\n            wave_{r|g|b|a|x|y|mode|mystery|usedots|thick|additive|brighten};\n            darken_center, wrap; invert, brighten, darken, solarize\n            decay, gamma, echo_zoom, echo_alpha, echo_orient"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_MENU_ROTATION_AMOUNT_TT 
                             "controls the amount of rotation.  0=none, 0.1=slightly right, -0.1=slightly clockwise, 0.1=CCW"
@@ -881,7 +484,7 @@ BEGIN
     IDS_MENU_DARKEN_CENTER  "darken center"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_MENU_DARKEN_CENTER_TT 
                             "when ON, help keeps the image from getting too bright by continually dimming the center point"
@@ -905,7 +508,7 @@ BEGIN
     IDS_MENU_FILTER_INVERT  "filter: invert"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_MENU_FILTER_INVERT_TT "inverts the colors in the image"
     IDS_MENU_FILTER_BRIGHTEN "filter: brighten"
@@ -929,7 +532,7 @@ BEGIN
     IDS_MENU_SMOOTHING_TT   "0=the raw wave; 1=a highly damped (smoothed) wave"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_MENU_WAVE_TYPE      "wave type"
     IDS_MENU_WAVE_TYPE_TT   "each value represents a different way of drawing the waveform"
@@ -949,7 +552,7 @@ BEGIN
     IDS_MENU_COLOR_GREEN    "color (green)"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_MENU_COLOR_GREEN_TT "amount of green color in the wave (0..1)"
     IDS_MENU_COLOR_BLUE     "color (blue)"
@@ -972,7 +575,7 @@ BEGIN
     IDS_MENU_ADDITIVE_DRAWING "additive drawing"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_MENU_ADDITIVE_DRAWING_TT 
                             "if true, the wave is drawn additively, saturating the image at white"
@@ -994,7 +597,7 @@ BEGIN
     IDS_MENU_INNER_BORDER_THICKNESS "inner border thickness"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_MENU_INNER_BORDER_THICKNESS_TT 
                             "thickness of the inner border drawn at the edges of the screen"
@@ -1016,7 +619,7 @@ BEGIN
     IDS_MENU_OFFSET_Y_TT    "vertical placement offset of the motion vectors"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_MENU_TRAIL_LENGTH   " trail length"
     IDS_MENU_TRAIL_LENGTH_TT "the length of the motion vectors (1=normal)"
@@ -1039,7 +642,7 @@ BEGIN
     IDS_MENU_ROTATION_AMOUNT "rotation amount"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_MENU_BLUR3_MIN_COLOR_VALUE_TT 
                             "narrowing these to just the color range you need will greatly increase color fidelity in the blurred images.  MUST BE SUBSET OF BLUR1, BLUR2 RANGES."
@@ -1071,7 +674,7 @@ BEGIN
                             "IN: instance, num_inst, time, frame, fps, progress; q1-q8 (from preset init); x,y,rad,ang; r,g,b,a; r2,g2,b2,a2; border_{r|g|b|a}; sides, thick, additive, textured\nOUT: t1-t8; x,y,rad,ang; r,g,b,a; r2,g2,b2,a2; border_{r|g|b|a}; sides, thick, additive, textured"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_MENU_OPACITY_WAVE_TT 
                             "opacity of the waveform; 0=transparent, 1=opaque"
@@ -1101,7 +704,7 @@ BEGIN
                             "IN: sample [0..1]; value1 [left ch], value2 [right ch], plus all vars for per-frame code / OUT: x,y; r,g,b,a; t1-t8"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_MENU_ENABLED_SHAPE_TT "enables or disables this shape"
     IDS_MENU_NUMBER_OF_SIDES "number of sides"
@@ -1124,7 +727,7 @@ BEGIN
     IDS_MENU_TEXTURE_ZOOM   "texture zoom"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_MENU_TEXTURE_ZOOM_TT 
                             "the portion of the previous frame's image to use with the shape"
@@ -1152,7 +755,7 @@ BEGIN
     IDS_MENU_OUTER_COLOR_BLUE "outer color (blue)"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_MENU_OUTER_COLOR_BLUE_TT 
                             "default amount of blue color toward the outer edge of the shape (0..1)"
@@ -1178,7 +781,7 @@ BEGIN
     IDS_ERROR_UNABLE_TO_SAVE_THE_FILE "ERROR: unable to save the file"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_ERROR_PRESET_NOT_FOUND_X "ERROR: preset not found: %s"
     IDS_ERROR_NO_PRESET_FILES_OR_DIRS_FOUND_IN_X 
@@ -1205,7 +808,7 @@ BEGIN
     IDS_PAGE_X              " Page %d "
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_SAVE_SUCCESSFUL     "[save successful]"
     IDS_ERROR_UNABLE_TO_DELETE_THE_FILE "ERROR: unable to delete the file"
@@ -1227,7 +830,7 @@ BEGIN
                             "warning: preset ""%s"": error in wave %d init code"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_WARNING_PRESET_X_ERROR_IN_WAVE_X_PER_FRAME_CODE 
                             "warning: preset ""%s"": error in wave %d per-frame code"
@@ -1252,7 +855,7 @@ BEGIN
                             "One or more fullscreen display adapters are behaving strangely and will not\nreport a list of display modes.  It's quite possible that your graphics subsystem\nis temporarily unstable.\n\nSUGGESTED ACTION: If you have modified your multimon setup or Windows,\ndisplay settings, or have updated any display drivers or installed\nany new programs, you should probably REBOOT YOUR COMPUTER before\ntrying to configure (or run) the plug-in again."
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_UNKNOWN             "UNKNOWN"
     IDS_DISABLED_PAGE_TEARING "(disabled/pg. tearing)"
@@ -1274,7 +877,7 @@ BEGIN
                             "This lets you select which display adapter (video card) you'd like to\nrun the plug-in on, when it goes fullscreen.  If you only have one video\ncard and monitor in your system, you will only have one choice here; but\nif you have multiple video cards, or a multi-head video card (one card\nthat drives multiple monitors), there should be two or more choices here.\n\nNote that if you have trouble running in fullscreen mode with multiple\ndisplays, you might want to try the 'fake fullscreen mode' option.\nSee its help screen for more information."
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_WINDOWED_ADPATER    "Help on windowed-mode display adapter selection"
     IDS_WINDOWED_ADPATER_HELP 
@@ -1300,7 +903,7 @@ BEGIN
                             "This lets you select which display mode you'd like to use when you\nrun the plug-in fullscreen.\n\nThe first parameter is the pixel color format, which decides\nthe total number of possible colors in the rendered image.\nRGB-555 and RGB-565 are 16-bit color formats, which have poor\ncolor resolution but are often fast.  RGB-888 is a 32-bit color\nformat; it often has superior image quality, but is often slower\nand takes up twice the video memory.\n\nThe next two parameters are the width and height of the display mode,\nin pixels, also known as the 'resolution'.  Higher resolutions are\nusually slower and require more video memory, but look better.\n\nThe last parameter is the refresh rate: the rate at which the\n""monitor refreshes the image you see, in Hertz (cycles per second).\nHigher refresh rates tend to be easier on the eyes."
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_TRY_TO_FIX_SLOW_TEXT "Help on 'Try to fix slow text' checkbox"
     IDS_TRY_TO_FIX_SLOW_TEXT_HELP 
@@ -1324,7 +927,7 @@ BEGIN
                             "the documentation file:\n\n\t%s\n\ncould not be accessed (error code: %d)"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_ERROR_OPENING_DOCUMENTATION "Error Opening Documentation"
     IDS_URL_COULD_NOT_OPEN  "the URL\n\n\t%s\n\ncould not be opened."
@@ -1350,7 +953,7 @@ BEGIN
     IDS_8_8_8_TEXTURE       "an 8-8-8 texture (w/8 bits of transparency)"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_NO_ALPHA_FALLBACK   "Help on ""no alpha"" fallback options"
     IDS_NO_ALPHA_FALLBACK_HELP 
@@ -1373,7 +976,7 @@ BEGIN
     IDS_ERROR_CREATING_DESKTOP_FONT "Error creating desktop font"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_ERROR_CREATING_TEXTURE_FOR_ICON_BITMAPS 
                             "Error creating texture for icon bitmaps"
@@ -1408,7 +1011,7 @@ BEGIN
     IDS_DIRECTX_INIT_FAILED "DirectX initialization failed; unknown color format"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_VJ_MODE_INIT_ERROR  "VJ mode init error: error determining color format\nfor currently-selected Windowed Mode display adapter."
     IDS_ERROR_REGISTERING_WINDOW_CLASS_FOR_TEXT_WINDOW 
@@ -1435,7 +1038,7 @@ BEGIN
                             "Error: the plug-in is already running."
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_MB                  "MB"
     IDS_GB                  "GB"
@@ -1455,7 +1058,7 @@ BEGIN
     IDS_STRING623           "           float2 uv_orig;   //original UV coordinates [0..1]"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_STRING624           "           float  rad;       //radius [0..1]"
     IDS_STRING625           "           float  ang;       //angle [0..PI*2]"
@@ -1476,7 +1079,7 @@ BEGIN
     IDS_ERROR_COMPILING_X_X_SHADER "Error compiling %hs %hs shader:\n"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_ERROR_PARSING_X_X_SHADER "Error parsing %hs %hs shader.\n"
     IDS_UNABLE_TO_RESOLVE_TEXSIZE_FOR_A_TEXTURE_NOT_IN_USE 
@@ -1484,7 +1087,7 @@ BEGIN
     IDS_KEY_MAPPINGS        "yYYyYzZ"
 END
 
-#endif    // English (U.K.) resources
+#endif    // English (United Kingdom) resources
 /////////////////////////////////////////////////////////////////////////////
 
 

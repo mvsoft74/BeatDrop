@@ -52,14 +52,14 @@ typedef struct
 
 typedef struct
 {
-    float   imm[2][3];                // bass, mids, treble, no damping, for each channel (long-term average is 1)
-    float    avg[2][3];               // bass, mids, treble, some damping, for each channel (long-term average is 1)
-    float     med_avg[2][3];          // bass, mids, treble, more damping, for each channel (long-term average is 1)
-    float      long_avg[2][3];        // bass, mids, treble, heavy damping, for each channel (long-term average is 1)
-    float       infinite_avg[2][3];   // bass, mids, treble: winamp's average output levels. (1)
-    float   fWaveform[2][576];             // Not all 576 are valid! - only NUM_WAVEFORM_SAMPLES samples are valid for each channel (note: NUM_WAVEFORM_SAMPLES is declared in shell_defines.h)
-    float   fSpectrum[2][NUM_FREQUENCIES]; // NUM_FREQUENCIES samples for each channel (note: NUM_FREQUENCIES is declared in shell_defines.h)
-} td_soundinfo;                    // ...range is 0 Hz to 22050 Hz, evenly spaced.
+    float imm[2][3];                        // bass, mids, treble, no damping, for each channel (long-term average is 1)
+    float avg[2][3];                        // bass, mids, treble, some damping, for each channel (long-term average is 1)
+    float med_avg[2][3];                    // bass, mids, treble, more damping, for each channel (long-term average is 1)
+    float long_avg[2][3];                   // bass, mids, treble, heavy damping, for each channel (long-term average is 1)
+    float infinite_avg[2][3];               // bass, mids, treble: winamp's average output levels. (1)
+    float fWaveform[2][576];                // Not all 576 are valid! - only NUM_WAVEFORM_SAMPLES samples are valid for each channel (note: NUM_WAVEFORM_SAMPLES is declared in shell_defines.h)
+    float fSpectrum[2][NUM_FREQUENCIES];    // NUM_FREQUENCIES samples for each channel (note: NUM_FREQUENCIES is declared in shell_defines.h)
+} td_soundinfo;                             // ...range is 0 Hz to 22050 Hz, evenly spaced.
 
 class CPluginShell
 {
@@ -69,7 +69,6 @@ public:
     int       GetFrame();          // returns current frame # (starts at zero)
     float     GetTime();           // returns current animation time (in seconds) (starts at zero) (updated once per frame)
     float     GetFps();            // returns current estimate of framerate (frames per second)
-    eScrMode  GetScreenMode();     // returns WINDOWED, FULLSCREEN, FAKE_FULLSCREEN, DESKTOP, or NOT_YET_KNOWN (if called before or during OverrideDefaults()).
     HWND      GetWinampWindow();   // returns handle to Winamp main window
     HINSTANCE GetInstance();       // returns handle to the plugin DLL module; used for things like loading resources (dialogs, bitmaps, icons...) that are built into the plugin.
     wchar_t*  GetPluginsDirPath(); // usually returns 'c:\\program files\\winamp\\plugins\\'
@@ -146,14 +145,12 @@ protected:
     virtual void MyRenderFn(int redraw)  = 0;
     virtual void MyRenderUI(int *upper_left_corner_y, int *upper_right_corner_y, int *lower_left_corner_y, int *lower_right_corner_y, int xL, int xR) = 0;
     virtual LRESULT MyWindowProc(HWND hWnd, unsigned uMsg, WPARAM wParam, LPARAM lParam) = 0;
-    virtual BOOL MyConfigTabProc(int nPage, HWND hwnd,UINT msg,WPARAM wParam,LPARAM lParam) = 0;
     virtual void OnAltK() { }; // doesn't *have* to be implemented
 
 //=====================================================================================================================
 private:
 
     // GENERAL PRIVATE STUFF
-    eScrMode     m_screenmode;      // // WINDOWED, FULLSCREEN, or FAKE_FULLSCREEN (i.e. running in a full-screen-sized window)
     int          m_frame;           // current frame #, starting at zero
     float        m_time;            // current animation time in seconds; starts at zero.
     float        m_fps;             // current estimate of frames per second
@@ -203,37 +200,8 @@ private:
     int m_right_edge;
     int m_force_accept_WM_WINDOWPOSCHANGING;
 
-    // PRIVATE - GDI STUFF
-    HMENU               m_main_menu;
-    HMENU               m_context_menu;
-
     // PRIVATE - DESKTOP MODE STUFF
     //typedef std::list<icon_t> IconList;
-    typedef std::vector<icon_t> IconList;
-    IconList        m_icon_list;
-    IDirect3DTexture9*  m_desktop_icons_texture[MAX_ICON_TEXTURES];
-    HWND                m_hWndProgMan;
-    HWND                m_hWndDesktop;
-    HWND                m_hWndDesktopListView;
-    char                m_szDesktopFolder[MAX_PATH];   // *without* the final backslash
-    int                 m_desktop_icon_size;
-    int                 m_desktop_dragging;  // '1' when user is dragging icons around
-    int                 m_desktop_box;       // '1' when user is drawing a box
-    BYTE                m_desktop_drag_pidl[1024]; // cast this to ITEMIDLIST
-    POINT               m_desktop_drag_startpos; // applies to dragging or box-drawing
-    POINT               m_desktop_drag_curpos;   // applies to dragging or box-drawing
-    int                 m_desktop_wc_registered;
-    DWORD               m_desktop_bk_color;
-    DWORD               m_desktop_text_color;
-    DWORD               m_desktop_sel_color;
-    DWORD               m_desktop_sel_text_color;
-    int                 m_desktop_icon_state;   // 0=uninit, 1=total refresh in progress, 2=ready, 3=update in progress
-    int                 m_desktop_icon_count;
-    int                 m_desktop_icon_update_frame;
-    CRITICAL_SECTION    m_desktop_cs;
-    int                 m_desktop_icons_disabled;
-    int                 m_vms_desktop_loaded;
-    int                 m_desktop_hook_set;
     bool                m_bClearVJWindow;
 
     // PRIVATE - MORE TIMEKEEPING
@@ -262,7 +230,6 @@ public:
     void PluginQuit();
 
     void ToggleHelp();
-    void TogglePlaylist();
 
 	void READ_FONT(int n);
 	void WRITE_FONT(int n);
@@ -278,7 +245,6 @@ public:
     static INT_PTR CALLBACK DualheadDialogProc(HWND hwnd,UINT msg,WPARAM wParam,LPARAM lParam);
 
 private:
-    void PushWindowToJustBeforeDesktop(HWND h);
     void DrawAndDisplay(int redraw);
     void ReadConfig();
     void WriteConfig();
@@ -298,7 +264,6 @@ private:
     int  AllocateFonts(IDirect3DDevice9 *pDevice);
     void CleanUpFonts();
     void AllocateTextSurface();
-    void ToggleDesktop();
     void OnUserResizeWindow();
     void OnUserResizeTextWindow();
     void PrepareFor2DDrawing_B(IDirect3DDevice9 *pDevice, int w, int h);
@@ -306,21 +271,12 @@ private:
     int  GetCanvasMarginX();     // returns the # of pixels that exist on the canvas, on each side, that the user will never see.  Mainly here for windowed mode, where sometimes, up to 15 pixels get cropped at edges of the screen.
     int  GetCanvasMarginY();     // returns the # of pixels that exist on the canvas, on each side, that the user will never see.  Mainly here for windowed mode, where sometimes, up to 15 pixels get cropped at edges of the screen.
 public:
-    void ToggleFullScreen();
     void DrawDarkTranslucentBox(RECT* pr);
+
 protected:
     void RenderPlaylist();
     void StuffParams(DXCONTEXT_PARAMS *pParams);
     void EnforceMaxFPS();
-
-    // DESKTOP MODE FUNCTIONS (found in desktop_mode.cpp)
-    int  InitDesktopMode();
-    void CleanUpDesktopMode();
-    int  CreateDesktopIconTexture(IDirect3DTexture9** ppTex);
-    void DeselectDesktop();
-    void UpdateDesktopBitmaps();
-    int  StuffIconBitmaps(int iStartIconIdx, int iTexNum, int *show_msgs);
-    void RenderDesktop();
 
     // SEPARATE TEXT WINDOW (FOR VJ MODE)
 	  int 		m_vj_mode;
