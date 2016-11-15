@@ -321,7 +321,7 @@ class Visualizer : public musik::core::audio::IPcmVisualizer {
         };
 
         virtual const char* Version() {
-            return "0.1.3";
+            return "0.1.4";
         };
 
         virtual const char* Author() {
