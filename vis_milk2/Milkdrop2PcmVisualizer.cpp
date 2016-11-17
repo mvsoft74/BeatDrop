@@ -180,11 +180,13 @@ void RenderFrame() {
         std::unique_lock<std::mutex> lock(pcmMutex);
         memcpy(pcmLeftOut, pcmLeftIn, SAMPLE_SIZE);
         memcpy(pcmRightOut, pcmRightIn, SAMPLE_SIZE);
+        memset(pcmLeftIn, 0, SAMPLE_SIZE);
+        memset(pcmRightIn, 0, SAMPLE_SIZE);
     }
 
     g_plugin.PluginRender(
-        (unsigned char*) pcmLeftIn,
-        (unsigned char*) pcmRightIn);
+        (unsigned char*) pcmLeftOut,
+        (unsigned char*) pcmRightOut);
 }
 
 unsigned __stdcall CreateWindowAndRun(void* data) {
@@ -194,9 +196,6 @@ unsigned __stdcall CreateWindowAndRun(void* data) {
     _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
     _CrtSetBreakAlloc(60);
 #endif
-
-    // Find the window's initial size, but it might be changed later
-
 
     // Register the windows class
     WNDCLASSW wndClass;
@@ -321,7 +320,7 @@ class Visualizer : public musik::core::audio::IPcmVisualizer {
         };
 
         virtual const char* Version() {
-            return "0.1.4";
+            return "0.2.0";
         };
 
         virtual const char* Author() {
