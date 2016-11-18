@@ -19,6 +19,7 @@
 #include <atomic>
 
 #include <core/sdk/IPcmVisualizer.h>
+#include <core/sdk/IPlaybackRemote.h>
 
 #define DLL_EXPORT __declspec(dllexport)
 #define COMPILE_AS_DLL
@@ -49,6 +50,8 @@ static unsigned char pcmLeftIn[SAMPLE_SIZE];
 static unsigned char pcmRightIn[SAMPLE_SIZE];
 static unsigned char pcmLeftOut[SAMPLE_SIZE];
 static unsigned char pcmRightOut[SAMPLE_SIZE];
+
+static musik::core::sdk::IPlaybackService* playback = nullptr;
 
 static HICON icon = nullptr;
 
@@ -154,6 +157,39 @@ LRESULT CALLBACK StaticWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPara
             PostQuitMessage(0);
             break;
         }
+
+        case WM_KEYDOWN: {
+            if (playback && wParam >= VK_F5 && wParam <= VK_F12) {
+                switch (wParam) {
+                case VK_F5:
+                    playback->PauseOrResume();
+                    break;
+                case VK_F6:
+                    playback->Stop();
+                    break;
+                case VK_F7:
+                    playback->Previous();
+                    break;
+                case VK_F8:
+                    playback->Next();
+                    break;
+                case VK_F9:
+                    playback->ToggleShuffle();
+                    break;
+                case VK_F10:
+                    playback->ToggleRepeatMode();
+                    break;
+                case VK_F11:
+                    playback->SetVolume(playback->GetVolume() - 0.05);
+                    break;
+                case VK_F12:
+                    playback->SetVolume(playback->GetVolume() + 0.05);
+                    break;
+                }
+            }
+            g_plugin.PluginShellWindowProc(hWnd, uMsg, wParam, lParam);
+        }
+        break;
 
         case WM_SYSKEYDOWN: {
             if (wParam == VK_F4) {
@@ -313,64 +349,88 @@ void StartRenderThread(HINSTANCE instance) {
     }
 #endif
 
-class Visualizer : public musik::core::audio::IPcmVisualizer {
-    public:
-        virtual const char* Name() {
-            return "Milkdrop2";
-        };
+static std::string title;
 
-        virtual const char* Version() {
-            return "0.2.0";
-        };
+class Visualizer :
+    public musik::core::sdk::IPcmVisualizer ,
+    public musik::core::sdk::IPlaybackRemote {
+        public:
+            virtual const char* Name() {
+                return "Milkdrop2";
+            };
 
-        virtual const char* Author() {
-            return "clangen";
-        };
+            virtual const char* Version() {
+                return "0.2.0";
+            };
 
-        virtual void Destroy() {
-            this->Hide();
-            delete this;
-        }
+            virtual const char* Author() {
+                return "clangen";
+            };
 
-        virtual void Write(musik::core::audio::IBuffer* buffer) {
-            if (Visible()) {
-                float* b = buffer->BufferPointer();
+            virtual void Destroy() {
+                this->Hide();
+            }
 
-                std::unique_lock<std::mutex> lock(pcmMutex);
+            virtual void SetPlaybackService(musik::core::sdk::IPlaybackService* playback) {
+                ::playback = playback;
+            }
 
-                int n = 0;
-                for (int i = 0; i < buffer->Samples(); i++, n++) {
-                    int x = i * 2;
-                    pcmLeftIn[n % SAMPLE_SIZE] = (unsigned char)(b[i + 0] * 255.0f);
-                    pcmRightIn[n % SAMPLE_SIZE] = (unsigned char)(b[i + 1] * 255.0f);
+            virtual void OnTrackChanged(musik::core::sdk::ITrack* track) {
+                if (track) {
+                    char buffer[1024];
+                    track->GetValue("title", buffer, 1024);
+                    g_plugin.emulatedWinampSongTitle = std::string(buffer);
+                }
+                else {
+                    g_plugin.emulatedWinampSongTitle = "";
                 }
             }
-        }
 
-        virtual void Show() {
-            if (!Visible()) {
-                StartRenderThread(module);
+            virtual void Write(musik::core::sdk::IBuffer* buffer) {
+                if (Visible()) {
+                    float* b = buffer->BufferPointer();
+
+                    std::unique_lock<std::mutex> lock(pcmMutex);
+
+                    int n = 0;
+                    for (int i = 0; i < buffer->Samples(); i++, n++) {
+                        int x = i * 2;
+                        pcmLeftIn[n % SAMPLE_SIZE] = (unsigned char)(b[i + 0] * 255.0f);
+                        pcmRightIn[n % SAMPLE_SIZE] = (unsigned char)(b[i + 1] * 255.0f);
+                    }
+                }
             }
-        }
 
-        virtual void Hide() {
-            if (Visible()) {
-                PostThreadMessage(threadId, WM_QUIT, 0, 0);
-                WaitForSingleObject(thread, INFINITE);
+            virtual void Show() {
+                if (!Visible()) {
+                    StartRenderThread(module);
+                }
             }
-        }
 
-        virtual bool Visible() {
-            return thread.load() != nullptr;
-        }
+            virtual void Hide() {
+                if (Visible()) {
+                    PostThreadMessage(threadId, WM_QUIT, 0, 0);
+                    WaitForSingleObject(thread, INFINITE);
+                }
+            }
+
+            virtual bool Visible() {
+                return thread.load() != nullptr;
+            }
 };
 
-extern "C" DLL_EXPORT musik::core::IPlugin* GetPlugin() {
-    return new Visualizer();
+static Visualizer visualizer;
+
+extern "C" DLL_EXPORT musik::core::sdk::IPlugin* GetPlugin() {
+    return &visualizer;
 }
 
-extern "C" DLL_EXPORT musik::core::audio::IPcmVisualizer* GetPcmVisualizer() {
-    return new Visualizer();
+extern "C" DLL_EXPORT musik::core::sdk::IPcmVisualizer* GetPcmVisualizer() {
+    return &visualizer;
+}
+
+extern "C" DLL_EXPORT musik::core::sdk::IPlaybackRemote* GetPlaybackRemote() {
+    return &visualizer;
 }
 
 #ifdef DEBUG

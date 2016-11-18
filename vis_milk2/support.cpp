@@ -247,15 +247,6 @@ void MakeProjectionMatrix( D3DXMATRIX* pOut,
     pOut->_34 = 1;
 }
 
-void GetWinampSongTitle(HWND hWndWinamp, wchar_t *szSongTitle, int nSize)
-{
-
- //   szSongTitle[0] = 0;
-	//lstrcpynW(szSongTitle, (wchar_t*)SendMessage(hWndWinamp, WM_WA_IPC,
-	//								 SendMessage(hWndWinamp, WM_WA_IPC, 0 , IPC_GETLISTPOS),
-	//								 IPC_GETPLAYLISTTITLEW), nSize);
-}
-
 void GetWinampSongPosAsText(HWND hWndWinamp, wchar_t *szSongPos)
 {
     // note: size(szSongPos[]) must be at least 64.

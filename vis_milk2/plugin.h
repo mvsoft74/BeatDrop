@@ -423,16 +423,9 @@ public:
         #define MASH_SLOTS 5
         #define MASH_APPLY_DELAY_FRAMES 1
         int         m_nMashSlot;    //0..MASH_SLOTS-1
-        //char        m_szMashDir[MASH_SLOTS][MAX_PATH];
         int         m_nMashPreset[MASH_SLOTS];
         int         m_nLastMashChangeFrame[MASH_SLOTS];
 
-        //td_playlist_entry *m_szPlaylist;	// array of 128-char strings
-        //int		m_nPlaylistCurPos;
-        //int		m_nPlaylistLength;
-        //int		m_nTrackPlaying;
-        //int		m_nSongPosMS;
-        //int		m_nSongLenMS;
         bool		m_bUserPagedUp;
         bool		m_bUserPagedDown;
         float		m_fMotionVectorsTempDx;
@@ -504,6 +497,10 @@ public:
         void        AddError(wchar_t* szMsg, float fDuration, int category=ERR_ALL, bool bBold=true);
         void        ClearErrors(int category=ERR_ALL);  // 0=all categories
 
+
+        void GetWinampSongTitle(HWND hWndWinamp, wchar_t *szSongTitle, int nSize);
+
+        std::string emulatedWinampSongTitle;
         char		m_szDebugMessage[512];
         wchar_t		m_szSongTitle    [512];
         wchar_t		m_szSongTitlePrev[512];
@@ -587,8 +584,6 @@ public:
         char        m_szBlurVS[32768];
         char        m_szBlurPSX[32768];
         char        m_szBlurPSY[32768];
-        //const char* GetDefaultWarpShadersText() { return m_szDefaultWarpShaderText; }
-        //const char* GetDefaultCompShadersText() { return m_szDefaultCompShaderText; }
         void        GenWarpPShaderText(char *szShaderText, float decay, bool bWrap);
         void        GenCompPShaderText(char *szShaderText, float brightness, float ve_alpha, float ve_zoom, int ve_orient, float hue_shader, bool bBrighten, bool bDarken, bool bSolarize, bool bInvert);
 
@@ -610,7 +605,6 @@ public:
 	    void		LoadPreset(const wchar_t *szPresetFilename, float fBlendTime);
         void        LoadPresetTick();
         void        FindValidPresetDir();
-	    //char*		GetConfigIniFile() { return m_szConfigIniFile; };
 	    wchar_t*	GetMsgIniFile()    { return m_szMsgIniFile; };
 	    wchar_t*    GetPresetDir()     { return m_szPresetDir; };
 	    void		SavePresetAs(wchar_t *szNewFile);		// overwrites the file if it was already there.
@@ -622,12 +616,7 @@ public:
 	    int 		HandleRegularKey(WPARAM wParam);
 	    bool		OnResizeGraphicsWindow();
 	    bool		OnResizeTextWindow();
-	    //bool		InitFont();
-	    //void		ToggleControlWindow();	// for Desktop Mode only
-	    //void		DrawUI();
 	    void		ClearGraphicsWindow();	// for windowed mode only
-        //bool    Update_Overlay();
-	    //void		UpdatePlaylist();
 	    void		LaunchCustomMessage(int nMsgNum);
 	    void		ReadCustomMessages();
 	    void		LaunchSongTitleAnim();
@@ -680,45 +669,6 @@ public:
         virtual void MyRenderUI(int *upper_left_corner_y, int *upper_right_corner_y, int *lower_left_corner_y, int *lower_right_corner_y, int xL, int xR);
         virtual LRESULT MyWindowProc(HWND hWnd, unsigned uMsg, WPARAM wParam, LPARAM lParam);
         virtual void OnAltK();
-
-        //====[ 4. methods from base class: ]===========================================================================
-    /*
-        // 'GET' METHODS
-        // ------------------------------------------------------------
-        int     GetFrame();            // returns current frame # (starts at zero)
-        float   GetTime();             // returns current animation time (in seconds) (starts at zero) (updated once per frame)
-        float   GetFps();              // returns current estimate of framerate (frames per second)
-        eScrMode GetScreenMode();      // returns WINDOWED, FULLSCREEN, FAKE_FULLSCREEN, or NOT_YET_KNOWN (if called before or during OverrideDefaults()).
-        HWND    GetWinampWindow();     // returns handle to Winamp main window
-        HINSTANCE GetInstance();       // returns handle to the plugin DLL module; used for things like loading resources (dialogs, bitmaps, icons...) that are built into the plugin.
-        char*   GetPluginsDirPath();   // usually returns 'c:\\program files\\winamp\\plugins\\'
-        char*   GetConfigIniFile();    // usually returns 'c:\\program files\\winamp\\plugins\\something.ini' - filename is determined from identifiers in 'defines.h'
-
-        // GET METHODS THAT ONLY WORK ONCE DIRECTX IS READY
-        // ------------------------------------------------------------
-        //  The following 'Get' methods are only available after DirectX has been initialized.
-        //  If you call these from OverrideDefaults, MyPreInitialize, or MyReadConfig,
-        //    they will fail and return NULL (zero).
-        // ------------------------------------------------------------
-        HWND         GetPluginWindow();    // returns handle to the plugin window.  NOT persistent; can change.
-        int          GetWidth();           // returns width of plugin window interior, in pixels.
-        int          GetHeight();          // returns height of plugin window interior, in pixels.
-        D3DFORMAT    GetBackBufFormat();   // returns the pixelformat of the back buffer (probably D3DFMT_R8G8B8, D3DFMT_A8R8G8B8, D3DFMT_X8R8G8B8, D3DFMT_R5G6B5, D3DFMT_X1R5G5B5, D3DFMT_A1R5G5B5, D3DFMT_A4R4G4B4, D3DFMT_R3G3B2, D3DFMT_A8R3G3B2, D3DFMT_X4R4G4B4, or D3DFMT_UNKNOWN)
-        D3DFORMAT    GetBackBufZFormat();  // returns the pixelformat of the back buffer's Z buffer (probably D3DFMT_D16_LOCKABLE, D3DFMT_D32, D3DFMT_D15S1, D3DFMT_D24S8, D3DFMT_D16, D3DFMT_D24X8, D3DFMT_D24X4S4, or D3DFMT_UNKNOWN)
-        D3DCAPS8*    GetCaps();            // returns a pointer to the D3DCAPS8 structer for the device.  NOT persistent; can change.
-        LPDIRECT3DDEVICE8 GetDevice();     // returns a pointer to the DirectX 8 Device.  NOT persistent; can change.
-
-        // FONTS & TEXT
-        // ------------------------------------------------------------
-        LPD3DXFONT   GetFont(eFontIndex idx);        // returns a handle to a D3DX font you can use to draw text on the screen
-        int          GetFontHeight(eFontIndex idx);  // returns the height of the font, in pixels
-
-        // MISC
-        // ------------------------------------------------------------
-        td_soundinfo m_sound;                   // a structure always containing the most recent sound analysis information; defined in pluginshell.h.
-        void         SuggestHowToFreeSomeMem(); // gives the user a 'smart' messagebox that suggests how they can free up some video memory.
-    */
-    //=====================================================================================================================
 };
 
 #endif

@@ -147,6 +147,8 @@ protected:
     virtual LRESULT MyWindowProc(HWND hWnd, unsigned uMsg, WPARAM wParam, LPARAM lParam) = 0;
     virtual void OnAltK() { }; // doesn't *have* to be implemented
 
+    int m_show_help;
+
 //=====================================================================================================================
 private:
 
@@ -183,7 +185,6 @@ private:
     int m_lost_focus;     // ~mostly for fullscreen mode
     int m_hidden;         // ~mostly for windowed mode
     int m_resizing;       // ~mostly for windowed mode
-    int m_show_help;
     int m_show_playlist;
     int  m_playlist_pos;            // current selection on (plugin's) playlist menu
     int  m_playlist_pageups;        // can be + or -

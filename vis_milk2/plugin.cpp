@@ -5488,55 +5488,55 @@ LRESULT CPlugin::MyWindowProc(HWND hWnd, unsigned uMsg, WPARAM wParam, LPARAM lP
 		switch(wParam)
 		{
 		case VK_F2:		m_bShowSongTitle = !m_bShowSongTitle;   return 0; // we processed (or absorbed) the key
-		case VK_F3:
-			if (m_bShowSongTime && m_bShowSongLen)
-			{
-				m_bShowSongTime = false;
-				m_bShowSongLen  = false;
-			}
-			else if (m_bShowSongTime && !m_bShowSongLen)
-			{
-				m_bShowSongLen  = true;
-			}
-			else
-			{
-				m_bShowSongTime = true;
-				m_bShowSongLen  = false;
-			}
-			return 0; // we processed (or absorbed) the key
-		case VK_F4:		m_bShowPresetInfo = !m_bShowPresetInfo;	return 0; // we processed (or absorbed) the key
-		case VK_F5:		m_bShowFPS = !m_bShowFPS;				return 0; // we processed (or absorbed) the key
-		case VK_F6:		m_bShowRating = !m_bShowRating;			return 0; // we processed (or absorbed) the key
-		case VK_F7:
-			if (m_nNumericInputMode == NUMERIC_INPUT_MODE_CUST_MSG)
-				ReadCustomMessages();		// re-read custom messages
-			return 0; // we processed (or absorbed) the key
-		case VK_F8:
-			{
-				m_UI_mode = UI_CHANGEDIR;
+		//case VK_F3:
+		//	if (m_bShowSongTime && m_bShowSongLen)
+		//	{
+		//		m_bShowSongTime = false;
+		//		m_bShowSongLen  = false;
+		//	}
+		//	else if (m_bShowSongTime && !m_bShowSongLen)
+		//	{
+		//		m_bShowSongLen  = true;
+		//	}
+		//	else
+		//	{
+		//		m_bShowSongTime = true;
+		//		m_bShowSongLen  = false;
+		//	}
+		//	return 0; // we processed (or absorbed) the key
+		case VK_F3:		m_bShowPresetInfo = !m_bShowPresetInfo;	return 0; // we processed (or absorbed) the key
+		case VK_F4:		m_bShowFPS = !m_bShowFPS;				return 0; // we processed (or absorbed) the key
+		//case VK_F6:		m_bShowRating = !m_bShowRating;			return 0; // we processed (or absorbed) the key
+		//case VK_F7:
+		//	if (m_nNumericInputMode == NUMERIC_INPUT_MODE_CUST_MSG)
+		//		ReadCustomMessages();		// re-read custom messages
+		//	return 0; // we processed (or absorbed) the key
+		//case VK_F8:
+		//	{
+		//		m_UI_mode = UI_CHANGEDIR;
 
-				// enter WaitString mode
-				m_waitstring.bActive = true;
-				m_waitstring.bFilterBadChars = false;
-				m_waitstring.bDisplayAsCode = false;
-				m_waitstring.nSelAnchorPos = -1;
-				m_waitstring.nMaxLen = min(sizeof(m_waitstring.szText)-1, MAX_PATH - 1);
-				lstrcpyW(m_waitstring.szText, GetPresetDir());
-				{
-					// for subtle beauty - remove the trailing '\' from the directory name (if it's not just "x:\")
-					int len = lstrlenW(m_waitstring.szText);
-					if (len > 3 && m_waitstring.szText[len-1] == '\\')
-						m_waitstring.szText[len-1] = 0;
-				}
-				wasabiApiLangString(IDS_DIRECTORY_TO_JUMP_TO, m_waitstring.szPrompt, 512);
-				m_waitstring.szToolTip[0] = 0;
-				m_waitstring.nCursorPos = lstrlenW(m_waitstring.szText);	// set the starting edit position
-			}
-			return 0; // we processed (or absorbed) the key
+		//		// enter WaitString mode
+		//		m_waitstring.bActive = true;
+		//		m_waitstring.bFilterBadChars = false;
+		//		m_waitstring.bDisplayAsCode = false;
+		//		m_waitstring.nSelAnchorPos = -1;
+		//		m_waitstring.nMaxLen = min(sizeof(m_waitstring.szText)-1, MAX_PATH - 1);
+		//		lstrcpyW(m_waitstring.szText, GetPresetDir());
+		//		{
+		//			// for subtle beauty - remove the trailing '\' from the directory name (if it's not just "x:\")
+		//			int len = lstrlenW(m_waitstring.szText);
+		//			if (len > 3 && m_waitstring.szText[len-1] == '\\')
+		//				m_waitstring.szText[len-1] = 0;
+		//		}
+		//		wasabiApiLangString(IDS_DIRECTORY_TO_JUMP_TO, m_waitstring.szPrompt, 512);
+		//		m_waitstring.szToolTip[0] = 0;
+		//		m_waitstring.nCursorPos = lstrlenW(m_waitstring.szText);	// set the starting edit position
+		//	}
+		//	return 0; // we processed (or absorbed) the key
 
-        case VK_F9:
-            m_bShowShaderHelp = !m_bShowShaderHelp;
-            return FALSE;
+  //      case VK_F9:
+  //          m_bShowShaderHelp = !m_bShowShaderHelp;
+  //          return FALSE;
 
         case VK_SCROLL:
             m_bPresetLockedByUser = GetKeyState(VK_SCROLL) & 1;
@@ -8919,4 +8919,14 @@ void CPlugin::GenCompPShaderText(char *szShaderText, float brightness, float ve_
         p += sprintf(p, "    ret = 1 - ret; //invert%c", LF);
     //p += sprintf(p, "    ret.w = vDiffuse.w; // pass alpha along - req'd for preset blending%c", LF);
     p += sprintf(p, "}%c", LF);
+}
+
+
+void CPlugin::GetWinampSongTitle(HWND hWndWinamp, wchar_t *szSongTitle, int nSize)
+{
+    lstrcpynW(szSongTitle, AutoWide(emulatedWinampSongTitle.c_str(), CP_UTF8), nSize);
+    //   szSongTitle[0] = 0;
+    //lstrcpynW(szSongTitle, (wchar_t*)SendMessage(hWndWinamp, WM_WA_IPC,
+    //								 SendMessage(hWndWinamp, WM_WA_IPC, 0 , IPC_GETLISTPOS),
+    //								 IPC_GETPLAYLISTTITLEW), nSize);
 }
