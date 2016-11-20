@@ -7,7 +7,7 @@
 
    SPACE / H       soft / hard cut to next preset
    BACKSPACE       go back to previous preset
-   SCROLL LOCK     [un]lock current preset
+   ` / ~           [un]lock current preset
    R               toggle random/sequential preset order 
    L               load specific preset
    M               show/hide preset-editing Menu

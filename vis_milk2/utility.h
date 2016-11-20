@@ -54,7 +54,6 @@ bool    WritePrivateProfileFloatW(float f, wchar_t *szKeyName, wchar_t *szIniFil
 extern  _locale_t g_use_C_locale;
 extern	char keyMappings[8];
 
-void	SetScrollLock(int bNewState, bool bPreventHandling);
 void    RemoveExtension(wchar_t *str);
 void    RemoveSingleAmpersands(wchar_t *str);
 void    TextToGuid(char *str, GUID *pGUID);

@@ -762,27 +762,6 @@ void CPlugin::RenderFrame(int bRedraw)
 	    m_lpVS[1] = pTemp;
     }
 
-	// update time
-    /*
-    float fDeltaT = (GetFrame()==0) ? 1.0f/30.0f : GetTime() - m_prev_time;
-	DWORD dwTime		= GetTickCount();
-	float fDeltaT		= (dwTime - m_dwPrevTickCount)*0.001f;
-	if (GetFrame() > 64)
-	{
-		fDeltaT = (fDeltaT)*0.2f + 0.8f*(1.0f/m_fps);
-		if (fDeltaT > 2.0f/m_fps)
-		{
-			char buf[64];
-			sprintf(buf, "fixing time gap of %5.3f seconds", fDeltaT);
-			dumpmsg(buf);
-
-			fDeltaT = 1.0f/m_fps;
-		}
-	}
-	m_dwPrevTickCount	= dwTime;
-	GetTime()			+= fDeltaT;
-    */
-
 	if (GetFrame()==0)
 	{
 		m_fStartTime = GetTime();
@@ -794,67 +773,6 @@ void CPlugin::RenderFrame(int bRedraw)
 		float dt = m_fTimeBetweenPresetsRand * (rand()%1000)*0.001f;
 		m_fNextPresetTime = GetTime() + m_fBlendTimeAuto + m_fTimeBetweenPresets + dt;
 	}
-
-	/*
-    if (m_bPresetLockedByUser || m_bPresetLockedByCode)
-	{
-		// if the user has the preset LOCKED, or if they're in the middle of
-		// saving it, then keep extending the time at which the auto-switch will occur
-		// (by the length of this frame).
-
-		m_fPresetStartTime += fDeltaT;
-		m_fNextPresetTime += fDeltaT;
-	}*/
-
-	// update fps
-	/*
-	if (GetFrame() < 4)
-	{
-		m_fps = 0.0f;
-	}
-	else if (GetFrame() <= 64)
-	{
-		m_fps = GetFrame() / (float)(GetTime() - m_fTimeHistory[0]);
-	}
-	else
-	{
-		m_fps = 64.0f / (float)(GetTime() - m_fTimeHistory[m_nTimeHistoryPos]);
-	}
-	m_fTimeHistory[m_nTimeHistoryPos] = GetTime();
-	m_nTimeHistoryPos = (m_nTimeHistoryPos + 1) % 64;
-    */
-
-	// limit fps, if necessary
-    /*
-	if (m_nFpsLimit > 0 && (GetFrame() % 64) == 0 && GetFrame() > 64)
-	{
-		float spf_now     = 1.0f / m_fps;
-		float spf_desired = 1.0f / (float)m_nFpsLimit;
-
-		float new_sleep = m_fFPSLimitSleep + (spf_desired - spf_now)*1000.0f;
-
-		if (GetFrame() <= 128)
-			m_fFPSLimitSleep = new_sleep;
-		else
-			m_fFPSLimitSleep = m_fFPSLimitSleep*0.8f + 0.2f*new_sleep;
-
-		if (m_fFPSLimitSleep < 0) m_fFPSLimitSleep = 0;
-		if (m_fFPSLimitSleep > 100) m_fFPSLimitSleep = 100;
-
-		//sprintf(m_szUserMessage, "sleep=%f", m_fFPSLimitSleep);
-		//m_fShowUserMessageUntilThisTime = GetTime() + 3.0f;
-	}
-
-	static float deficit;
-	if (GetFrame()==0) deficit = 0;
-	float ideal_sleep = (m_fFPSLimitSleep + deficit);
-	int actual_sleep = (int)ideal_sleep;
-	if (actual_sleep > 0)
-		Sleep(actual_sleep);
-	deficit = ideal_sleep - actual_sleep;
-	if (deficit < 0) deficit = 0;	// just in case
-	if (deficit > 1) deficit = 1;	// just in case
-    */
 
     if (!bRedraw)
     {

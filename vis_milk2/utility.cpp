@@ -119,26 +119,6 @@ bool WritePrivateProfileIntW(int d, wchar_t *szKeyName, wchar_t *szIniFile, wcha
     return (WritePrivateProfileStringW(szSectionName, szKeyName, szValue, szIniFile) != 0);
 }
 
-void SetScrollLock(int bNewState, bool bPreventHandling)
-{
-	if(bPreventHandling) return;
-
-    if (bNewState != (GetKeyState(VK_SCROLL) & 1))
-    {
-        // Simulate a key press
-        keybd_event( VK_SCROLL,
-                      0x45,
-                      KEYEVENTF_EXTENDEDKEY | 0,
-                      0 );
-
-        // Simulate a key release
-        keybd_event( VK_SCROLL,
-                      0x45,
-                      KEYEVENTF_EXTENDEDKEY | KEYEVENTF_KEYUP,
-                      0);
-    }
-}
-
 void RemoveExtension(wchar_t *str)
 {
     wchar_t *p = wcsrchr(str, L'.');

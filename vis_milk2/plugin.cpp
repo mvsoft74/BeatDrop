@@ -1487,8 +1487,6 @@ void CPlugin::CleanUpMyNonDx9Stuff()
     for (i=0; i<MAX_CUSTOM_SHAPES; i++)
 	    m_menuShapecode[i].Finish();
 
-    SetScrollLock(m_bOrigScrollLockState, m_bPreventScollLockHandling);
-
     //dumpmsg("Finish: cleanup complete.");
 }
 
@@ -1570,17 +1568,17 @@ int CPlugin::AllocateMyDX9Stuff()
        Auto mode: do a check against a few known, *SLOW* DX9/ps_2_0 cards to see
         if we should run them without pixel shaders instead.
        Here is valve's list of the cards they run DX8 on (mostly because they're too slow under DX9 + ps_2_0):
-            NVIDIA GeForce FX 5200  31.12%
-            ATI Radeon 9200         21.29%
-            NVIDIA GeForce FX 5500  11.27%
-            NVIDIA GeForce4          7.74%
-            NVIDIA GeForce FX 5700   7.12%
-            NVIDIA GeForce FX 5600   5.16%
-            SiS 661FX_760_741        3.34%
-            NVIDIA GeForce FX 5900   3.24%
-            NVIDIA GeForce3          2.09%
-            ATI Radeon 9000          1.98%
-            other                    5.66%
+            NVIDIA GeForce FX 5200Â  31.12%
+            ATI Radeon 9200Â Â Â Â Â Â Â Â  21.29%
+            NVIDIA GeForce FX 5500Â  11.27%
+            NVIDIA GeForce4Â Â Â Â Â Â Â Â Â  7.74%
+            NVIDIA GeForce FX 5700Â Â  7.12%
+            NVIDIA GeForce FX 5600Â Â  5.16%
+            SiS 661FX_760_741Â Â Â Â Â Â Â  3.34%
+            NVIDIA GeForce FX 5900Â Â  3.24%
+            NVIDIA GeForce3Â Â Â Â Â Â Â Â Â  2.09%
+            ATI Radeon 9000Â Â Â Â Â Â Â Â Â  1.98%
+            otherÂ Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â  5.66%
             [ from http://www.steampowered.com/status/survey.html ]
             see also:
                 http://en.wikipedia.org/wiki/Radeon
@@ -3932,54 +3930,27 @@ void CPlugin::MyRenderFn(int redraw)
         //    UpdatePresetList(true);//UpdatePresetRatings(); // read in a few each frame, til they're all in
     }
 
-    // 2. check for lost or gained kb focus:
-    // (note: can't use wm_setfocus or wm_killfocus because they don't work w/embedwnd)
-    if (GetFrame()==0)
+    m_bHadFocus = m_bHasFocus;
+
+    HWND plugin = GetPluginWindow();
+    HWND focus = GetFocus();
+    HWND cur = plugin;
+
+    m_bHasFocus = false;
+    do
     {
-        // NOTE: we skip this if we've already gotten a WM_COMMAND/ID_VIS_RANDOM message
-        //       from the skin - if that happened, we're running windowed with a fancy
-        //       skin with a 'rand' button.
-        SetScrollLock(m_bPresetLockOnAtStartup, m_bPreventScollLockHandling);
+        m_bHasFocus = (focus == cur);
+        if (m_bHasFocus)
+            break;
+        cur = GetParent(cur);
     }
-    else
-    {
-        m_bHadFocus = m_bHasFocus;
+    while (cur != NULL);
 
-        HWND plugin = GetPluginWindow();
-        HWND focus = GetFocus();
-        HWND cur = plugin;
+    if (m_hTextWnd && focus==m_hTextWnd)
+        m_bHasFocus = 1;
 
-        m_bHasFocus = false;
-        do
-        {
-            m_bHasFocus = (focus == cur);
-            if (m_bHasFocus)
-                break;
-            cur = GetParent(cur);
-        }
-        while (cur != NULL);
-
-        if (m_hTextWnd && focus==m_hTextWnd)
-            m_bHasFocus = 1;
-
-        if (GetFocus()==NULL)
-            m_bHasFocus = 0;
-                          ;
-        //HWND t1 = GetFocus();
-        //HWND t2 = GetPluginWindow();
-        //HWND t3 = GetParent(t2);
-
-        if (m_bHadFocus==1 && m_bHasFocus==0)
-        {
-            //m_bMilkdropScrollLockState = GetKeyState(VK_SCROLL) & 1;
-            SetScrollLock(m_bOrigScrollLockState, m_bPreventScollLockHandling);
-        }
-        else if (m_bHadFocus==0 && m_bHasFocus==1)
-        {
-            m_bOrigScrollLockState = GetKeyState(VK_SCROLL) & 1;
-            SetScrollLock(m_bPresetLockedByUser, m_bPreventScollLockHandling);
-        }
-    }
+    if (GetFocus()==NULL)
+        m_bHasFocus = 0;
 
     if (!redraw)
     {
@@ -4009,34 +3980,6 @@ void CPlugin::MyRenderFn(int redraw)
         DoCustomSoundAnalysis();    // emulates old pre-vms milkdrop sound analysis
 
     RenderFrame(redraw);  // see milkdropfs.cpp
-
-    /*
-    for (int i=0; i<10; i++)
-    {
-        RECT r;
-        r.top = GetHeight()*i/10;
-        r.left = 0;
-        r.right = GetWidth();
-        r.bottom = r.top + GetFontHeight(DECORATIVE_FONT);
-        char buf[256];
-        switch(i)
-        {
-        case 0: lstrcpy(buf, "this is a test"); break;
-        case 1: lstrcpy(buf, "argh"); break;
-        case 2: lstrcpy(buf, "!!"); break;
-        case 3: lstrcpy(buf, "TESTING FONTS"); break;
-        case 4: lstrcpy(buf, "rancid bear grease"); break;
-        case 5: lstrcpy(buf, "whoppers and ding dongs"); break;
-        case 6: lstrcpy(buf, "billy & joey"); break;
-        case 7: lstrcpy(buf, "."); break;
-        case 8: lstrcpy(buf, "---"); break;
-        case 9: lstrcpy(buf, "test"); break;
-        }
-        int t = (int)( 54 + 18*sin(i/10.0f*53.7f + 1) - 28*sin(i/10.0f*39.4f + 3) );
-        if (((GetFrame() + i*107) % t) < t*8/9)
-            m_text.QueueText(GetFont(DECORATIVE_FONT), buf, r, 0, 0xFFFF00FF);
-    }
-    /**/
 
     if (!redraw)
     {
@@ -4207,7 +4150,11 @@ void CPlugin::MyRenderUI(
 		if (m_bShowPresetInfo)
 		{
             SelectFont(DECORATIVE_FONT);
-            swprintf(buf, L"%s ", (m_nLoadingPreset != 0) ? m_pNewState->m_szDesc : m_pState->m_szDesc);
+            swprintf(
+                buf,
+                L"%s %s ",
+                (m_bPresetLockedByUser || m_bPresetLockedByCode) ? L"\xD83D\xDD12" : L"",
+                (m_nLoadingPreset != 0) ? m_pNewState->m_szDesc : m_pState->m_szDesc);
             MyTextOut_Shadow(buf, MTO_UPPER_RIGHT);
 		}
 
@@ -6560,6 +6507,11 @@ int CPlugin::HandleRegularKey(WPARAM wParam)
             return 0;
 		}
 		break;
+
+    case '`':
+    case '~':
+        m_bPresetLockedByUser = !m_bPresetLockedByUser;
+        return 0;
 
 	case 'l':				// LOAD PRESET
 	case 'L':
