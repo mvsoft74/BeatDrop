@@ -59,11 +59,6 @@ void    RemoveExtension(wchar_t *str);
 void    RemoveSingleAmpersands(wchar_t *str);
 void    TextToGuid(char *str, GUID *pGUID);
 void    GuidToText(GUID *pGUID, char *str, int nStrLen);
-//int    GetPentiumTimeRaw(unsigned __int64 *cpu_timestamp);
-//double GetPentiumTimeAsDouble(unsigned __int64 frequency);
-#ifdef _DEBUG
-    void    OutputDebugMessage(char *szStartText, HWND hwnd,UINT msg,WPARAM wParam,LPARAM lParam); // only available in RELEASE builds!
-#endif
 void    MissingDirectX(HWND hwnd);
 bool    CheckForMMX();
 bool    CheckForSSE();
@@ -93,7 +88,6 @@ inline void SelectItemByPos(HWND ctrl, int pos) {
 int SelectItemByValue(HWND ctrl, DWORD value);
 bool ReadCBValue(HWND hwnd, DWORD ctrl_id, int* pRetValue);
 
-LRESULT GetWinampVersion(HWND winamp);
 void* GetTextResource(UINT id, int no_fallback);
 
 intptr_t myOpenURL(HWND hwnd, wchar_t *loc);

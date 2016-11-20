@@ -29,7 +29,6 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "support.h"
 #include "utility.h"
-#include "wa_ipc.h"
 
 bool g_bDebugOutput = false;
 bool g_bDumpFileCleared = false;

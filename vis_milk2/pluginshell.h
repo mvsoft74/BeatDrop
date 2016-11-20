@@ -69,7 +69,6 @@ public:
     int       GetFrame();          // returns current frame # (starts at zero)
     float     GetTime();           // returns current animation time (in seconds) (starts at zero) (updated once per frame)
     float     GetFps();            // returns current estimate of framerate (frames per second)
-    HWND      GetWinampWindow();   // returns handle to Winamp main window
     HINSTANCE GetInstance();       // returns handle to the plugin DLL module; used for things like loading resources (dialogs, bitmaps, icons...) that are built into the plugin.
     wchar_t*  GetPluginsDirPath(); // usually returns 'c:\\program files\\winamp\\plugins\\'
     wchar_t*  GetConfigIniFile();  // usually returns 'c:\\program files\\winamp\\plugins\\something.ini' - filename is determined from identifiers in 'defines.h'
@@ -156,7 +155,6 @@ private:
     int          m_frame;           // current frame #, starting at zero
     float        m_time;            // current animation time in seconds; starts at zero.
     float        m_fps;             // current estimate of frames per second
-    HWND         m_hWndWinamp;      // handle to Winamp window
     HINSTANCE    m_hInstance;       // handle to application instance
     DXContext*   m_lpDX;            // pointer to DXContext object
     wchar_t      m_szPluginsDirPath[MAX_PATH];  // usually 'c:\\program files\\winamp\\plugins\\'

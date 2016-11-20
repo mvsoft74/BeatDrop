@@ -59,6 +59,4 @@ typedef enum
 }
 eFontIndex;
 
-#include "wa_ipc.h"
-
 #endif

@@ -500,7 +500,7 @@ public:
         void        ClearErrors(int category=ERR_ALL);  // 0=all categories
 
 
-        void GetWinampSongTitle(HWND hWndWinamp, wchar_t *szSongTitle, int nSize);
+        void GetSongTitle(wchar_t *szSongTitle, int nSize);
 
         musik::core::sdk::IPlaybackService* playbackService;
         std::string emulatedWinampSongTitle;

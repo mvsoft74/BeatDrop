@@ -141,7 +141,6 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "resource.h"
 #include "wasabi.h"
 #include <multimon.h>
-#include "wa_ipc.h"
 #include "AutoCharFn.h"
 #include <mmsystem.h>
 #pragma comment(lib,"winmm.lib")    // for timeGetTime
@@ -215,10 +214,6 @@ int       CPluginShell::GetCanvasMarginX()
 int       CPluginShell::GetCanvasMarginY()
 {
 	if (m_lpDX) return (m_lpDX->m_client_height - m_lpDX->m_REAL_client_height)/2; else return 0;
-};
-HWND      CPluginShell::GetWinampWindow()
-{
-	return m_hWndWinamp;
 };
 HINSTANCE CPluginShell::GetInstance()
 {
@@ -777,16 +772,10 @@ void CPluginShell::StuffParams(DXCONTEXT_PARAMS *pParams)
 	pParams->parent_window = NULL;
 }
 
-#define IPC_IS_PLAYING_VIDEO 501 // from wa_ipc.h
-#define IPC_SET_VIS_FS_FLAG 631 // a vis should send this message with 1/as param to notify winamp that it has gone to or has come back from fullscreen mode
-
 int CPluginShell::InitDirectX(LPDIRECT3DDEVICE9 device, D3DPRESENT_PARAMETERS* d3dpp, HWND hwnd)
 {
     if (device) {
         m_lpDX = new DXContext(device, d3dpp, hwnd, m_szConfigIniFile);
-    }
-    else {
-//        m_lpDX = new DXContext(m_hWndWinamp, m_hInstance, CLASSNAME, WINDOWCAPTION, CPluginShell::WindowProc, (LONG_PTR)this, m_minimize_winamp, m_szConfigIniFile);
     }
 
 	if (!m_lpDX)
@@ -947,65 +936,18 @@ int CPluginShell::PluginPreInitialize(HWND hWinampWnd, HINSTANCE hWinampInstance
 	m_frame = 0;
 	m_time = 0;
 	m_fps = 30;
-	m_hWndWinamp = hWinampWnd;
 	m_hInstance = hWinampInstance;
 	m_lpDX = NULL;
 	m_szPluginsDirPath[0] = 0;  // will be set further down
 	m_szConfigIniFile[0] = 0;  // will be set further down
 	// m_szPluginsDirPath:
 
-	wchar_t *p;
-
-	if (hWinampWnd
-	    && (p = (wchar_t *)SendMessage(hWinampWnd, WM_WA_IPC, 0, IPC_GETPLUGINDIRECTORYW))
-	    && p != (wchar_t *)1)
-	{
-		swprintf(m_szPluginsDirPath, L"%s\\", p);
-	}
-	else
-	{
-		// get path to INI file & read in prefs/settings right away, so DumpMsg works!
-		GetModuleFileNameW(m_hInstance, m_szPluginsDirPath, MAX_PATH);
-		wchar_t *p = m_szPluginsDirPath + wcslen(m_szPluginsDirPath);
-		while (p >= m_szPluginsDirPath && *p != L'\\') p--;
-		if (++p >= m_szPluginsDirPath) *p = 0;
-	}
-
-	if (hWinampWnd
-	    && (p = (wchar_t *)SendMessage(hWinampWnd, WM_WA_IPC, 0, IPC_GETINIDIRECTORYW))
-	    && p != (wchar_t *)1)
-	{
-		// load settings as well as coping with moving old settings to a contained folder
-		wchar_t m_szOldConfigIniFile[MAX_PATH] = {0}, temp[MAX_PATH] = {0}, temp2[MAX_PATH] = {0};
-		swprintf(m_szOldConfigIniFile, L"%s\\Plugins\\%s", p, INIFILE);
-		swprintf(m_szConfigIniFile, L"%s\\Plugins\\%s%s", p, SUBDIR, INIFILE);
-		swprintf(temp, L"%s\\Plugins\\%s", p, SUBDIR);
-		swprintf(temp2, L"%s\\Plugins\\", p);
-		CreateDirectoryW(temp, NULL);
-
-		if (PathFileExistsW(m_szOldConfigIniFile) && !PathFileExistsW(m_szConfigIniFile))
-		{
-			MoveFileW(m_szOldConfigIniFile, m_szConfigIniFile);
-
-			wchar_t m_szMsgIniFile[MAX_PATH] = {0}, m_szNewMsgIniFile[MAX_PATH] = {0},
-					m_szImgIniFile[MAX_PATH] = {0}, m_szNewImgIniFile[MAX_PATH] = {0},
-					m_szAdaptersFile[MAX_PATH] = {0}, m_szNewAdaptersFile[MAX_PATH] = {0};
-   			swprintf(m_szMsgIniFile, L"%s%s", temp2, MSG_INIFILE);
-			swprintf(m_szNewMsgIniFile, L"%s%s", temp, MSG_INIFILE);
-			swprintf(m_szImgIniFile, L"%s%s", temp2, IMG_INIFILE);
-			swprintf(m_szNewImgIniFile, L"%s%s", temp, IMG_INIFILE);
-			swprintf(m_szAdaptersFile, L"%s%s", temp2, ADAPTERSFILE);
-			swprintf(m_szNewAdaptersFile, L"%s%s", temp, ADAPTERSFILE);
-
-			MoveFileW(m_szImgIniFile, m_szNewImgIniFile);
-			MoveFileW(m_szMsgIniFile, m_szNewMsgIniFile);
-			MoveFileW(m_szAdaptersFile, m_szNewAdaptersFile);
-		}
-	}
-	else
-	{
-		swprintf(m_szConfigIniFile, L"%s%s", m_szPluginsDirPath, INIFILE);
-	}
+	// get path to INI file & read in prefs/settings right away, so DumpMsg works!
+	GetModuleFileNameW(m_hInstance, m_szPluginsDirPath, MAX_PATH);
+	wchar_t *p = m_szPluginsDirPath + wcslen(m_szPluginsDirPath);
+	while (p >= m_szPluginsDirPath && *p != L'\\') p--;
+	if (++p >= m_szPluginsDirPath) *p = 0;
+    swprintf(m_szConfigIniFile, L"%s%s", m_szPluginsDirPath, INIFILE);
 	lstrcpyn(m_szConfigIniFileA,AutoCharFn(m_szConfigIniFile),MAX_PATH);
 
 	// PRIVATE CONFIG PANEL SETTINGS
@@ -1110,10 +1052,6 @@ void CPluginShell::PluginQuit()
 	CleanUpDX9Stuff(1);
 	CleanUpNondx9Stuff();
 	CleanUpDirectX();
-
-	SetFocus(m_hWndWinamp);
-	SetActiveWindow(m_hWndWinamp);
-	SetForegroundWindow(m_hWndWinamp);
 }
 
 wchar_t* BuildSettingName(wchar_t* name, int number){
@@ -1776,50 +1714,6 @@ void CPluginShell::AnalyzeNewSound(unsigned char *pWaveL, unsigned char *pWaveR)
 		}
 	}
 
-	// some code to find empirical long-term averages for imm[0..2]:
-	/*{
-	    static float sum[3];
-	    static int count = 0;
-
-	    #define FRAMES_PER_SONG 300     // should be at least 200!
-
-	    if (m_frame < FRAMES_PER_SONG)
-	    {
-	        sum[0] = sum[1] = sum[2] = 0;
-	        count = 0;
-	    }
-	    else
-	    {
-	        if (m_frame%FRAMES_PER_SONG == 0)
-	        {
-	            char buf[256];
-	            sprintf(buf, "%.4f, %.4f, %.4f     (%d samples / ~%d songs)\n",
-	                sum[0]/(float)(count),
-	                sum[1]/(float)(count),
-	                sum[2]/(float)(count),
-	                count,
-	                count/(FRAMES_PER_SONG-10)
-	            );
-	            OutputDebugString(buf);
-
-	            // skip to next song
-	            PostMessage(m_hWndWinamp,WM_COMMAND,40048,0);
-	        }
-	        else if (m_frame%FRAMES_PER_SONG == 5)
-	        {
-	            // then advance to 0-2 minutes into the song:
-	            PostMessage(m_hWndWinamp,WM_USER,(20 + (rand()%65) + (rand()%65))*1000,106);
-	        }
-	        else if (m_frame%FRAMES_PER_SONG >= 10)
-	        {
-	            sum[0] += m_sound.imm[0];
-	            sum[1] += m_sound.imm[1];
-	            sum[2] += m_sound.imm[2];
-	            count++;
-	        }
-	    }
-	}*/
-
 	// multiply by long-term, empirically-determined inverse averages:
 	// (for a trial of 244 songs, 10 seconds each, somewhere in the 2nd or 3rd minute,
 	//  the average levels were: 0.326781557	0.38087377	0.199888934
@@ -2011,8 +1905,8 @@ void CPluginShell::RenderPlaylist()
 	if (m_show_playlist)
 	{
 		RECT r;
-		int nSongs = SendMessage(m_hWndWinamp,WM_USER, 0, 124);
-		int now_playing = SendMessage(m_hWndWinamp,WM_USER, 0, 125);
+        int nSongs = 0;  //SendMessage(m_hWndWinamp, WM_USER, 0, 124);
+        int now_playing = 0; // SendMessage(m_hWndWinamp, WM_USER, 0, 125);
 
 		if (nSongs <= 0)
 		{
@@ -2057,8 +1951,8 @@ void CPluginShell::RenderPlaylist()
 					if (j < nSongs)
 					{
 						// clip max len. of song name to 240 chars, to prevent overflows
-						lstrcpynW(buf, (wchar_t*)SendMessage(m_hWndWinamp, WM_USER, j, IPC_GETPLAYLISTTITLEW), 240);
-						wsprintfW(m_playlist[i], L"%d. %s ", j+1, buf);  // leave an extra space @ end, so italicized fonts don't get clipped
+						//lstrcpynW(buf, (wchar_t*)SendMessage(m_hWndWinamp, WM_USER, j, IPC_GETPLAYLISTTITLEW), 240);
+						//wsprintfW(m_playlist[i], L"%d. %s ", j+1, buf);  // leave an extra space @ end, so italicized fonts don't get clipped
 					}
 				}
 			}
@@ -2184,34 +2078,12 @@ LRESULT CPluginShell::PluginShellWindowProc(HWND hWnd, unsigned uMsg, WPARAM wPa
 	//bool bAltHeldDown: most keys come in under WM_SYSKEYDOWN when ALT is depressed.
 
 	int i;
-#ifdef _DEBUG
-	char caption[256] = "WndProc: frame 0, ";
-	if (m_frame > 0)
-	{
-		float time = m_time;
-		int hours = (int)(time/3600);
-		time -= hours*3600;
-		int minutes = (int)(time/60);
-		time -= minutes*60;
-		int seconds = (int)time;
-		time -= seconds;
-		int dsec = (int)(time*100);
-		sprintf(caption, "WndProc: frame %d, t=%dh:%02dm:%02d.%02ds, ", m_frame, hours, minutes, seconds, dsec);
-	}
-
-	if (uMsg != WM_MOUSEMOVE &&
-	    uMsg != WM_NCHITTEST &&
-	    uMsg != WM_SETCURSOR &&
-	    uMsg != WM_COPYDATA &&
-	    uMsg != WM_USER)
-		OutputDebugMessage(caption, hWnd, uMsg, wParam, lParam);
-#endif
 
 	switch (uMsg)
 	{
 	case WM_ERASEBKGND:
 		// Repaint window when song is paused and image needs to be repainted:
-		if (SendMessage(m_hWndWinamp,WM_USER,0,104)!=1 && m_lpDX && m_lpDX->m_lpDevice && GetFrame() > 0)    // WM_USER/104 return codes: 1=playing, 3=paused, other=stopped
+		if (m_lpDX && m_lpDX->m_lpDevice && GetFrame() > 0)
 		{
 			m_lpDX->m_lpDevice->Present(NULL,NULL,NULL,NULL);
 			return 0;
@@ -2308,141 +2180,49 @@ LRESULT CPluginShell::PluginShellWindowProc(HWND hWnd, unsigned uMsg, WPARAM wPa
 		// if playlist is showing, steal p/j keys from the plugin:
 		if (m_show_playlist)
 		{
-			switch (wParam)
-			{
-			case 'j':
-			case 'J':
-				m_playlist_pos = SendMessage(m_hWndWinamp,WM_USER, 0, 125);
-				return 0;
-			default:
-			{
-				int nSongs = SendMessage(m_hWndWinamp,WM_USER, 0, 124);
-				int found = 0;
-				int orig_pos = m_playlist_pos;
-				int inc = (wParam>='A' && wParam<='Z') ? -1 : 1;
-				while (1)
-				{
-					if (inc==1 && m_playlist_pos >= nSongs-1)
-						break;
-					if (inc==-1 && m_playlist_pos <= 0)
-						break;
-
-					m_playlist_pos += inc;
-
-					char buf[32];
-					strncpy(buf, (char*)SendMessage(m_hWndWinamp, WM_USER, m_playlist_pos, 212), 31);
-					buf[31] = 0;
-
-					// remove song # and period from beginning
-					char *p = buf;
-					while (*p >= '0' && *p <= '9') p++;
-					if (*p == '.' && *(p+1) == ' ')
-					{
-						p += 2;
-						int pos = 0;
-						while (*p != 0)
-						{
-							buf[pos++] = *p;
-							p++;
-						}
-						buf[pos++] = 0;
-					}
-
-					int wParam2 = (wParam>='A' && wParam<='Z') ? (wParam + 'a'-'A') : (wParam + 'A'-'a');
-					if (buf[0]==wParam || buf[0]==wParam2)
-					{
-						found = 1;
-						break;
-					}
-				}
-
-				if (!found)
-					m_playlist_pos = orig_pos;
-			}
-			return 0;
-			}
+			/* resync m_playlist_pos */
 		}
 
 		// then allow the plugin to override any keys:
 		if (MyWindowProc(hWnd, uMsg, wParam, lParam) == 0)
 			return 0;
 
-		// finally, default key actions:
-		if (wParam == keyMappings[5] || wParam == keyMappings[6])	// 'z' or 'Z'
+		switch (wParam)
 		{
-			PostMessage(m_hWndWinamp,WM_COMMAND,40044,0);
+			// WINAMP PLAYBACK CONTROL KEYS:
+		case 'x':
+		case 'X':
+			/* play */
+			return 0;
+		case 'c':
+		case 'C':
+			/* pause */
+			return 0;
+		case 'v':
+		case 'V':
+			/* stop */
+			return 0;
+		case 'b':
+		case 'B':
+			/* next */
+			return 0;
+		case 's':
+		case 'S':
+			/* shuffle */
+			return 0;
+		case 'r':
+		case 'R':
+			/* repeat */
 			return 0;
 		}
-		else
-			{
-			switch (wParam)
-			{
-				// WINAMP PLAYBACK CONTROL KEYS:
-			case 'x':
-			case 'X':
-				PostMessage(m_hWndWinamp,WM_COMMAND,40045,0);
-				return 0;
-			case 'c':
-			case 'C':
-				PostMessage(m_hWndWinamp,WM_COMMAND,40046,0);
-				return 0;
-			case 'v':
-			case 'V':
-				PostMessage(m_hWndWinamp,WM_COMMAND,40047,0);
-				return 0;
-			case 'b':
-			case 'B':
-				PostMessage(m_hWndWinamp,WM_COMMAND,40048,0);
-				return 0;
-			case 's':
-			case 'S':
-				//if (SendMessage(m_hWndWinamp,WM_USER,0,250))
-				//    sprintf(m_szUserMessage, "shuffle is now OFF");    // shuffle was on
-				//else
-				//    sprintf(m_szUserMessage, "shuffle is now ON");    // shuffle was off
 
-				// toggle shuffle
-				PostMessage(m_hWndWinamp,WM_COMMAND,40023,0);
-				return 0;
-			case 'r':
-			case 'R':
-				// toggle repeat
-				PostMessage(m_hWndWinamp,WM_COMMAND,40022,0);
-				return 0;
-			case 'l':
-				// note that this is actually correct; when you hit 'l' from the
-				// MAIN winamp window, you get an "open files" dialog; when you hit
-				// 'l' from the playlist editor, you get an "add files to playlist" dialog.
-				// (that sends IDC_PLAYLIST_ADDMP3==1032 to the playlist, which we can't
-				//  do from here.)
-				PostMessage(m_hWndWinamp,WM_COMMAND,40029,0);
-				return 0;
-			case 'L':
-				PostMessage(m_hWndWinamp,WM_COMMAND,40187,0);
-				return 0;
-			case 'j':
-				PostMessage(m_hWndWinamp,WM_COMMAND,40194,0);
-				return 0;
-			}
-
-			return 0;//DefWindowProc(hWnd,uMsg,wParam,lParam);
-		}
-		break;  // end case WM_CHAR
+		return 0;
 
 	case WM_KEYUP:
 
 		// allow the plugin to override any keys:
 		if (MyWindowProc(hWnd, uMsg, wParam, lParam) == 0)
 			return 0;
-
-		/*
-		switch(wParam)
-		{
-		case VK_SOMETHING:
-		    ...
-		    break;
-		}
-		*/
 
 		return 0;
 		break;
@@ -2467,7 +2247,7 @@ LRESULT CPluginShell::PluginShellWindowProc(HWND hWnd, unsigned uMsg, WPARAM wPa
 				int nRepeat = lParam & 0xFFFF;
 				if (GetKeyState(VK_SHIFT) & mask)
 					m_playlist_pos += 10*nRepeat;
-				else
+                else
 					m_playlist_pos += nRepeat;
 			}
 			return 0;
@@ -2477,7 +2257,6 @@ LRESULT CPluginShell::PluginShellWindowProc(HWND hWnd, unsigned uMsg, WPARAM wPa
 				return 0;
 
 			case VK_END:
-				m_playlist_pos = SendMessage(m_hWndWinamp,WM_USER, 0, 124) - 1;
 				return 0;
 
 			case VK_PRIOR:
@@ -2495,8 +2274,7 @@ LRESULT CPluginShell::PluginShellWindowProc(HWND hWnd, unsigned uMsg, WPARAM wPa
 				return 0;
 
 			case VK_RETURN:
-				SendMessage(m_hWndWinamp,WM_USER, m_playlist_pos, 121);	// set sel
-				SendMessage(m_hWndWinamp,WM_COMMAND, 40045, 0);	// play it
+                /* set playlist selection, and play */
 				return 0;
 			}
 		}
@@ -2520,13 +2298,7 @@ LRESULT CPluginShell::PluginShellWindowProc(HWND hWnd, unsigned uMsg, WPARAM wPa
 		    case VK_LEFT:
 		    case VK_RIGHT:
 		    {
-			    bool bShiftHeldDown = (GetKeyState(VK_SHIFT) & mask) != 0;
-			    int cmd = (wParam == VK_LEFT) ? 40144 : 40148;
-			    int nRepeat = lParam & 0xFFFF;
-			    int reps = (bShiftHeldDown) ? 6*nRepeat : 1*nRepeat;
-
-			    for (int i=0; i<reps; i++)
-				    PostMessage(m_hWndWinamp,WM_COMMAND,cmd,0);
+                /* rewind 5 seconds, ff 5 seconds */
 		    }
 		    return 0;
 		}
@@ -2729,30 +2501,6 @@ LRESULT CALLBACK CPluginShell::VJModeWndProc(HWND hWnd, unsigned uMsg, WPARAM wP
 
 LRESULT CPluginShell::PluginShellVJModeWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-#ifdef _DEBUG
-	if (message != WM_MOUSEMOVE &&
-	    message != WM_NCHITTEST &&
-	    message != WM_SETCURSOR &&
-	    message != WM_COPYDATA &&
-	    message != WM_USER)
-	{
-		char caption[256] = "VJWndProc: frame 0, ";
-		if (m_frame > 0)
-		{
-			float time = m_time;
-			int hours = (int)(time/3600);
-			time -= hours*3600;
-			int minutes = (int)(time/60);
-			time -= minutes*60;
-			int seconds = (int)time;
-			time -= seconds;
-			int dsec = (int)(time*100);
-			sprintf(caption, "VJWndProc: frame %d, t=%dh:%02dm:%02d.%02ds, ", m_frame, hours, minutes, seconds, dsec);
-		}
-		OutputDebugMessage(caption, hwnd, message, wParam, lParam);
-	}
-#endif
-
 	switch (message)
 	{
 	case WM_KEYDOWN:
@@ -2766,99 +2514,12 @@ LRESULT CPluginShell::PluginShellVJModeWndProc(HWND hwnd, UINT message, WPARAM w
 
 	case WM_ERASEBKGND:
 		// Repaint window when song is paused and image needs to be repainted:
-		if (SendMessage(m_hWndWinamp,WM_USER,0,104)!=1 && m_vjd3d9_device && GetFrame() > 0)    // WM_USER/104 return codes: 1=playing, 3=paused, other=stopped
+		if (m_vjd3d9_device && GetFrame() > 0)    // WM_USER/104 return codes: 1=playing, 3=paused, other=stopped
 		{
 			m_vjd3d9_device->Present(NULL,NULL,NULL,NULL);
 			return 0;
 		}
 		break;
-
-		/*
-		case WM_WINDOWPOSCHANGING:
-		if (m_screenmode == DESKTOP)
-		{
-		    LPWINDOWPOS pwp = (LPWINDOWPOS)lParam;
-		    if (pwp)
-		        pwp->flags |= SWP_NOOWNERZORDER | SWP_NOZORDER;
-		}
-		break;
-
-		case WM_ACTIVATEAPP:
-		// *Very Important Handler!*
-		//    -Without this code, the app would not work properly when running in true
-		//     fullscreen mode on multiple monitors; it would auto-minimize whenever the
-		//     user clicked on a window in another display.
-		if (wParam == 1 &&
-		    m_screenmode == DESKTOP &&
-		    m_frame > 0 &&
-		    !m_exiting
-		   )
-		{
-		    return 0;
-		}
-		break;
-
-		/*
-		case WM_NCACTIVATE:
-		// *Very Important Handler!*
-		//    -Without this code, the app would not work properly when running in true
-		//     fullscreen mode on multiple monitors; it would auto-minimize whenever the
-		//     user clicked on a window in another display.
-		// (NOTE: main window also handles this message this way)
-		if (wParam == 0 &&
-		    m_screenmode == FULLSCREEN &&
-		    m_frame > 0 &&
-		    !m_exiting &&
-		    m_lpDX &&
-		    m_lpDX->m_ready
-		    && m_lpDX->m_lpD3D &&
-		    m_lpDX->m_lpD3D->GetAdapterCount() > 1
-		    )
-		{
-		    return 0;
-		}
-		break;
-		*/
-
-		/*
-		case WM_ACTIVATEAPP:
-		if (wParam == 1 &&
-		    m_screenmode == DESKTOP &&
-		    m_frame > 0 &&
-		    !m_exiting &&
-		    m_vjd3d9_device
-		   )
-		{
-		    return 0;
-		}
-		break;
-		*/
-
-		/*
-		case WM_WINDOWPOSCHANGING:
-		if (
-		    m_screenmode == DESKTOP
-		    && (!m_force_accept_WM_WINDOWPOSCHANGING)
-		    && m_lpDX && m_lpDX->m_ready
-		   )
-		{
-		    // unless we requested it ourselves or it's init time,
-		    // prevent the fake desktop window from moving around
-		    // in the Z order!  (i.e., keep it on the bottom)
-
-		    // without this code, when you click on the 'real' desktop
-		    // in a multimon setup, any windows that are overtop of the
-		    // 'fake' desktop will flash, since they'll be covered
-		    // up by the fake desktop window (but then shown again on
-		    // the next frame, when we detect that the fake desktop
-		    // window isn't on bottom & send it back to the bottom).
-
-		    LPWINDOWPOS pwp = (LPWINDOWPOS)lParam;
-		    if (pwp)
-		        pwp->flags |= SWP_NOOWNERZORDER | SWP_NOZORDER;
-		}
-		break;
-		*/
 
 	case WM_CLOSE:
 		// if they close the VJ window (by some means other than ESC key),

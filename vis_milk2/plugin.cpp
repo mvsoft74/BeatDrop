@@ -3939,19 +3939,12 @@ void CPlugin::MyRenderFn(int redraw)
         // NOTE: we skip this if we've already gotten a WM_COMMAND/ID_VIS_RANDOM message
         //       from the skin - if that happened, we're running windowed with a fancy
         //       skin with a 'rand' button.
-
         SetScrollLock(m_bPresetLockOnAtStartup, m_bPreventScollLockHandling);
-
-        // make sure the 'random' button on the skin shows the right thing:
-        // NEVERMIND - if it's a fancy skin, it'll send us WM_COMMAND/ID_VIS_RANDOM
-        //   and we'll match the skin's Random button state.
-        //SendMessage(GetWinampWindow(),WM_WA_IPC,m_bMilkdropScrollLockState, IPC_CB_VISRANDOM);
     }
     else
     {
         m_bHadFocus = m_bHasFocus;
 
-        HWND winamp = GetWinampWindow();
         HWND plugin = GetPluginWindow();
         HWND focus = GetFocus();
         HWND cur = plugin;
@@ -3964,7 +3957,7 @@ void CPlugin::MyRenderFn(int redraw)
                 break;
             cur = GetParent(cur);
         }
-        while (cur != NULL && cur != winamp);
+        while (cur != NULL);
 
         if (m_hTextWnd && focus==m_hTextWnd)
             m_bHasFocus = 1;
@@ -3990,7 +3983,7 @@ void CPlugin::MyRenderFn(int redraw)
 
     if (!redraw)
     {
-        GetWinampSongTitle(GetWinampWindow(), m_szSongTitle, sizeof(m_szSongTitle)-1);
+        GetSongTitle(m_szSongTitle, sizeof(m_szSongTitle)-1);
         if (wcscmp(m_szSongTitle, m_szSongTitlePrev))
         {
             lstrcpynW(m_szSongTitlePrev, m_szSongTitle, 512);
@@ -4266,7 +4259,7 @@ void CPlugin::MyRenderUI(
         {
 			wchar_t buf4[512] = {0};
             SelectFont(DECORATIVE_FONT);
-            GetWinampSongTitle(GetWinampWindow(), buf4, sizeof(buf4)); // defined in utility.h/cpp
+            GetSongTitle(buf4, sizeof(buf4)); // defined in utility.h/cpp
             MyTextOut_Shadow(buf4, MTO_LOWER_LEFT);
         }
 
@@ -5204,51 +5197,6 @@ LRESULT CPlugin::MyWindowProc(HWND hWnd, unsigned uMsg, WPARAM wParam, LPARAM lP
     switch (uMsg)
     {
     case WM_COMMAND:
-        switch (LOWORD(wParam))
-        {
-        case ID_VIS_NEXT:
-            NextPreset(m_fBlendTimeUser);
-            return 0;
-        case ID_VIS_PREV:
-            PrevPreset(m_fBlendTimeUser);
-            return 0;
-        case ID_VIS_RANDOM:
-            {
-                // note: when the vis is launched, if we're using a fancy modern skin
-                //       (with a Random button), it will send us one of these...
-                //       if it's NOT a fancy skin, we'll never get this message (confirmed).
-
-                USHORT v = HIWORD(wParam);     // here, v is 0 (locked) or 1 (random) or 0xFFFF (don't know / startup!)
-                if (v==0xFFFF)
-                {
-                    // plugin just launched or changed modes -
-                    // Winamp wants to know what our saved Random state is...
-                    SendMessage(GetWinampWindow(), WM_WA_IPC, (m_bPresetLockOnAtStartup ? 0 : 1) << 16, IPC_CB_VISRANDOM);
-
-                    return 0;
-                }
-
-                // otherwise it's 0 or 1 - user clicked the button, we should respond.
-
-                v = v ? 1 : 0;      // same here
-
-                //see also - IPC_CB_VISRANDOM
-                m_bPresetLockedByUser = (v == 0);
-                SetScrollLock(m_bPresetLockedByUser, m_bPreventScollLockHandling);
-
-                return 0;
-            }
-        case ID_VIS_FS:
-			PostMessage(hWnd, WM_USER + 1667, 0, 0);
-            return 0;
-
-        case ID_VIS_MENU:
-            POINT pt;
-            GetCursorPos(&pt);
-            SendMessage(hWnd, WM_CONTEXTMENU, (WPARAM)hWnd, (pt.y << 16) | pt.x);
-            return 0;
-        }
-        break;
 
     case WM_CHAR:   // plain & simple alphanumeric keys
         nRepeat = LOWORD(lParam);
@@ -5543,9 +5491,7 @@ LRESULT CPlugin::MyWindowProc(HWND hWnd, unsigned uMsg, WPARAM wParam, LPARAM lP
         case VK_SCROLL:
             m_bPresetLockedByUser = GetKeyState(VK_SCROLL) & 1;
             //SetScrollLock(m_bPresetLockedByUser);
-            SendMessage(GetWinampWindow(), WM_WA_IPC, (m_bPresetLockedByUser ? 0 : 1) << 16, IPC_CB_VISRANDOM);
             //int set = m_bPresetLockedByUser ?
-            //PostMessage(GetWinampWindow(), WM_COMMAND, ID_VIS_RANDOM | (set << 16), 0);
 
 			return 0; // we processed (or absorbed) the key
 		//case VK_F6:	break;
@@ -6419,18 +6365,8 @@ int CPlugin::HandleRegularKey(WPARAM wParam)
 
 	case 'u':
 	case 'U':
-		if (SendMessage(GetWinampWindow(),WM_USER,0,250))
-            AddError(wasabiApiLangString(IDS_SHUFFLE_IS_NOW_OFF), 3.0f, ERR_NOTIFY, false);
-		else
-            AddError(wasabiApiLangString(IDS_SHUFFLE_IS_NOW_ON), 3.0f, ERR_NOTIFY, false);
-
-		//m_fShowUserMessageUntilThisTime = GetTime() + 4.0f;
-
-		// toggle shuffle
-		PostMessage(GetWinampWindow(),WM_COMMAND,40023,0);
-
+        AddError(wasabiApiLangString(IDS_SHUFFLE_IS_NOW_ON), 3.0f, ERR_NOTIFY, false);
 		return 0; // we processed (or absorbed) the key
-
 
 	/*
 	case 'u':	m_pState->m_fWarpScale /= 1.1f;			break;
@@ -8924,11 +8860,7 @@ void CPlugin::GenCompPShaderText(char *szShaderText, float brightness, float ve_
 }
 
 
-void CPlugin::GetWinampSongTitle(HWND hWndWinamp, wchar_t *szSongTitle, int nSize)
+void CPlugin::GetSongTitle(wchar_t *szSongTitle, int nSize)
 {
     lstrcpynW(szSongTitle, AutoWide(emulatedWinampSongTitle.c_str(), CP_UTF8), nSize);
-    //   szSongTitle[0] = 0;
-    //lstrcpynW(szSongTitle, (wchar_t*)SendMessage(hWndWinamp, WM_WA_IPC,
-    //								 SendMessage(hWndWinamp, WM_WA_IPC, 0 , IPC_GETLISTPOS),
-    //								 IPC_GETPLAYLISTTITLEW), nSize);
 }
