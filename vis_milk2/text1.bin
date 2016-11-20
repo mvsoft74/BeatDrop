@@ -15,14 +15,13 @@
    A               do random mini-mash-up
    D               toggle warp & comp shader locks
 
- INFO:
-
-   F1    help            F3    song time
-   F2    song name       F4    preset name   
-
  PLAYBACK:
 
-   F5    play/pause      F6    stop
-   F7    prev            F8    next
-   F9    shuffle         F10   repeat mode
-   F11   volume up       F12   volume down
+   F1    play/pause      F2    stop
+   F3    prev            F4    next
+   F5    volume up       F6    volume down
+   F7    shuffle         F8    repeat mode
+
+ INFO:
+
+   F12   help            F9    title / time / preset

@@ -5384,24 +5384,12 @@ LRESULT CPlugin::MyWindowProc(HWND hWnd, unsigned uMsg, WPARAM wParam, LPARAM lP
 
 		switch(wParam)
 		{
-		case VK_F2:		m_bShowSongTitle = !m_bShowSongTitle;   return 0; // we processed (or absorbed) the key
-		case VK_F3:
-			if (m_bShowSongTime && m_bShowSongLen)
-			{
-				m_bShowSongTime = false;
-				m_bShowSongLen  = false;
-			}
-			else if (m_bShowSongTime && !m_bShowSongLen)
-			{
-				m_bShowSongLen  = true;
-			}
-			else
-			{
-				m_bShowSongTime = true;
-				m_bShowSongLen  = false;
-			}
-			return 0; // we processed (or absorbed) the key
-		case VK_F4:		m_bShowPresetInfo = !m_bShowPresetInfo;	return 0; // we processed (or absorbed) the key
+		case VK_F9:
+            m_bShowSongTitle = !m_bShowSongTitle; // we processed (or absorbed) the key
+			m_bShowSongTime = !m_bShowSongTime;
+			m_bShowSongLen  = !m_bShowSongLen;
+		    m_bShowPresetInfo = !m_bShowPresetInfo;
+            return 0; // we processed (or absorbed) the key
 		//case VK_F4:		m_bShowFPS = !m_bShowFPS;				return 0; // we processed (or absorbed) the key
 		//case VK_F6:		m_bShowRating = !m_bShowRating;			return 0; // we processed (or absorbed) the key
 		//case VK_F7:

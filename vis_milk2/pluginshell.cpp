@@ -2285,7 +2285,7 @@ LRESULT CPluginShell::PluginShellWindowProc(HWND hWnd, unsigned uMsg, WPARAM wPa
 
 		switch (wParam)
 		{
-		    case VK_F1:
+		    case VK_F12:
 			    m_show_press_f1_msg = 0;
 			    ToggleHelp();
 			    return 0;

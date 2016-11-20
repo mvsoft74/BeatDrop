@@ -159,31 +159,31 @@ LRESULT CALLBACK StaticWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPara
         }
 
         case WM_KEYDOWN: {
-            if (playback && wParam >= VK_F5 && wParam <= VK_F12) {
+            if (playback && wParam >= VK_F1 && wParam <= VK_F8) {
                 switch (wParam) {
-                case VK_F5:
+                case VK_F1:
                     playback->PauseOrResume();
                     break;
-                case VK_F6:
+                case VK_F2:
                     playback->Stop();
                     break;
-                case VK_F7:
+                case VK_F3:
                     playback->Previous();
                     break;
-                case VK_F8:
+                case VK_F4:
                     playback->Next();
                     break;
-                case VK_F9:
-                    playback->ToggleShuffle();
-                    break;
-                case VK_F10:
-                    playback->ToggleRepeatMode();
-                    break;
-                case VK_F11:
+                case VK_F5:
                     playback->SetVolume(playback->GetVolume() - 0.05);
                     break;
-                case VK_F12:
+                case VK_F6:
                     playback->SetVolume(playback->GetVolume() + 0.05);
+                    break;
+                case VK_F7:
+                    playback->ToggleShuffle();
+                    break;
+                case VK_F8:
+                    playback->ToggleMute();
                     break;
                 }
             }
