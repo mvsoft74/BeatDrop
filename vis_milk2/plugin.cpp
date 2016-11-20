@@ -8862,5 +8862,11 @@ void CPlugin::GenCompPShaderText(char *szShaderText, float brightness, float ve_
 
 void CPlugin::GetSongTitle(wchar_t *szSongTitle, int nSize)
 {
+    if (playbackService &&
+        playbackService->GetPlaybackState() == musik::core::sdk::PlaybackStopped)
+    {
+        emulatedWinampSongTitle = "Playback Stopped";
+    }
+
     lstrcpynW(szSongTitle, AutoWide(emulatedWinampSongTitle.c_str(), CP_UTF8), nSize);
 }
