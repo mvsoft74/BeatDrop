@@ -4273,23 +4273,25 @@ void CPlugin::MyRenderUI(
         // render song time & len above that:
         if (m_bShowSongTime || m_bShowSongLen)
         {
-            GetWinampSongPosAsText(GetWinampWindow(), buf); // defined in utility.h/cpp
-            GetWinampSongLenAsText(GetWinampWindow(), buf2); // defined in utility.h/cpp
-            if (m_bShowSongTime && m_bShowSongLen)
-			{
-				// only show playing position and track length if it is playing (buffer is valid)
-				if(buf[0])
-					swprintf(buf3, L"%s / %s ", buf, buf2);
-				else
-					lstrcpynW(buf3, buf2, 512);
-			}
-            else if (m_bShowSongTime)
-                lstrcpynW(buf3, buf, 512);
-            else
-                lstrcpynW(buf3, buf2, 512);
+            if (playbackService) {
+                FormatSongTime(playbackService->GetPosition(), buf); // defined in utility.h/cpp
+                FormatSongTime(playbackService->GetDuration(), buf2); // defined in utility.h/cpp
+                if (m_bShowSongTime && m_bShowSongLen)
+                {
+                    // only show playing position and track length if it is playing (buffer is valid)
+                    if (buf[0])
+                        swprintf(buf3, L"%s / %s ", buf, buf2);
+                    else
+                        lstrcpynW(buf3, buf2, 512);
+                }
+                else if (m_bShowSongTime)
+                    lstrcpynW(buf3, buf, 512);
+                else
+                    lstrcpynW(buf3, buf2, 512);
 
-            SelectFont(DECORATIVE_FONT);
-            MyTextOut_Shadow(buf3, MTO_LOWER_LEFT);
+                SelectFont(DECORATIVE_FONT);
+                MyTextOut_Shadow(buf3, MTO_LOWER_LEFT);
+            }
         }
     }
 
@@ -5488,24 +5490,24 @@ LRESULT CPlugin::MyWindowProc(HWND hWnd, unsigned uMsg, WPARAM wParam, LPARAM lP
 		switch(wParam)
 		{
 		case VK_F2:		m_bShowSongTitle = !m_bShowSongTitle;   return 0; // we processed (or absorbed) the key
-		//case VK_F3:
-		//	if (m_bShowSongTime && m_bShowSongLen)
-		//	{
-		//		m_bShowSongTime = false;
-		//		m_bShowSongLen  = false;
-		//	}
-		//	else if (m_bShowSongTime && !m_bShowSongLen)
-		//	{
-		//		m_bShowSongLen  = true;
-		//	}
-		//	else
-		//	{
-		//		m_bShowSongTime = true;
-		//		m_bShowSongLen  = false;
-		//	}
-		//	return 0; // we processed (or absorbed) the key
-		case VK_F3:		m_bShowPresetInfo = !m_bShowPresetInfo;	return 0; // we processed (or absorbed) the key
-		case VK_F4:		m_bShowFPS = !m_bShowFPS;				return 0; // we processed (or absorbed) the key
+		case VK_F3:
+			if (m_bShowSongTime && m_bShowSongLen)
+			{
+				m_bShowSongTime = false;
+				m_bShowSongLen  = false;
+			}
+			else if (m_bShowSongTime && !m_bShowSongLen)
+			{
+				m_bShowSongLen  = true;
+			}
+			else
+			{
+				m_bShowSongTime = true;
+				m_bShowSongLen  = false;
+			}
+			return 0; // we processed (or absorbed) the key
+		case VK_F4:		m_bShowPresetInfo = !m_bShowPresetInfo;	return 0; // we processed (or absorbed) the key
+		//case VK_F4:		m_bShowFPS = !m_bShowFPS;				return 0; // we processed (or absorbed) the key
 		//case VK_F6:		m_bShowRating = !m_bShowRating;			return 0; // we processed (or absorbed) the key
 		//case VK_F7:
 		//	if (m_nNumericInputMode == NUMERIC_INPUT_MODE_CUST_MSG)

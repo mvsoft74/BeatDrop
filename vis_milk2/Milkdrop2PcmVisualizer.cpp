@@ -372,6 +372,7 @@ class Visualizer :
             }
 
             virtual void SetPlaybackService(musik::core::sdk::IPlaybackService* playback) {
+                g_plugin.playbackService = playback;
                 ::playback = playback;
             }
 

@@ -40,6 +40,8 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gstring.h"
 #include "../ns-eel2/ns-eel.h"
 
+#include <core/sdk/IPlaybackService.h>
+
 extern "C" int (*warand)(void);
 
 typedef enum { TEX_DISK, TEX_VS, TEX_BLUR0, TEX_BLUR1, TEX_BLUR2, TEX_BLUR3, TEX_BLUR4, TEX_BLUR5, TEX_BLUR6, TEX_BLUR_LAST } tex_code;
@@ -500,6 +502,7 @@ public:
 
         void GetWinampSongTitle(HWND hWndWinamp, wchar_t *szSongTitle, int nSize);
 
+        musik::core::sdk::IPlaybackService* playbackService;
         std::string emulatedWinampSongTitle;
         char		m_szDebugMessage[512];
         wchar_t		m_szSongTitle    [512];

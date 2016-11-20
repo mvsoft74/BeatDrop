@@ -247,49 +247,18 @@ void MakeProjectionMatrix( D3DXMATRIX* pOut,
     pOut->_34 = 1;
 }
 
-void GetWinampSongPosAsText(HWND hWndWinamp, wchar_t *szSongPos)
+void FormatSongTime(double seconds, wchar_t *dst)
 {
-    // note: size(szSongPos[]) must be at least 64.
-    szSongPos[0] = 0;
-	int nSongPosMS = SendMessage(hWndWinamp,WM_USER,0,105);
-    if (nSongPosMS > 0)
-    {
-		wchar_t tmp[16];
-		float time_s = nSongPosMS*0.001f;
-		int minutes = (int)(time_s/60);
-		time_s -= minutes*60;
-		int seconds = (int)time_s;
-		time_s -= seconds;
-		int dsec = (int)(time_s*100);
-		swprintf(tmp, L"%.02f", dsec/100.0f);
-		swprintf(szSongPos, L"%d:%02d%s", minutes, seconds, tmp+1);
-    }
-}
-
-void GetWinampSongLenAsText(HWND hWndWinamp, wchar_t *szSongLen)
-{
+    int millis = (int) seconds * 1000;
     // note: size(szSongLen[]) must be at least 64.
-    szSongLen[0] = 0;
-	int nSongLenMS = SendMessage(hWndWinamp,WM_USER,1,105)*1000;
-    if (nSongLenMS > 0)
+    dst[0] = 0;
+    if (millis >= 0)
     {
-		int len_s = nSongLenMS/1000;
+		int len_s = millis/1000;
 		int minutes = len_s/60;
 		int seconds = len_s - minutes*60;
-		swprintf(szSongLen, L"%d:%02d", minutes, seconds);
+		swprintf(dst, L"%d:%02d", minutes, seconds);
     }
-}
-
-float GetWinampSongPos(HWND hWndWinamp)
-{
-    // returns answer in seconds
-    return (float)SendMessage(hWndWinamp,WM_USER,0,105)*0.001f;
-}
-
-float GetWinampSongLen(HWND hWndWinamp)
-{
-    // returns answer in seconds
-	return (float)SendMessage(hWndWinamp,WM_USER,1,105);
 }
 
 int GetDX9TexFormatBitsPerPixel(D3DFORMAT fmt)
