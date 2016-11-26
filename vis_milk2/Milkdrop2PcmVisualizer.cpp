@@ -387,6 +387,18 @@ class Visualizer :
                 }
             }
 
+            virtual void OnPlaybackStateChanged(musik::core::sdk::PlaybackState state) {
+
+            }
+
+            virtual void OnVolumeChanged(double volume) {
+
+            }
+
+            virtual void OnModeChanged(musik::core::sdk::RepeatMode repeatMode, bool shuffled) {
+
+            }
+
             virtual void Write(musik::core::sdk::IBuffer* buffer) {
                 if (Visible()) {
                     float* b = buffer->BufferPointer();
