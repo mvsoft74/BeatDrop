@@ -60,6 +60,12 @@ void InitD3d(HWND hwnd, int width, int height) {
 
     D3DDISPLAYMODE mode;
     pD3D9->GetAdapterDisplayMode(D3DADAPTER_DEFAULT, &mode);
+    
+    UINT adapterId = g_plugin.m_adapterId;
+
+    if (adapterId > pD3D9->GetAdapterCount()) {
+        adapterId = D3DADAPTER_DEFAULT;
+    }
 
     memset(&d3dPp, 0, sizeof(d3dPp));
 
@@ -77,12 +83,12 @@ void InitD3d(HWND hwnd, int width, int height) {
     d3dPp.hDeviceWindow = (HWND) hwnd;
 
     pD3D9->CreateDevice(
-        D3DADAPTER_DEFAULT,
+        adapterId,
         D3DDEVTYPE_HAL,
         (HWND) hwnd,
         D3DCREATE_HARDWARE_VERTEXPROCESSING,
         &d3dPp,
-        &pD3DDevice );
+        &pD3DDevice);
 }
 
 void DeinitD3d() {
@@ -315,7 +321,9 @@ unsigned __stdcall CreateWindowAndRun(void* data) {
         }
     }
 
+    g_plugin.MyWriteConfig();
     g_plugin.PluginQuit();
+
     DeinitD3d();
 
     thread = nullptr;

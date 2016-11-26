@@ -96,14 +96,6 @@ enum
 	MD2_PS_3_0 = 4,
 	MD2_PS_4_0 = 5, // not supported by milkdrop
 };
-/*
-typedef struct
-{
-    char szFace[256];
-    int nSize;
-    int bBold;
-    int bItalic;
-} td_titlefontinfo;*/
 
 typedef struct
 {
@@ -266,21 +258,6 @@ typedef struct
     VShaderInfo comp;
 } VShaderSet;
 
-/*
-typedef struct
-{
-    void*                ptr;  // to IDirect3DPixelShader9 or IDirect3DVertexShader9
-    LPD3DXCONSTANTTABLE  CT;
-    CShaderParams        params;
-} ShaderInfo;
-
-typedef struct
-{
-    ShaderInfo warp;
-    ShaderInfo comp;
-} ShaderSet;
-*/
-
 typedef struct
 {
     std::wstring  szFilename;    // without path
@@ -353,16 +330,6 @@ public:
         int         m_nMaxImages;
         int         m_nMaxBytes;
 
-        /*
-        char		m_szFontFace[NUM_FONTS][128];
-        int			m_nFontSize[NUM_FONTS];
-        bool		m_bFontBold[NUM_FONTS];
-        bool		m_bFontItalic[NUM_FONTS];
-        char		 m_szTitleFontFace[128];
-        int			 m_nTitleFontSize;			// percentage of screen width (0..100)
-        bool		 m_bTitleFontBold;
-        bool		 m_bTitleFontItalic;
-        */
         HFONT       m_gdi_title_font_doublesize;
         LPD3DXFONT  m_d3dx_title_font_doublesize;
 
@@ -473,8 +440,6 @@ public:
         td_mysounddata mysound;
 
         // stuff for displaying text to user:
-        //int			m_nTextHeightPixels;	// this is for the menu/detail font; NOT the "fancy font"
-        //int			m_nTextHeightPixels_Fancy;
         bool		m_bShowFPS;
         bool		m_bShowRating;
         bool		m_bShowPresetInfo;
@@ -483,9 +448,6 @@ public:
         bool		m_bShowSongTime;
         bool		m_bShowSongLen;
         float		m_fShowRatingUntilThisTime;
-        //float		m_fShowUserMessageUntilThisTime;
-        //char		m_szUserMessage[512];
-         //bool        m_bUserMessageIsError;
 
         #define ERR_ALL    0
         #define ERR_INIT   1  //specifically, loading a preset
@@ -506,10 +468,7 @@ public:
         char		m_szDebugMessage[512];
         wchar_t		m_szSongTitle    [512];
         wchar_t		m_szSongTitlePrev[512];
-        //HFONT		m_hfont[3];	// 0=fancy font (for song titles, preset name)
-						        // 1=legible font (the main font)
-						        // 2=tooltip font (for tooltips in the menu system)
-        //HFONT       m_htitlefont[NUM_TITLE_FONTS]; // ~25 different sizes
+
         // stuff for menu system:
         CMilkMenu	*m_pCurMenu;	// should always be valid!
         CMilkMenu	 m_menuPreset;
@@ -522,8 +481,6 @@ public:
         CMilkMenu    m_menuWavecode[MAX_CUSTOM_WAVES];
         CMilkMenu    m_menuShapecode[MAX_CUSTOM_SHAPES];
         bool         m_bShowShaderHelp;
-
-
 
         wchar_t		m_szMilkdrop2Path[MAX_PATH];		// ends in a backslash
         wchar_t		m_szMsgIniFile[MAX_PATH];
@@ -542,6 +499,7 @@ public:
         int m_nHighestBlurTexUsedThisFrame;
         IDirect3DTexture9 *m_lpDDSTitle;    // CAREFUL: MIGHT BE NULL (if not enough mem)!
         int               m_nTitleTexSizeX, m_nTitleTexSizeY;
+        UINT              m_adapterId;
         MYVERTEX          *m_verts;
         MYVERTEX          *m_verts_temp;
         td_vertinfo       *m_vertinfo;

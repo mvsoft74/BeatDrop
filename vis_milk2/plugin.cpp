@@ -1215,6 +1215,7 @@ void CPlugin::MyReadConfig()
 	m_fSongTitleAnimDuration	= GetPrivateProfileFloatW(L"settings",L"fSongTitleAnimDuration" ,m_fSongTitleAnimDuration ,pIni);
 	m_fTimeBetweenRandomSongTitles = GetPrivateProfileFloatW(L"settings",L"fTimeBetweenRandomSongTitles" ,m_fTimeBetweenRandomSongTitles,pIni);
 	m_fTimeBetweenRandomCustomMsgs = GetPrivateProfileFloatW(L"settings",L"fTimeBetweenRandomCustomMsgs" ,m_fTimeBetweenRandomCustomMsgs,pIni);
+    m_adapterId = GetPrivateProfileIntW(L"settings", L"nVideoAdapterIndex", 0, pIni);
 
     // --------
 
@@ -1308,6 +1309,9 @@ void CPlugin::MyWriteConfig()
 	WritePrivateProfileFloatW(m_fSongTitleAnimDuration,  L"fSongTitleAnimDuration",   pIni, L"settings");
 	WritePrivateProfileFloatW(m_fTimeBetweenRandomSongTitles,L"fTimeBetweenRandomSongTitles",pIni, L"settings");
 	WritePrivateProfileFloatW(m_fTimeBetweenRandomCustomMsgs,L"fTimeBetweenRandomCustomMsgs",pIni, L"settings");
+
+    WritePrivateProfileIntW(m_adapterId, L"nVideoAdapterIndex", pIni, L"settings");
+
 }
 
 //----------------------------------------------------------------------
