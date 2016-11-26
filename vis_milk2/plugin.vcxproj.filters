@@ -104,12 +104,6 @@
     <ClInclude Include="pluginshell.h">
       <Filter>library\headers</Filter>
     </ClInclude>
-    <ClInclude Include="icon_t.h">
-      <Filter>library\headers</Filter>
-    </ClInclude>
-    <ClInclude Include="gstring.h">
-      <Filter>library\headers</Filter>
-    </ClInclude>
     <ClInclude Include="fft.h">
       <Filter>library\headers</Filter>
     </ClInclude>
@@ -144,9 +138,6 @@
       <Filter>library\headers</Filter>
     </ClInclude>
     <ClInclude Include="AutoWide.h">
-      <Filter>library\headers</Filter>
-    </ClInclude>
-    <ClInclude Include="wa_ipc.h">
       <Filter>library\headers</Filter>
     </ClInclude>
   </ItemGroup>

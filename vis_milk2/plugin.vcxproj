@@ -198,8 +198,6 @@ xcopy $(SolutionDir)resources\Milkdrop2\* $(SolutionDir)..\musikcube\bin\debug\p
     <ClInclude Include="defines.h" />
     <ClInclude Include="dxcontext.h" />
     <ClInclude Include="fft.h" />
-    <ClInclude Include="gstring.h" />
-    <ClInclude Include="icon_t.h" />
     <ClInclude Include="md_defines.h" />
     <ClInclude Include="menu.h" />
     <ClInclude Include="plugin.h" />
@@ -212,7 +210,6 @@ xcopy $(SolutionDir)resources\Milkdrop2\* $(SolutionDir)..\musikcube\bin\debug\p
     <ClInclude Include="textmgr.h" />
     <ClInclude Include="utility.h" />
     <ClInclude Include="wasabi.h" />
-    <ClInclude Include="wa_ipc.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="plugin.rc" />

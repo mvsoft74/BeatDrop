@@ -37,7 +37,6 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "texmgr.h"
 #include "state.h"
 #include <vector>
-#include "gstring.h"
 #include "../ns-eel2/ns-eel.h"
 
 #include <core/sdk/IPlaybackService.h>
@@ -175,7 +174,7 @@ typedef struct
 
 typedef struct
 {
-    GString    texname;  // just for ref
+    std::wstring    texname;  // just for ref
     D3DXHANDLE texsize_param;
     int        w,h;
 } TexSizeParamInfo;
@@ -189,7 +188,7 @@ typedef struct
 
 typedef struct
 {
-    GString   msg;
+    std::wstring   msg;
     bool      bBold;  // true == red bkg; false == black bkg
     float     birthTime;
     float     expireTime;
@@ -284,7 +283,7 @@ typedef struct
 
 typedef struct
 {
-    GString  szFilename;    // without path
+    std::wstring  szFilename;    // without path
     float    fRatingThis;
     float    fRatingCum;
 } PresetInfo;
@@ -462,7 +461,7 @@ public:
 
         // PRESET HISTORY
         #define PRESET_HIST_LEN (64+2)     // make this 2 more than the # you REALLY want to be able to go back.
-        GString     m_presetHistory[PRESET_HIST_LEN];   //circular
+        std::wstring     m_presetHistory[PRESET_HIST_LEN];   //circular
         int         m_presetHistoryPos;
         int         m_presetHistoryBackFence;
         int         m_presetHistoryFwdFence;

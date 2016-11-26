@@ -63,7 +63,6 @@ bool    CheckForMMX();
 bool    CheckForSSE();
 void    GetDesktopFolder(char *szDesktopFolder); // should be MAX_PATH len.
 
-#include "icon_t.h"
 #include <shlobj.h>
 #include <list>
 

@@ -52,10 +52,8 @@ extern CPlugin g_plugin;		// declared in main.cpp
 //  the next line doesn't have the expected token - we rescan from the top.  If the line
 //  is never found, we use the default value, and leave MyGetPos untouched.
 
-#include "gstring.h"
-
-typedef std::vector<GStringA> VarNameList;
-typedef std::vector<int    > IntList;
+typedef std::vector<std::string> VarNameList;
+typedef std::vector<int> IntList;
 
 
 FILE* fLastFilePtr = NULL;

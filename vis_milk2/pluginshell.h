@@ -36,7 +36,6 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "defines.h"
 #include "textmgr.h"
 #include <vector>
-#include "icon_t.h"
 
 #define TIME_HIST_SLOTS 128     // # of slots used if fps > 60.  half this many if fps==30.
 #define MAX_SONGS_PER_PAGE 40
@@ -200,7 +199,6 @@ private:
     int m_force_accept_WM_WINDOWPOSCHANGING;
 
     // PRIVATE - DESKTOP MODE STUFF
-    //typedef std::list<icon_t> IconList;
     bool                m_bClearVJWindow;
 
     // PRIVATE - MORE TIMEKEEPING
