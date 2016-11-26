@@ -368,7 +368,7 @@ class Visualizer :
             };
 
             virtual const char* Version() {
-                return "0.2.1";
+                return "0.2.2";
             };
 
             virtual const char* Author() {
