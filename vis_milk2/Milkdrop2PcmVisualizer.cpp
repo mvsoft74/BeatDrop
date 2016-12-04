@@ -60,7 +60,7 @@ void InitD3d(HWND hwnd, int width, int height) {
 
     D3DDISPLAYMODE mode;
     pD3D9->GetAdapterDisplayMode(D3DADAPTER_DEFAULT, &mode);
-    
+
     UINT adapterId = g_plugin.m_adapterId;
 
     if (adapterId > pD3D9->GetAdapterCount()) {
@@ -368,7 +368,7 @@ class Visualizer :
             };
 
             virtual const char* Version() {
-                return "0.2.2";
+                return "0.2.3";
             };
 
             virtual const char* Author() {
