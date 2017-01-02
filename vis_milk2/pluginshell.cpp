@@ -2077,8 +2077,6 @@ LRESULT CPluginShell::PluginShellWindowProc(HWND hWnd, unsigned uMsg, WPARAM wPa
 	bool bCtrlHeldDown  = (GetKeyState(VK_CONTROL) & mask) != 0;
 	//bool bAltHeldDown: most keys come in under WM_SYSKEYDOWN when ALT is depressed.
 
-	int i;
-
 	switch (uMsg)
 	{
 	case WM_ERASEBKGND:

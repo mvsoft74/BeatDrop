@@ -18,6 +18,7 @@
 #include <mutex>
 #include <atomic>
 
+#include <core/sdk/constants.h>
 #include <core/sdk/IPcmVisualizer.h>
 #include <core/sdk/IPlaybackRemote.h>
 
@@ -359,21 +360,22 @@ void StartRenderThread(HINSTANCE instance) {
 
 static std::string title;
 
+class VisaulizerPlugin : public musik::core::sdk::IPlugin {
+    public:
+        virtual void Destroy() { delete this; }
+        virtual const char* Name() { return "Milkdrop2 IPcmVisualizer, IPlaybackRemote"; }
+        virtual const char* Version() { return "0.2.3"; }
+        virtual const char* Author() { return "clangen"; }
+        virtual int SdkVersion() { return musik::core::sdk::SdkVersion; }
+};
+
 class Visualizer :
     public musik::core::sdk::IPcmVisualizer ,
     public musik::core::sdk::IPlaybackRemote {
         public:
             virtual const char* Name() {
                 return "Milkdrop2";
-            };
-
-            virtual const char* Version() {
-                return "0.2.3";
-            };
-
-            virtual const char* Author() {
-                return "clangen";
-            };
+            }
 
             virtual void Destroy() {
                 this->Hide();
@@ -440,10 +442,11 @@ class Visualizer :
             }
 };
 
+static VisaulizerPlugin visualizerPlugin;
 static Visualizer visualizer;
 
 extern "C" DLL_EXPORT musik::core::sdk::IPlugin* GetPlugin() {
-    return &visualizer;
+    return &visualizerPlugin;
 }
 
 extern "C" DLL_EXPORT musik::core::sdk::IPcmVisualizer* GetPcmVisualizer() {
