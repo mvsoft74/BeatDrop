@@ -409,6 +409,10 @@ class Visualizer :
 
             }
 
+            virtual void OnPlayQueueChanged() {
+
+            }
+
             virtual void Write(musik::core::sdk::IBuffer* buffer) {
                 if (Visible()) {
                     float* b = buffer->BufferPointer();
