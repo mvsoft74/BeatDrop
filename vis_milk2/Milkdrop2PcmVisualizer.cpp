@@ -364,7 +364,7 @@ class VisaulizerPlugin : public musik::core::sdk::IPlugin {
     public:
         virtual void Destroy() { }
         virtual const char* Name() { return "Milkdrop2 IPcmVisualizer, IPlaybackRemote"; }
-        virtual const char* Version() { return "0.4.6"; }
+        virtual const char* Version() { return "0.4.7"; }
         virtual const char* Author() { return "clangen"; }
         virtual const char* Guid() { return "5533c371-ed2b-40cf-aabb-f897661aeec1"; }
         virtual bool Configurable() { return false; }
@@ -414,6 +414,10 @@ class Visualizer :
             }
 
             virtual void OnPlayQueueChanged() {
+
+            }
+
+            virtual void OnPlaybackTimeChanged(double time) {
 
             }
 
