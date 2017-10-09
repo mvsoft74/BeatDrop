@@ -362,38 +362,38 @@ static std::string title;
 
 class VisaulizerPlugin : public musik::core::sdk::IPlugin {
     public:
-        virtual void Destroy() { }
-        virtual const char* Name() { return "Milkdrop2 IPcmVisualizer, IPlaybackRemote"; }
-        virtual const char* Version() { return "0.5.0"; }
-        virtual const char* Author() { return "clangen"; }
-        virtual const char* Guid() { return "5533c371-ed2b-40cf-aabb-f897661aeec1"; }
-        virtual bool Configurable() { return false; }
-        virtual void Configure() { }
-        virtual void Reload() { }
-        virtual int SdkVersion() { return musik::core::sdk::SdkVersion; }
+        virtual void Release() override { }
+        virtual const char* Name() override { return "Milkdrop2 IPcmVisualizer, IPlaybackRemote"; }
+        virtual const char* Version() override { return "0.5.1"; }
+        virtual const char* Author() override { return "clangen"; }
+        virtual const char* Guid() override { return "5533c371-ed2b-40cf-aabb-f897661aeec1"; }
+        virtual bool Configurable() override { return false; }
+        virtual void Configure() override { }
+        virtual void Reload() override { }
+        virtual int SdkVersion() override { return musik::core::sdk::SdkVersion; }
 };
 
 class Visualizer :
     public musik::core::sdk::IPcmVisualizer ,
     public musik::core::sdk::IPlaybackRemote {
         public:
-            virtual const char* Name() {
+            virtual const char* Name() override {
                 return "Milkdrop2";
             }
 
-            virtual void Destroy() {
+            virtual void Release() override {
                 this->Hide();
             }
 
-            virtual void SetPlaybackService(musik::core::sdk::IPlaybackService* playback) {
+            virtual void SetPlaybackService(musik::core::sdk::IPlaybackService* playback) override {
                 g_plugin.playbackService = playback;
                 ::playback = playback;
             }
 
-            virtual void OnTrackChanged(musik::core::sdk::ITrack* track) {
+            virtual void OnTrackChanged(musik::core::sdk::ITrack* track) override {
                 if (track) {
                     char buffer[1024];
-                    track->GetValue("title", buffer, 1024);
+                    track->GetString("title", buffer, 1024);
                     g_plugin.emulatedWinampSongTitle = std::string(buffer);
                 }
                 else {
@@ -401,27 +401,27 @@ class Visualizer :
                 }
             }
 
-            virtual void OnPlaybackStateChanged(musik::core::sdk::PlaybackState state) {
+            virtual void OnPlaybackStateChanged(musik::core::sdk::PlaybackState state) override {
 
             }
 
-            virtual void OnVolumeChanged(double volume) {
+            virtual void OnVolumeChanged(double volume) override {
 
             }
 
-            virtual void OnModeChanged(musik::core::sdk::RepeatMode repeatMode, bool shuffled) {
+            virtual void OnModeChanged(musik::core::sdk::RepeatMode repeatMode, bool shuffled) override {
 
             }
 
-            virtual void OnPlayQueueChanged() {
+            virtual void OnPlayQueueChanged() override {
 
             }
 
-            virtual void OnPlaybackTimeChanged(double time) {
+            virtual void OnPlaybackTimeChanged(double time) override {
 
             }
 
-            virtual void Write(musik::core::sdk::IBuffer* buffer) {
+            virtual void Write(musik::core::sdk::IBuffer* buffer) override {
                 if (Visible()) {
                     float* b = buffer->BufferPointer();
 
@@ -436,20 +436,20 @@ class Visualizer :
                 }
             }
 
-            virtual void Show() {
+            virtual void Show() override {
                 if (!Visible()) {
                     StartRenderThread(module);
                 }
             }
 
-            virtual void Hide() {
+            virtual void Hide() override {
                 if (Visible()) {
                     PostThreadMessage(threadId, WM_QUIT, 0, 0);
                     WaitForSingleObject(thread, INFINITE);
                 }
             }
 
-            virtual bool Visible() {
+            virtual bool Visible() override {
                 return thread.load() != nullptr;
             }
 };
