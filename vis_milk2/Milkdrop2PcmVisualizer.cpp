@@ -364,7 +364,7 @@ class VisaulizerPlugin : public musik::core::sdk::IPlugin {
     public:
         virtual void Release() override { }
         virtual const char* Name() override { return "Milkdrop2 IPcmVisualizer, IPlaybackRemote"; }
-        virtual const char* Version() override { return "0.5.2"; }
+        virtual const char* Version() override { return "0.5.3"; }
         virtual const char* Author() override { return "clangen"; }
         virtual const char* Guid() override { return "5533c371-ed2b-40cf-aabb-f897661aeec1"; }
         virtual bool Configurable() override { return false; }
