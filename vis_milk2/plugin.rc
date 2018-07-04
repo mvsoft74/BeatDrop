@@ -69,8 +69,8 @@ IDR_TEXT1               TEXT                    "text1.bin"
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 2,25,3,0
- PRODUCTVERSION 1,0,0,1
+ FILEVERSION 0,0,0,0
+ PRODUCTVERSION 0,1,0,0
  FILEFLAGSMASK 0x17L
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -85,14 +85,14 @@ BEGIN
     BEGIN
         BLOCK "040904b0"
         BEGIN
-            VALUE "CompanyName", "Nullsoft, Inc."
-            VALUE "FileDescription", "Winamp Visualization Plug-in"
-            VALUE "FileVersion", "2, 25, 3, 0"
-            VALUE "InternalName", "Nullsoft Milkdrop v2"
-            VALUE "LegalCopyright", "Copyright © 2001-2013 Nullsoft, Inc."
-            VALUE "OriginalFilename", "vis_milk2.dll"
-            VALUE "ProductName", "Winamp"
-            VALUE "ProductVersion", "1, 0, 0, 1"
+            VALUE "CompanyName", "Maxim Volskiy"
+            VALUE "FileDescription", "BeatDrop Music Visualizer"
+            VALUE "FileVersion", "0, 0, 0, 0"
+            VALUE "InternalName", "BeatDrop"
+            VALUE "LegalCopyright", "Copyright © BeatDrop development team"
+            VALUE "OriginalFilename", "BeatDrop.exe"
+            VALUE "ProductName", "BeatDrop"
+            VALUE "ProductVersion", "0, 1, 0, 0"
         END
     END
     BLOCK "VarFileInfo"
