@@ -23,7 +23,7 @@
 //#include <core/sdk/IPlaybackRemote.h>
 
 #define DLL_EXPORT __declspec(dllexport)
-#define COMPILE_AS_DLL
+//#define COMPILE_AS_DLL
 #define SAMPLE_SIZE 576
 #define DEFAULT_WIDTH 1280;
 #define DEFAULT_HEIGHT 720;
@@ -352,7 +352,7 @@ void StartRenderThread(HINSTANCE instance) {
 #else
     int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLine, int iCmdShow) {
         api_orig_hinstance = hInstance;
-        HANDLE thread = StartRenderThread(hInstance);
+        /*HANDLE thread =*/ StartRenderThread(hInstance);
         WaitForSingleObject(thread, INFINITE);
         return 0;
     }
