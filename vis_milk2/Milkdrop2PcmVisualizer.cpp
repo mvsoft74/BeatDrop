@@ -18,9 +18,9 @@
 #include <mutex>
 #include <atomic>
 
-#include <core/sdk/constants.h>
-#include <core/sdk/IPcmVisualizer.h>
-#include <core/sdk/IPlaybackRemote.h>
+//#include <core/sdk/constants.h>
+//#include <core/sdk/IPcmVisualizer.h>
+//#include <core/sdk/IPlaybackRemote.h>
 
 #define DLL_EXPORT __declspec(dllexport)
 #define COMPILE_AS_DLL
@@ -52,7 +52,7 @@ static unsigned char pcmRightIn[SAMPLE_SIZE];
 static unsigned char pcmLeftOut[SAMPLE_SIZE];
 static unsigned char pcmRightOut[SAMPLE_SIZE];
 
-static musik::core::sdk::IPlaybackService* playback = nullptr;
+//static musik::core::sdk::IPlaybackService* playback = nullptr;
 
 static HICON icon = nullptr;
 
@@ -166,7 +166,7 @@ LRESULT CALLBACK StaticWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPara
         }
 
         case WM_KEYDOWN: {
-            if (playback && wParam >= VK_F1 && wParam <= VK_F8) {
+            /*if (playback && wParam >= VK_F1 && wParam <= VK_F8) {
                 switch (wParam) {
                 case VK_F1:
                     playback->PauseOrResume();
@@ -193,7 +193,7 @@ LRESULT CALLBACK StaticWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPara
                     playback->ToggleMute();
                     break;
                 }
-            }
+            }*/
             g_plugin.PluginShellWindowProc(hWnd, uMsg, wParam, lParam);
         }
         break;
@@ -359,7 +359,7 @@ void StartRenderThread(HINSTANCE instance) {
 #endif
 
 static std::string title;
-
+/*
 class VisaulizerPlugin : public musik::core::sdk::IPlugin {
     public:
         virtual void Release() override { }
@@ -468,7 +468,7 @@ extern "C" DLL_EXPORT musik::core::sdk::IPcmVisualizer* GetPcmVisualizer() {
 extern "C" DLL_EXPORT musik::core::sdk::IPlaybackRemote* GetPlaybackRemote() {
     return &visualizer;
 }
-
+*/
 #ifdef DEBUG
 struct _DEBUG_STATE {
     _DEBUG_STATE() {

@@ -39,7 +39,7 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <vector>
 #include "../ns-eel2/ns-eel.h"
 
-#include <core/sdk/IPlaybackService.h>
+//#include <core/sdk/IPlaybackService.h>
 
 extern "C" int (*warand)(void);
 
@@ -463,7 +463,7 @@ public:
 
         void GetSongTitle(wchar_t *szSongTitle, int nSize);
 
-        musik::core::sdk::IPlaybackService* playbackService;
+        //musik::core::sdk::IPlaybackService* playbackService;
         std::string emulatedWinampSongTitle;
         char		m_szDebugMessage[512];
         wchar_t		m_szSongTitle    [512];

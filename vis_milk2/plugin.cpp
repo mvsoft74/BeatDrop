@@ -4216,7 +4216,7 @@ void CPlugin::MyRenderUI(
         // render song time & len above that:
         if (m_bShowSongTime || m_bShowSongLen)
         {
-            if (playbackService) {
+            /*if (playbackService) {
                 FormatSongTime(playbackService->GetPosition(), buf); // defined in utility.h/cpp
                 FormatSongTime(playbackService->GetDuration(), buf2); // defined in utility.h/cpp
                 if (m_bShowSongTime && m_bShowSongLen)
@@ -4234,7 +4234,7 @@ void CPlugin::MyRenderUI(
 
                 SelectFont(DECORATIVE_FONT);
                 MyTextOut_Shadow(buf3, MTO_LOWER_LEFT);
-            }
+            }*/
         }
     }
 
@@ -8805,11 +8805,11 @@ void CPlugin::GenCompPShaderText(char *szShaderText, float brightness, float ve_
 
 void CPlugin::GetSongTitle(wchar_t *szSongTitle, int nSize)
 {
-    if (playbackService &&
-        playbackService->GetPlaybackState() == musik::core::sdk::PlaybackStopped)
-    {
-        emulatedWinampSongTitle = "Playback Stopped";
-    }
-
+    //if (playbackService &&
+    //    playbackService->GetPlaybackState() == musik::core::sdk::PlaybackStopped)
+    //{
+    //    emulatedWinampSongTitle = "Playback Stopped";
+    //}
+    emulatedWinampSongTitle = "";
     lstrcpynW(szSongTitle, AutoWide(emulatedWinampSongTitle.c_str(), CP_UTF8), nSize);
 }
