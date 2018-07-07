@@ -343,6 +343,12 @@ void StartRenderThread(HINSTANCE instance) {
         &threadId);
 }
 
+int StartThreads(HINSTANCE instance) {
+    /*HANDLE thread =*/ StartRenderThread(instance);
+    WaitForSingleObject(thread, INFINITE);
+    return 0;
+}
+
 #ifdef COMPILE_AS_DLL
     BOOL APIENTRY DllMain(HMODULE hModule, DWORD reason, LPVOID lpReserved) {
         module = hModule;
@@ -352,9 +358,7 @@ void StartRenderThread(HINSTANCE instance) {
 #else
     int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLine, int iCmdShow) {
         api_orig_hinstance = hInstance;
-        /*HANDLE thread =*/ StartRenderThread(hInstance);
-        WaitForSingleObject(thread, INFINITE);
-        return 0;
+        return StartThreads(hInstance);
     }
 #endif
 
