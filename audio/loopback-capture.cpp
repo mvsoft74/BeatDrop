@@ -202,6 +202,9 @@ HRESULT LoopbackCapture(
 
     bool bDone = false;
     bool bFirstPacket = true;
+
+    bool bErrorInAudioData = false;
+
     for (UINT32 nPasses = 0; !bDone; nPasses++) {
         // drain data while it is available
         UINT32 nNextPacketSize;
@@ -222,31 +225,45 @@ HRESULT LoopbackCapture(
                 NULL,
                 NULL
                 );
+
+            bErrorInAudioData = false;
+
             if (FAILED(hr)) {
+                bErrorInAudioData = true;
                 ERR(L"IAudioCaptureClient::GetBuffer failed on pass %u after %u frames: hr = 0x%08x", nPasses, *pnFrames, hr);
                 return hr;
             }
 
             if (bFirstPacket && AUDCLNT_BUFFERFLAGS_DATA_DISCONTINUITY == dwFlags) {
+                //bErrorInAudioData = true;
                 LOG(L"%s", L"Probably spurious glitch reported on first packet");
             } else if (0 != dwFlags) {
+                bErrorInAudioData = true;
                 LOG(L"IAudioCaptureClient::GetBuffer set flags to 0x%08x on pass %u after %u frames", dwFlags, nPasses, *pnFrames);
-                return E_UNEXPECTED;
+                //return E_UNEXPECTED;
             }
 
             if (0 == nNumFramesToRead) {
+                bErrorInAudioData = true;
                 ERR(L"IAudioCaptureClient::GetBuffer said to read 0 frames on pass %u after %u frames", nPasses, *pnFrames);
-                return E_UNEXPECTED;
+                //return E_UNEXPECTED;
             }
 
-            LONG lBytesToWrite = nNumFramesToRead * nBlockAlign;
-#pragma prefast(suppress: __WARNING_INCORRECT_ANNOTATION, "IAudioCaptureClient::GetBuffer SAL annotation implies a 1-byte buffer")
-            LONG lBytesWritten = mmioWrite(hFile, reinterpret_cast<PCHAR>(pData), lBytesToWrite);
-            if (lBytesToWrite != lBytesWritten) {
-                ERR(L"mmioWrite wrote %u bytes on pass %u after %u frames: expected %u bytes", lBytesWritten, nPasses, *pnFrames, lBytesToWrite);
-                return E_UNEXPECTED;
+            if (bErrorInAudioData) {
+                //ignoring error
+                //skipping writing to file
             }
-            *pnFrames += nNumFramesToRead;
+            else
+            {
+                LONG lBytesToWrite = nNumFramesToRead * nBlockAlign;
+#pragma prefast(suppress: __WARNING_INCORRECT_ANNOTATION, "IAudioCaptureClient::GetBuffer SAL annotation implies a 1-byte buffer")
+                LONG lBytesWritten = mmioWrite(hFile, reinterpret_cast<PCHAR>(pData), lBytesToWrite);
+                if (lBytesToWrite != lBytesWritten) {
+                    ERR(L"mmioWrite wrote %u bytes on pass %u after %u frames: expected %u bytes", lBytesWritten, nPasses, *pnFrames, lBytesToWrite);
+                    return E_UNEXPECTED;
+                }
+                *pnFrames += nNumFramesToRead;
+            }
 
             hr = pAudioCaptureClient->ReleaseBuffer(nNumFramesToRead);
             if (FAILED(hr)) {
