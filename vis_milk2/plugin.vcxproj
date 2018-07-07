@@ -171,6 +171,10 @@ xcopy $(SolutionDir)resources\Milkdrop2\* $(SolutionDir)..\musikcube\bin\debug\p
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\audio\guid.cpp" />
+    <ClCompile Include="..\audio\log.cpp" />
+    <ClCompile Include="..\audio\loopback-capture.cpp" />
+    <ClCompile Include="..\audio\prefs.cpp" />
     <ClCompile Include="..\ns-eel2\nseel-caltab.c" />
     <ClCompile Include="..\ns-eel2\nseel-cfunc.c" />
     <ClCompile Include="..\ns-eel2\nseel-compiler.c" />
@@ -196,6 +200,11 @@ xcopy $(SolutionDir)resources\Milkdrop2\* $(SolutionDir)..\musikcube\bin\debug\p
     <Image Include="plugin_icon.ico" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\audio\cleanup.h" />
+    <ClInclude Include="..\audio\common.h" />
+    <ClInclude Include="..\audio\log.h" />
+    <ClInclude Include="..\audio\loopback-capture.h" />
+    <ClInclude Include="..\audio\prefs.h" />
     <ClInclude Include="AutoCharFn.h" />
     <ClInclude Include="AutoWide.h" />
     <ClInclude Include="defines.h" />

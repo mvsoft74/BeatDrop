@@ -22,6 +22,8 @@
 //#include <core/sdk/IPcmVisualizer.h>
 //#include <core/sdk/IPlaybackRemote.h>
 
+#include "..\audio\common.h"
+
 #define DLL_EXPORT __declspec(dllexport)
 //#define COMPILE_AS_DLL
 #define SAMPLE_SIZE 576
@@ -344,7 +346,7 @@ void StartRenderThread(HINSTANCE instance) {
 }
 
 int StartThreads(HINSTANCE instance) {
-/*
+
     HRESULT hr = S_OK;
 
     hr = CoInitialize(NULL);
@@ -426,10 +428,13 @@ int StartThreads(HINSTANCE instance) {
 
     // at this point capture is running
     // wait for the user to press a key or for capture to error out
-*/    
+    
     /*HANDLE thread =*/ StartRenderThread(instance);
     WaitForSingleObject(thread, INFINITE);
-/*
+
+    //NEED TO STOP CAPTURE
+    // at this point capture is running
+    // wait for the user to press a key or for capture to error out
     {
         WaitForSingleObjectOnExit waitForThread(hThread);
         SetEventOnExit setStopEvent(hStopEvent);
@@ -460,7 +465,7 @@ int StartThreads(HINSTANCE instance) {
                                     // see if any of them was an Enter key-up event
                 INPUT_RECORD rInput[128];
                 DWORD nEvents;
-                if (!ReadConsoleInput(hStdIn, rInput, ARRAYSIZE(rInput), &nEvents)) {
+                /*if (!ReadConsoleInput(hStdIn, rInput, ARRAYSIZE(rInput), &nEvents)) {
                     ERR(L"ReadConsoleInput failed: last error is %u", GetLastError());
                     bKeepWaiting = false;
                 }
@@ -470,15 +475,15 @@ int StartThreads(HINSTANCE instance) {
                             KEY_EVENT == rInput[i].EventType &&
                             VK_RETURN == rInput[i].Event.KeyEvent.wVirtualKeyCode &&
                             !rInput[i].Event.KeyEvent.bKeyDown
-                            ) {
+                            ) {*/
                             LOG(L"%s", L"Stopping capture...");
                             bKeepWaiting = false;
                             break;
-                        }
+                /*        }
                     }
                     // if none of them were Enter key-up events,
                     // continue waiting
-                }
+                }*/
                 break;
 
             default:
@@ -517,7 +522,7 @@ int StartThreads(HINSTANCE instance) {
 
     // reopen the file in read/write mode
     MMIOINFO mi = { 0 };
-    prefs.m_hFile = mmioOpen(const_cast<LPWSTR>(prefs.m_szFilename), &mi, MMIO_READWRITE);
+    prefs.m_hFile = mmioOpenW(const_cast<LPWSTR>(prefs.m_szFilename), &mi, MMIO_READWRITE);
     if (NULL == prefs.m_hFile) {
         ERR(L"mmioOpen(\"%ls\", ...) failed. wErrorRet == %u", prefs.m_szFilename, mi.wErrorRet);
         return -__LINE__;
@@ -558,7 +563,7 @@ int StartThreads(HINSTANCE instance) {
         ERR(L"mmioAscend(\"fact\") failed: MMSYSERR = %u", result);
         return -__LINE__;
     }
-*/
+
     // let prefs' destructor call mmioClose
 
     return 0;

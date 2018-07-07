@@ -346,7 +346,7 @@ HRESULT get_specific_device(LPCWSTR szLongName, IMMDevice **ppMMDevice) {
 HRESULT open_file(LPCWSTR szFileName, HMMIO *phFile) {
     MMIOINFO mi = {0};
 
-    *phFile = mmioOpen(
+    *phFile = mmioOpenW(
         // some flags cause mmioOpen write to this buffer
         // but not any that we're using
         const_cast<LPWSTR>(szFileName),

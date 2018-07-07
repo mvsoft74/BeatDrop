@@ -158,7 +158,7 @@ HRESULT LoopbackCapture(
         return hr;
     }
     ReleaseOnExit releaseAudioCaptureClient(pAudioCaptureClient);
-    
+    /*
     // register with MMCSS
     DWORD nTaskIndex = 0;
     HANDLE hTask = AvSetMmThreadCharacteristics(L"Audio", &nTaskIndex);
@@ -168,7 +168,7 @@ HRESULT LoopbackCapture(
         return HRESULT_FROM_WIN32(dwErr);
     }
     AvRevertMmThreadCharacteristicsOnExit unregisterMmcss(hTask);
-
+    */
     // set the waitable timer
     LARGE_INTEGER liFirstFire;
     liFirstFire.QuadPart = -hnsDefaultDevicePeriod / 2; // negative means relative time

@@ -82,6 +82,18 @@
     <ClCompile Include="fft.cpp">
       <Filter>library\sources</Filter>
     </ClCompile>
+    <ClCompile Include="..\audio\guid.cpp">
+      <Filter>musikcube</Filter>
+    </ClCompile>
+    <ClCompile Include="..\audio\log.cpp">
+      <Filter>musikcube</Filter>
+    </ClCompile>
+    <ClCompile Include="..\audio\loopback-capture.cpp">
+      <Filter>musikcube</Filter>
+    </ClCompile>
+    <ClCompile Include="..\audio\prefs.cpp">
+      <Filter>musikcube</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="plugin_icon.ico">
@@ -140,6 +152,11 @@
     <ClInclude Include="AutoWide.h">
       <Filter>library\headers</Filter>
     </ClInclude>
+    <ClInclude Include="..\audio\cleanup.h" />
+    <ClInclude Include="..\audio\common.h" />
+    <ClInclude Include="..\audio\log.h" />
+    <ClInclude Include="..\audio\loopback-capture.h" />
+    <ClInclude Include="..\audio\prefs.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="text1.bin">
