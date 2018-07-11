@@ -320,6 +320,7 @@ unsigned __stdcall CreateWindowAndRun(void* data) {
             DispatchMessage(&msg);
         }
         else {
+            GetAudioBuf(pcmLeftIn, pcmRightIn, SAMPLE_SIZE);
             RenderFrame();
         }
     }

@@ -250,11 +250,15 @@ HRESULT LoopbackCapture(
             }
 
             if (bErrorInAudioData) {
-                //ignoring error
-                //skipping writing to file
+                // Glitch in audio detected so we reset audio buffer and avoid writing to the output .wav file
+                ResetAudioBuf();
             }
             else
             {
+                // Saving audio data for visualizer
+                SetAudioBuf(pData, nNumFramesToRead, pwfx, bInt16);
+
+                // Writing the buffer captured to the output .wav file
                 LONG lBytesToWrite = nNumFramesToRead * nBlockAlign;
 #pragma prefast(suppress: __WARNING_INCORRECT_ANNOTATION, "IAudioCaptureClient::GetBuffer SAL annotation implies a 1-byte buffer")
                 LONG lBytesWritten = mmioWrite(hFile, reinterpret_cast<PCHAR>(pData), lBytesToWrite);

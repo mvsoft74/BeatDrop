@@ -94,6 +94,9 @@
     <ClCompile Include="..\audio\prefs.cpp">
       <Filter>musikcube</Filter>
     </ClCompile>
+    <ClCompile Include="..\audio\audiobuf.cpp">
+      <Filter>musikcube</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="plugin_icon.ico">
@@ -157,6 +160,7 @@
     <ClInclude Include="..\audio\log.h" />
     <ClInclude Include="..\audio\loopback-capture.h" />
     <ClInclude Include="..\audio\prefs.h" />
+    <ClInclude Include="..\audio\audiobuf.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="text1.bin">

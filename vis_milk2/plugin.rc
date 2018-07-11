@@ -70,7 +70,7 @@ IDR_TEXT1               TEXT                    "text1.bin"
 
 VS_VERSION_INFO VERSIONINFO
  FILEVERSION 0,0,0,0
- PRODUCTVERSION 0,2,0,0
+ PRODUCTVERSION 0,6,0,0
  FILEFLAGSMASK 0x17L
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -92,7 +92,7 @@ BEGIN
             VALUE "LegalCopyright", "Copyright © BeatDrop development team"
             VALUE "OriginalFilename", "BeatDrop.exe"
             VALUE "ProductName", "BeatDrop"
-            VALUE "ProductVersion", "0, 2, 0, 0"
+            VALUE "ProductVersion", "0, 6, 0, 0"
         END
     END
     BLOCK "VarFileInfo"

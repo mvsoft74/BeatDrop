@@ -171,6 +171,7 @@ xcopy $(SolutionDir)resources\Milkdrop2\* $(SolutionDir)..\musikcube\bin\debug\p
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\audio\audiobuf.cpp" />
     <ClCompile Include="..\audio\guid.cpp" />
     <ClCompile Include="..\audio\log.cpp" />
     <ClCompile Include="..\audio\loopback-capture.cpp" />
@@ -202,6 +203,7 @@ xcopy $(SolutionDir)resources\Milkdrop2\* $(SolutionDir)..\musikcube\bin\debug\p
   <ItemGroup>
     <ClInclude Include="..\audio\cleanup.h" />
     <ClInclude Include="..\audio\common.h" />
+    <ClInclude Include="..\audio\audiobuf.h" />
     <ClInclude Include="..\audio\log.h" />
     <ClInclude Include="..\audio\loopback-capture.h" />
     <ClInclude Include="..\audio\prefs.h" />
