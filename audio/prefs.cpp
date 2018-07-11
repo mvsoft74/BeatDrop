@@ -120,18 +120,18 @@ CPrefs::CPrefs(int argc, LPCWSTR argv[], HRESULT &hr)
                 }
             }
 
-            /*
-            // if no filename specified, use default
-            if (NULL == m_szFilename) {
-                m_szFilename = DEFAULT_FILE;
-            }
+            if (NULL != m_szFilename) {
+                // if no filename specified, use default
+                if (NULL == m_szFilename) {
+                    m_szFilename = DEFAULT_FILE;
+                }
 
-            // open file
-            hr = open_file(m_szFilename, &m_hFile);
-            if (FAILED(hr)) {
-                return;
+                // open file
+                hr = open_file(m_szFilename, &m_hFile);
+                if (FAILED(hr)) {
+                    return;
+                }
             }
-            */
     }
 }
 

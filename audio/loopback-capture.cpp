@@ -112,16 +112,16 @@ HRESULT LoopbackCapture(
         }
     }
 
-    MMCKINFO ckRIFF = {0};
-    MMCKINFO ckData = {0};
+    MMCKINFO ckRIFF = { 0 };
+    MMCKINFO ckData = { 0 };
 
-    /*
-    hr = WriteWaveHeader(hFile, pwfx, &ckRIFF, &ckData);
-    if (FAILED(hr)) {
-        // WriteWaveHeader does its own logging
-        return hr;
+    if (NULL != hFile) {
+        hr = WriteWaveHeader(hFile, pwfx, &ckRIFF, &ckData);
+        if (FAILED(hr)) {
+            // WriteWaveHeader does its own logging
+            return hr;
+        }
     }
-    */
 
     // create a periodic waitable timer
     HANDLE hWakeUp = CreateWaitableTimer(NULL, FALSE, NULL);
@@ -260,17 +260,17 @@ HRESULT LoopbackCapture(
             {
                 // Saving audio data for visualizer
                 SetAudioBuf(pData, nNumFramesToRead, pwfx, bInt16);
-
-                /*
-                // Writing the buffer captured to the output .wav file
-                LONG lBytesToWrite = nNumFramesToRead * nBlockAlign;
+                
+                if (NULL != hFile) {
+                    // Writing the buffer captured to the output .wav file
+                    LONG lBytesToWrite = nNumFramesToRead * nBlockAlign;
 #pragma prefast(suppress: __WARNING_INCORRECT_ANNOTATION, "IAudioCaptureClient::GetBuffer SAL annotation implies a 1-byte buffer")
-                LONG lBytesWritten = mmioWrite(hFile, reinterpret_cast<PCHAR>(pData), lBytesToWrite);
-                if (lBytesToWrite != lBytesWritten) {
-                    ERR(L"mmioWrite wrote %u bytes on pass %u after %u frames: expected %u bytes", lBytesWritten, nPasses, *pnFrames, lBytesToWrite);
-                    return E_UNEXPECTED;
+                    LONG lBytesWritten = mmioWrite(hFile, reinterpret_cast<PCHAR>(pData), lBytesToWrite);
+                    if (lBytesToWrite != lBytesWritten) {
+                        ERR(L"mmioWrite wrote %u bytes on pass %u after %u frames: expected %u bytes", lBytesWritten, nPasses, *pnFrames, lBytesToWrite);
+                        return E_UNEXPECTED;
+                    }
                 }
-                */
                 *pnFrames += nNumFramesToRead;
             }
 
@@ -305,13 +305,13 @@ HRESULT LoopbackCapture(
         }
     } // capture loop
 
-    /*
-    hr = FinishWaveFile(hFile, &ckData, &ckRIFF);
-    if (FAILED(hr)) {
-        // FinishWaveFile does it's own logging
-        return hr;
+    if (NULL != hFile) {
+        hr = FinishWaveFile(hFile, &ckData, &ckRIFF);
+        if (FAILED(hr)) {
+            // FinishWaveFile does it's own logging
+            return hr;
+        }
     }
-    */
 
     return hr;
 }

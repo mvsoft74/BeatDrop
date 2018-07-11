@@ -357,8 +357,11 @@ int StartThreads(HINSTANCE instance) {
     }
     CoUninitializeOnExit cuoe;
 
-    int argc = 1; // argc==1 No additional params. Output is 32bit IEEE 754 FLOAT. argc==2 One additional param. Output is 16bit LITTLE ENDIAN PCM
-    LPCWSTR argv[2] = { L"", L"--int-16" };
+    // argc==1 No additional params. Output disabled.
+    // argc==3 Two additional params. Output file enabled (32bit IEEE 754 FLOAT).
+    // argc==4 Three additional params. Output file enabled (LITTLE ENDIAN PCM).
+    int argc = 1;
+    LPCWSTR argv[4] = { L"", L"--file", L"loopback-capture.wav", L"--int-16" };
     hr = S_OK;
 
     // parse command line
@@ -513,59 +516,59 @@ int StartThreads(HINSTANCE instance) {
         return -__LINE__;
     }
 
-    /*
-    // everything went well... fixup the fact chunk in the file
-    MMRESULT result = mmioClose(prefs.m_hFile, 0);
-    prefs.m_hFile = NULL;
-    if (MMSYSERR_NOERROR != result) {
-        ERR(L"mmioClose failed: MMSYSERR = %u", result);
-        return -__LINE__;
-    }
+    if (NULL != prefs.m_szFilename) {
+        // everything went well... fixup the fact chunk in the file
+        MMRESULT result = mmioClose(prefs.m_hFile, 0);
+        prefs.m_hFile = NULL;
+        if (MMSYSERR_NOERROR != result) {
+            ERR(L"mmioClose failed: MMSYSERR = %u", result);
+            return -__LINE__;
+        }
 
-    // reopen the file in read/write mode
-    MMIOINFO mi = { 0 };
-    prefs.m_hFile = mmioOpenW(const_cast<LPWSTR>(prefs.m_szFilename), &mi, MMIO_READWRITE);
-    if (NULL == prefs.m_hFile) {
-        ERR(L"mmioOpen(\"%ls\", ...) failed. wErrorRet == %u", prefs.m_szFilename, mi.wErrorRet);
-        return -__LINE__;
-    }
+        // reopen the file in read/write mode
+        MMIOINFO mi = { 0 };
+        prefs.m_hFile = mmioOpenW(const_cast<LPWSTR>(prefs.m_szFilename), &mi, MMIO_READWRITE);
+        if (NULL == prefs.m_hFile) {
+            ERR(L"mmioOpen(\"%ls\", ...) failed. wErrorRet == %u", prefs.m_szFilename, mi.wErrorRet);
+            return -__LINE__;
+        }
 
-    // descend into the RIFF/WAVE chunk
-    MMCKINFO ckRIFF = { 0 };
-    ckRIFF.ckid = MAKEFOURCC('W', 'A', 'V', 'E'); // this is right for mmioDescend
-    result = mmioDescend(prefs.m_hFile, &ckRIFF, NULL, MMIO_FINDRIFF);
-    if (MMSYSERR_NOERROR != result) {
-        ERR(L"mmioDescend(\"WAVE\") failed: MMSYSERR = %u", result);
-        return -__LINE__;
-    }
+        // descend into the RIFF/WAVE chunk
+        MMCKINFO ckRIFF = { 0 };
+        ckRIFF.ckid = MAKEFOURCC('W', 'A', 'V', 'E'); // this is right for mmioDescend
+        result = mmioDescend(prefs.m_hFile, &ckRIFF, NULL, MMIO_FINDRIFF);
+        if (MMSYSERR_NOERROR != result) {
+            ERR(L"mmioDescend(\"WAVE\") failed: MMSYSERR = %u", result);
+            return -__LINE__;
+        }
 
-    // descend into the fact chunk
-    MMCKINFO ckFact = { 0 };
-    ckFact.ckid = MAKEFOURCC('f', 'a', 'c', 't');
-    result = mmioDescend(prefs.m_hFile, &ckFact, &ckRIFF, MMIO_FINDCHUNK);
-    if (MMSYSERR_NOERROR != result) {
-        ERR(L"mmioDescend(\"fact\") failed: MMSYSERR = %u", result);
-        return -__LINE__;
-    }
+        // descend into the fact chunk
+        MMCKINFO ckFact = { 0 };
+        ckFact.ckid = MAKEFOURCC('f', 'a', 'c', 't');
+        result = mmioDescend(prefs.m_hFile, &ckFact, &ckRIFF, MMIO_FINDCHUNK);
+        if (MMSYSERR_NOERROR != result) {
+            ERR(L"mmioDescend(\"fact\") failed: MMSYSERR = %u", result);
+            return -__LINE__;
+        }
 
-    // write the correct data to the fact chunk
-    LONG lBytesWritten = mmioWrite(
-        prefs.m_hFile,
-        reinterpret_cast<PCHAR>(&threadArgs.nFrames),
-        sizeof(threadArgs.nFrames)
-    );
-    if (lBytesWritten != sizeof(threadArgs.nFrames)) {
-        ERR(L"Updating the fact chunk wrote %u bytes; expected %u", lBytesWritten, (UINT32)sizeof(threadArgs.nFrames));
-        return -__LINE__;
-    }
+        // write the correct data to the fact chunk
+        LONG lBytesWritten = mmioWrite(
+            prefs.m_hFile,
+            reinterpret_cast<PCHAR>(&threadArgs.nFrames),
+            sizeof(threadArgs.nFrames)
+        );
+        if (lBytesWritten != sizeof(threadArgs.nFrames)) {
+            ERR(L"Updating the fact chunk wrote %u bytes; expected %u", lBytesWritten, (UINT32)sizeof(threadArgs.nFrames));
+            return -__LINE__;
+        }
 
-    // ascend out of the fact chunk
-    result = mmioAscend(prefs.m_hFile, &ckFact, 0);
-    if (MMSYSERR_NOERROR != result) {
-        ERR(L"mmioAscend(\"fact\") failed: MMSYSERR = %u", result);
-        return -__LINE__;
+        // ascend out of the fact chunk
+        result = mmioAscend(prefs.m_hFile, &ckFact, 0);
+        if (MMSYSERR_NOERROR != result) {
+            ERR(L"mmioAscend(\"fact\") failed: MMSYSERR = %u", result);
+            return -__LINE__;
+        }
     }
-    */
 
     // let prefs' destructor call mmioClose
 
