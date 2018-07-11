@@ -463,9 +463,9 @@ int StartThreads(HINSTANCE instance) {
 
             case WAIT_OBJECT_0 + 1: // hStdIn
                                     // see if any of them was an Enter key-up event
-                INPUT_RECORD rInput[128];
+                /*INPUT_RECORD rInput[128];
                 DWORD nEvents;
-                /*if (!ReadConsoleInput(hStdIn, rInput, ARRAYSIZE(rInput), &nEvents)) {
+                if (!ReadConsoleInput(hStdIn, rInput, ARRAYSIZE(rInput), &nEvents)) {
                     ERR(L"ReadConsoleInput failed: last error is %u", GetLastError());
                     bKeepWaiting = false;
                 }
