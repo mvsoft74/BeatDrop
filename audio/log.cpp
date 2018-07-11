@@ -1,5 +1,8 @@
-#include <stdio.h>
-#include <windows.h>
+// log.cpp
+
+#include "log.h"
+
+#define LOG_SIZE 512
 
 //LPCTSTR UNICODE _UNICODE
 
@@ -7,7 +10,7 @@
 
 //LPCSTR
 void LOGA(LPCSTR format, ...) {
-	char output_buff[256];
+	char output_buff[LOG_SIZE];
 
 	char err[20] = ""; //"Warn: ";
 	int sl = strnlen_s(err, 20);
@@ -23,7 +26,7 @@ void LOGA(LPCSTR format, ...) {
 
 //LPCWSTR
 void LOG(LPCWSTR format, ...) {
-	wchar_t output_buff[256];
+	wchar_t output_buff[LOG_SIZE];
 
 	wchar_t err[20] = L""; //L"Warn: ";
 	int sl = wcsnlen_s(err, 20);
@@ -41,7 +44,7 @@ void LOG(LPCWSTR format, ...) {
 
 //LPCSTR
 void ERRA(LPCSTR format, ...) {
-	char output_buff[256];
+	char output_buff[LOG_SIZE];
 
 	char err[20] = "Error: ";
 	int sl = strnlen_s(err, 20);
@@ -57,7 +60,7 @@ void ERRA(LPCSTR format, ...) {
 
 //LPCWSTR
 void ERR(LPCWSTR format, ...) {
-	wchar_t output_buff[256];
+	wchar_t output_buff[LOG_SIZE];
 
 	wchar_t err[20] = L"Error: ";
 	int sl = wcsnlen_s(err, 20);
