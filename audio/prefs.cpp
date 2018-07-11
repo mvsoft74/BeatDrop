@@ -120,6 +120,7 @@ CPrefs::CPrefs(int argc, LPCWSTR argv[], HRESULT &hr)
                 }
             }
 
+            /*
             // if no filename specified, use default
             if (NULL == m_szFilename) {
                 m_szFilename = DEFAULT_FILE;
@@ -130,6 +131,7 @@ CPrefs::CPrefs(int argc, LPCWSTR argv[], HRESULT &hr)
             if (FAILED(hr)) {
                 return;
             }
+            */
     }
 }
 

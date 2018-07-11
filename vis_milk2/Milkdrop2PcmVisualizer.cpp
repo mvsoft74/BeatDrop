@@ -513,6 +513,7 @@ int StartThreads(HINSTANCE instance) {
         return -__LINE__;
     }
 
+    /*
     // everything went well... fixup the fact chunk in the file
     MMRESULT result = mmioClose(prefs.m_hFile, 0);
     prefs.m_hFile = NULL;
@@ -564,6 +565,7 @@ int StartThreads(HINSTANCE instance) {
         ERR(L"mmioAscend(\"fact\") failed: MMSYSERR = %u", result);
         return -__LINE__;
     }
+    */
 
     // let prefs' destructor call mmioClose
 
