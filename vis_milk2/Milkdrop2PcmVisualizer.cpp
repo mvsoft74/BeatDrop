@@ -356,8 +356,8 @@ int StartThreads(HINSTANCE instance) {
     }
     CoUninitializeOnExit cuoe;
 
-    int argc = 0;
-    LPCWSTR argv[1] = { L"--no-param" };
+    int argc = 1; // argc==1 No additional params. Output is 32bit IEEE 754 FLOAT. argc==2 One additional param. Output is 16bit LITTLE ENDIAN PCM
+    LPCWSTR argv[2] = { L"", L"--int-16" };
     hr = S_OK;
 
     // parse command line
