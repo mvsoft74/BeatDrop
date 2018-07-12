@@ -272,7 +272,7 @@ unsigned __stdcall CreateWindowAndRun(void* data) {
     // Create the render window
     HWND hwnd = CreateWindowW(
         L"Direct3DWindowClass",
-        L"milkdrop2-musikcube",
+        L"BeatDrop Music Visualizer",
         WS_OVERLAPPEDWINDOW,
         CW_USEDEFAULT,
         CW_USEDEFAULT,

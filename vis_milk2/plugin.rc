@@ -69,7 +69,7 @@ IDR_TEXT1               TEXT                    "text1.bin"
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 0,0,0,0
+ FILEVERSION 1,0,0,0
  PRODUCTVERSION 0,9,0,0
  FILEFLAGSMASK 0x17L
 #ifdef _DEBUG
@@ -87,7 +87,7 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "Maxim Volskiy"
             VALUE "FileDescription", "BeatDrop Music Visualizer"
-            VALUE "FileVersion", "0, 0, 0, 0"
+            VALUE "FileVersion", "1, 0, 0, 0"
             VALUE "InternalName", "BeatDrop"
             VALUE "LegalCopyright", "Copyright © BeatDrop development team"
             VALUE "OriginalFilename", "BeatDrop.exe"
