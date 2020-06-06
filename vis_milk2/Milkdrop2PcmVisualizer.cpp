@@ -125,7 +125,6 @@ void ToggleStretch(HWND hwnd) {
         d3dPp.BackBufferHeight = height;
 
         pD3DDevice->Reset(&d3dPp);
-        stretch = false;
         SetWindowLongW(hwnd, GWL_STYLE, WS_POPUP | WS_VISIBLE);
         SetWindowLongW(hwnd, GWL_EXSTYLE, WS_EX_APPWINDOW);
         SetWindowPos(hwnd, HWND_NOTOPMOST, left, top, width, height, SWP_DRAWFRAME | SWP_FRAMECHANGED);
