@@ -43,6 +43,7 @@ static LONG lastWindowStyle = 0;
 static LONG lastWindowStyleEx = 0;
 
 static bool fullscreen = false;
+static bool stretch = false;
 static RECT lastRect = { 0 };
 
 static HMODULE module = nullptr;
@@ -106,14 +107,60 @@ void DeinitD3d() {
     }
 }
 
+void ToggleStretch(HWND hwnd) {
+    if (!stretch) {
+        int width = GetSystemMetrics(SM_CXVIRTUALSCREEN);
+        int height = GetSystemMetrics(SM_CYVIRTUALSCREEN);
+        int left = GetSystemMetrics(SM_XVIRTUALSCREEN);
+        int top = GetSystemMetrics(SM_YVIRTUALSCREEN);
+
+        if (!fullscreen) {
+            lastWindowStyle = GetWindowLong(hwnd, GWL_STYLE);
+            lastWindowStyleEx = GetWindowLongW(hwnd, GWL_EXSTYLE);
+            lastWindowStyleEx &= ~WS_EX_TOPMOST;
+            GetWindowRect(hwnd, &lastRect);
+        }
+
+        d3dPp.BackBufferWidth = width;
+        d3dPp.BackBufferHeight = height;
+
+        pD3DDevice->Reset(&d3dPp);
+        stretch = false;
+        SetWindowLongW(hwnd, GWL_STYLE, WS_POPUP | WS_VISIBLE);
+        SetWindowLongW(hwnd, GWL_EXSTYLE, WS_EX_APPWINDOW);
+        SetWindowPos(hwnd, HWND_NOTOPMOST, left, top, width, height, SWP_DRAWFRAME | SWP_FRAMECHANGED);
+
+        stretch = true;
+    } else {
+        ShowCursor(TRUE);
+
+        int width = lastRect.right - lastRect.left;
+        int height = lastRect.bottom - lastRect.top;
+
+        d3dPp.BackBufferWidth = width;
+        d3dPp.BackBufferHeight = height;
+
+        pD3DDevice->Reset(&d3dPp);
+        stretch = false;
+
+        SetWindowLongW(hwnd, GWL_STYLE, lastWindowStyle);
+        SetWindowLongW(hwnd, GWL_EXSTYLE, lastWindowStyleEx);
+        SetWindowPos(hwnd, HWND_NOTOPMOST, lastRect.left, lastRect.top, width, height, SWP_DRAWFRAME | SWP_FRAMECHANGED);
+        SetWindowPos(hwnd, 0, 0, 0, 0, 0, SWP_DRAWFRAME | SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE | SWP_NOZORDER);
+    }
+    fullscreen = false;
+}
+
 void ToggleFullScreen(HWND hwnd) {
     if (!fullscreen) {
         ShowCursor(FALSE);
 
-        lastWindowStyle = GetWindowLong(hwnd, GWL_STYLE);
-        lastWindowStyleEx = GetWindowLongW(hwnd, GWL_EXSTYLE);
-        lastWindowStyleEx &= ~WS_EX_TOPMOST;
-        GetWindowRect(hwnd, &lastRect);
+        if (!stretch) {
+            lastWindowStyle = GetWindowLong(hwnd, GWL_STYLE);
+            lastWindowStyleEx = GetWindowLongW(hwnd, GWL_EXSTYLE);
+            lastWindowStyleEx &= ~WS_EX_TOPMOST;
+            GetWindowRect(hwnd, &lastRect);
+        }
 
         HMONITOR monitor = MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST);
 
@@ -152,6 +199,7 @@ void ToggleFullScreen(HWND hwnd) {
         SetWindowPos(hwnd, HWND_NOTOPMOST, lastRect.left, lastRect.top, width, height, SWP_DRAWFRAME | SWP_FRAMECHANGED);
         SetWindowPos(hwnd, 0, 0, 0, 0, 0, SWP_DRAWFRAME | SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE | SWP_NOZORDER);
     }
+    stretch = false;
 }
 
 LRESULT CALLBACK StaticWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
@@ -203,6 +251,10 @@ LRESULT CALLBACK StaticWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPara
         case WM_SYSKEYDOWN: {
             if (wParam == VK_F4) {
                 PostQuitMessage(0);
+            }
+            else if (wParam == VK_SHIFT)
+            {
+                ToggleStretch(hWnd);
             }
             else if (wParam == VK_RETURN) {
                 ToggleFullScreen(hWnd);
@@ -264,7 +316,7 @@ unsigned __stdcall CreateWindowAndRun(void* data) {
 
     int windowWidth = DEFAULT_WIDTH;
     int windowHeight = DEFAULT_HEIGHT;
-
+        
     RECT rc;
     SetRect(&rc, 0, 0, windowWidth, windowHeight);
     AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW, false);
@@ -294,7 +346,7 @@ unsigned __stdcall CreateWindowAndRun(void* data) {
 
     SendMessageW(hwnd, WM_SETICON, ICON_BIG, (LPARAM) icon);
     SendMessageW(hwnd, WM_SETICON, ICON_SMALL, (LPARAM) icon);
-
+    
     ShowWindow(hwnd, SW_SHOW);
 
     int lastWidth = windowWidth;
