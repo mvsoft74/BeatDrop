@@ -850,7 +850,7 @@ BEGIN
     IDS_CONFIG_PANEL_BUTTON_8 " "
     IDS_EXTRA_FONT_1_NAME   "Tooltips"
     IDS_EXTRA_FONT_2_NAME   "Animated Songtitles"
-    IDS_PRESS_F1_MSG        "Press F1 for Help "
+    IDS_PRESS_F1_MSG        "Press F12 for Help "
     IDS_GRAPHICS_SUBSYSTEM_IS_TEMPORARILY_UNSTABLE 
                             "One or more fullscreen display adapters are behaving strangely and will not\nreport a list of display modes.  It's quite possible that your graphics subsystem\nis temporarily unstable.\n\nSUGGESTED ACTION: If you have modified your multimon setup or Windows,\ndisplay settings, or have updated any display drivers or installed\nany new programs, you should probably REBOOT YOUR COMPUTER before\ntrying to configure (or run) the plug-in again."
 END
@@ -893,7 +893,7 @@ BEGIN
     IDS_FORCE_INTO_DESKTOP_MODE_HELP 
                             "Enable this to force the plug-in to start in desktop mode."
     IDS_HELP_ON_F1          "Help on 'Press F1...' checkbox"
-    IDS_HELP_ON_F1_HELP     "Disable this to prevent the 'Press F1 for Help' message\nfrom appearing when the plug-in starts."
+    IDS_HELP_ON_F1_HELP     "Disable this to prevent the 'Press F12 for Help' message\nfrom appearing when the plug-in starts."
     IDS_CB_SKIN_HELP        "Check this box to 'skin' the plug-in's window frame when it runs\nin a window, so that it looks like the rest of the windows that\nmake up Winamp's interface.\n\nThis feature requires Winamp 2.90 or later; if the box is greyed\nout, it means you need a newer version of Winamp."
     IDS_SAVE_CPU_CHECKBOX   "Help on 'Save CPU' checkbox"
     IDS_SAVE_CPU_CHECKBOX_HELP 

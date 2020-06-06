@@ -2,6 +2,7 @@
 
    ESC             exit help / menus
    ALT+ENTER       toggle fullscreen
+   ALT+SHIFT       toggle multiple monitor stretching
 
  PRESETS:
 
@@ -14,13 +15,6 @@
    S               save new preset
    A               do random mini-mash-up
    D               toggle warp & comp shader locks
-
- PLAYBACK:
-
-   F1    play/pause      F2    stop
-   F3    prev            F4    next
-   F5    volume up       F6    volume down
-   F7    shuffle         F8    repeat mode
 
  INFO:
 
