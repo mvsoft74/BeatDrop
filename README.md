@@ -26,7 +26,7 @@ Use BeatDrop with your favourite
   ...
 
 ## System Requirements
-* Windows 10, Windows 8.1 or Windows 7 SP1
+* Windows 11, Windows 10, Windows 8.1 or Windows 7 SP1
 
 * WASAPI-compatible sound card
 
